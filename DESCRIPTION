@@ -1,0 +1,20 @@
+Package: hdat9700tutorials
+Type: Package
+Title: Health Data Analytics: Statistical Modelling II (HDAT9700)
+Version: 0.1.0
+Authors@R: as.person(c(
+    "Mark Hanly <m.hanly@unsw.edu.au> [aut, cre]", 
+    "Andrea Schaffer <andrea.schaffer@unsw.edu.au> [aut]",
+    "Kylie-Ann Mallitt <k.mallitt@unsw.edu.au> [aut]",
+    "Sanja Lujic <s.lujic@unsw.edu.au> [aut]",
+    "UNSW Sydney [cph]"
+  ))
+Description: This package contains interactive learnr tutorials for the course 
+    HDAT9700 Statistical Modelling II, provided as part of the Masters of Science in Health Data 
+    Science and delivered by the Centre for Big Data Research in Health, UNSW Sydney.
+License: file LICENSE
+Copyright: UNSW Sydney
+Imports: 
+  learnr (>= 0.10)
+Encoding: UTF-8
+LazyData: true
