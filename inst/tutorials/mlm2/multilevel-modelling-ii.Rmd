@@ -610,7 +610,7 @@ $$
 
 Fitting a random intercept logistic regression model to the incentive experiment data would correspond to the following picture:
 
-```{r}
+```{r ri}
 
 set.seed(131)
 
@@ -645,7 +645,7 @@ Note:
 Here we review how the incentive
 
 #### Positive covariance between random intercept and random slope
-```{r}
+```{r rsp}
   x %>%
     ggplot() +
     geom_linerange(aes(x=id, ymin=tx0, ymax=tx2), linetype="dashed", color="gray35") +
@@ -665,7 +665,7 @@ Note:
 ***
 
 #### Negative covariance between random intercept and random slope
-```{r}
+```{r rsn}
   x %>%
     ggplot() +
     geom_linerange(aes(x=id, ymin=tx0, ymax=tx3), linetype="dashed", color="gray35") +
@@ -685,7 +685,7 @@ Note:
 ***
 
 #### Zero covariance between random intercept and random slope
-```{r}
+```{r rs0}
   x %>%
     ggplot() +
     geom_linerange(aes(x=id, ymin=tx0, ymax=tx4), linetype="dashed", color="gray35") +

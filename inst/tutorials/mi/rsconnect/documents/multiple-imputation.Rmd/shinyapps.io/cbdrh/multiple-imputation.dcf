@@ -1,0 +1,12 @@
+name: multiple-imputation
+title: multiple-imputation
+username:
+account: cbdrh
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 1659387
+bundleId: 2729758
+url: https://cbdrh.shinyapps.io/multiple-imputation/
+when: 1579070474.73391
+asMultiple: FALSE
+asStatic: FALSE
