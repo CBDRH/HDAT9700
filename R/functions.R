@@ -12,7 +12,7 @@
 #'
 #' @export
 chapter1 <- function() {
-  learnr::run_tutorial("research-design-and-methods", utils::packageName())
+  learnr::run_tutorial("rdx", utils::packageName())
 }
 
 
@@ -32,7 +32,7 @@ chapter2 <- function() {
 #'
 #' @export
 chapter3 <- function() {
-  learnr::run_tutorial("propensity-score-matching", utils::packageName())
+  learnr::run_tutorial("psm", utils::packageName())
 }
 
 
@@ -42,7 +42,7 @@ chapter3 <- function() {
 #'
 #' @export
 chapter4 <- function() {
-  learnr::run_tutorial("multilevel-modelling-i", utils::packageName())
+  learnr::run_tutorial("mlm1", utils::packageName())
 }
 
 
@@ -52,7 +52,7 @@ chapter4 <- function() {
 #'
 #' @export
 chapter5 <- function() {
-  learnr::run_tutorial("multilevel-modelling-ii", utils::packageName())
+  learnr::run_tutorial("mlm2", utils::packageName())
 }
 
 
@@ -62,7 +62,7 @@ chapter5 <- function() {
 #'
 #' @export
 chapter6 <- function() {
-  learnr::run_tutorial("growth-curve-modelling", utils::packageName())
+  learnr::run_tutorial("mlm3", utils::packageName())
 }
 
 
@@ -72,7 +72,7 @@ chapter6 <- function() {
 #'
 #' @export
 chapter7 <- function() {
-  learnr::run_tutorial("time-series-analysis", utils::packageName())
+  learnr::run_tutorial("tsa", utils::packageName())
 }
 
 
@@ -82,7 +82,7 @@ chapter7 <- function() {
 #'
 #' @export
 chapter8 <- function() {
-  learnr::run_tutorial("interrupted-time-series-analysis", utils::packageName())
+  learnr::run_tutorial("its", utils::packageName())
 }
 
 
@@ -92,6 +92,6 @@ chapter8 <- function() {
 #'
 #' @export
 chapter9 <- function() {
-  learnr::run_tutorial("missing-data-and-multiple-imputation", utils::packageName())
+  learnr::run_tutorial("mi", utils::packageName())
 }
 

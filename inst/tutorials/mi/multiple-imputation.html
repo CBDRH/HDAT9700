@@ -237,7 +237,7 @@ mean(obs_heights, na.rm=TRUE)</code></pre>
 <strong>Monotone</strong> Variables <span class="math inline">\(Y_j\)</span> can be arranged in such a way that that if <span class="math inline">\(Y_j\)</span> is missing then all variables <span class="math inline">\(Y_k\)</span>, where <span class="math inline">\(k&gt;j\)</span> are also missing.<br />
 <strong>File matching</strong> Data are taken from different sources, resulting in large blocks of information missing for some individuals.<br />
 <strong>General</strong> Multiple variables have missing data, and the variables can not be ordered monotonically.</p>
-<p><img src="missing-data-and-multiple-imputation_files/figure-html/1_4-1.png" width="624" /></p>
+<p><img src="multiple-imputation_files/figure-html/1_4-1.png" width="624" /></p>
 <p><strong>Figure 1</strong> Patterns of Missing Data <em>(Adapted from Van Buuren, Ch4.)</em></p>
 <hr />
 <div id="section-unit-and-item-missing-data" class="section level3">
@@ -587,7 +587,7 @@ cor_pw$n</code></pre>
 <li>Biases the relationship between variables</li>
 <li>Problematic for categorical variables</li>
 </ul>
-<p><img src="missing-data-and-multiple-imputation_files/figure-html/2_3-1.png" width="624" /></p>
+<p><img src="multiple-imputation_files/figure-html/2_3-1.png" width="624" /></p>
 <p><strong>Figure 3</strong> Mean imputation <em>(Adapted from Van Buuren, Ch1.)</em></p>
 <p>Figure 3 above illustrates mean imputation for two variables from the <strong>sleep</strong> dataset: <strong>Gest</strong> and <strong>Span</strong>. Note that <em>all</em> missing values on the variable <strong>Gest</strong> are replaced with the mean gestation time (142 days) and <em>all</em> missing values on the variable span are replaced with the mean life span (19.9 years). This is a straightforward approach, but because of the drawbacks listed above, mean imputation is generally ill-advised, unless the proportion of missing data is very small.</p>
 </div>
@@ -604,7 +604,7 @@ cor_pw$n</code></pre>
 <li>Underestimates standard errors in the imputed data</li>
 <li>Can bias estimates of correlation between variables included in the imputation model</li>
 </ul>
-<p><img src="missing-data-and-multiple-imputation_files/figure-html/2_4-1.png" width="624" /></p>
+<p><img src="multiple-imputation_files/figure-html/2_4-1.png" width="624" /></p>
 <p><strong>Figure 4</strong> Regression imputation <em>(Adapted from Van Buuren, Ch1.)</em></p>
 <p>Note in Figure 4, the imputed values lie along one of two regression lines. Missing values for <strong>Gest</strong> lie on the predicted values from <span class="math inline">\(gest \sim span\)</span> and imputed values for <strong>Span</strong> lie on the predicted values from <span class="math inline">\(span \sim gest\)</span>.</p>
 </div>
@@ -621,7 +621,7 @@ cor_pw$n</code></pre>
 <li>Underestimates standard errors in the imputed data</li>
 <li>Can result in imputations outside of the valid range of the data</li>
 </ul>
-<p><img src="missing-data-and-multiple-imputation_files/figure-html/2_5-1.png" width="624" /></p>
+<p><img src="multiple-imputation_files/figure-html/2_5-1.png" width="624" /></p>
 <p><strong>Figure 5</strong> Stochasic regression imputation <em>(Adapted from Van Buuren, Ch1.)</em></p>
 <p>Note in Figure 5, the imputed values no longer lie exactly on the regression lines; the added noise reflects the variability in the underlying data.</p>
 </div>
@@ -654,7 +654,7 @@ cor_pw$n</code></pre>
 <ul>
 <li>Can yield biased estimates</li>
 </ul>
-<p><img src="missing-data-and-multiple-imputation_files/figure-html/2_7-1.png" width="624" /></p>
+<p><img src="multiple-imputation_files/figure-html/2_7-1.png" width="624" /></p>
 <p><strong>Figure 6</strong> Imputation using LOCF <em>(Adapted from Van Buuren, Ch1.)</em></p>
 </div>
 <div id="section-practical-2-comparing-simple-approaches-to-handling-missing-data" class="section level2">
@@ -872,7 +872,7 @@ X_{n}^{0} \sim X_{1}^{1} + X_{2}^{1} \ldots + X_{n-1}^{1}
 library(&quot;VIM&quot;)
 data(sleep,package=&quot;VIM&quot;)
 md.pattern(sleep)</code></pre>
-<p><img src="missing-data-and-multiple-imputation_files/figure-html/demo1-1.png" width="864" /></p>
+<p><img src="multiple-imputation_files/figure-html/demo1-1.png" width="864" /></p>
 <pre><code>##    BodyWgt BrainWgt Pred Exp Danger Sleep Span Gest Dream NonD   
 ## 42       1        1    1   1      1     1    1    1     1    1  0
 ## 9        1        1    1   1      1     1    1    1     0    0  2
@@ -941,14 +941,14 @@ md.pattern(sleep)</code></pre>
 <h3>Visualising imputations</h3>
 <p>The <code>MICE</code> package includes several functions to help visualise imputations. Below we use the <code>stripplot()</code> function to examine the observed and imputed data for the five incomplete variables. This helps us check if any unusual values have been imputed. In this case, because the default univariate imputation method for continuous variables is <strong>PMM</strong>, the imputed values all correspond to existing data points.</p>
 <pre class="r"><code>stripplot(imp1, NonD+Dream+Sleep+Span+Gest~.imp)</code></pre>
-<p><img src="missing-data-and-multiple-imputation_files/figure-html/demo5-1.png" width="100%" /></p>
+<p><img src="multiple-imputation_files/figure-html/demo5-1.png" width="100%" /></p>
 <p>A very important diagnostic graph to examine is the <em>trace plot</em>. The trace plot is simply the value of an estimate plotted at each cycle of the <code>MICE</code> algorithm, producing a different line for each imputed dataset. Any estimate can be plotted but by default the <code>plot()</code> function shows the trace plot of the mean and SD for the imputed values of each incomplete variable. The trace plot is used to detect non-convergence of the <code>MICE</code> algorithm. The plotted lines from each imputation should “mix well”, i.e. they should move up and down the parameter space without any patterns or trends.</p>
 <p>Let’s examine the trace plot for the most incomplete variable, <strong>NonD</strong></p>
 <pre class="r"><code>plot(imp1, &quot;NonD&quot;, layout = c(2, 1))</code></pre>
-<p><img src="missing-data-and-multiple-imputation_files/figure-html/demo6a-1.png" width="100%" /> This doesn’t look good. The trace lines from the five different sets of imputations are not mixing well. This indicates that there may be problems with the algorithm, such as non-convergence.</p>
+<p><img src="multiple-imputation_files/figure-html/demo6a-1.png" width="100%" /> This doesn’t look good. The trace lines from the five different sets of imputations are not mixing well. This indicates that there may be problems with the algorithm, such as non-convergence.</p>
 <p>Let’s explore this further. To examine relationships between variables we can use the <code>xyplot()</code> function. This is useful to check whether the imputed values have preserved existing relationships in the observed data. Below we examine the relationship between the variables <strong>NonD</strong> (Hours asleep not dreaming) and <strong>Gest</strong> (gestation in days).</p>
 <pre class="r"><code>xyplot(imp1, NonD~Gest, xlab=&quot;Gestation (days)&quot;, ylab=&quot;Hours spent dreaming&quot;)</code></pre>
-<p><img src="missing-data-and-multiple-imputation_files/figure-html/demo6-1.png" width="100%" /></p>
+<p><img src="multiple-imputation_files/figure-html/demo6-1.png" width="100%" /></p>
 <p>Here we can see that the relationship between <strong>Gest</strong> and the imputed values of <strong>NonD</strong> depart from the observed data relationship. This is particularly true for imputed values of <strong>NonD</strong> at higher levels of <strong>Gest</strong>.</p>
 </div>
 <div id="section-changing-the-univariate-modelling-method" class="section level3">
@@ -973,7 +973,7 @@ meth1</code></pre>
 <pre class="r"><code>imp2 &lt;- mice(sleep, method=meth2, seed=8102)</code></pre>
 <p>Now, let’s re-examine the relationship between <strong>NonD</strong> and <strong>Gest</strong> under this new imputation model.</p>
 <pre class="r"><code>xyplot(imp2, NonD~Gest, xlab=&quot;Gestation (days)&quot;, ylab=&quot;Hours spent dreaming&quot;)</code></pre>
-<p><img src="missing-data-and-multiple-imputation_files/figure-html/demo9-1.png" width="100%" /> This looks a bit better. By modelling the variable <strong>NonD</strong> using a <strong>quadratic</strong> model, rather than <strong>pmm</strong>, the imputed values better reflect the non-linear relationship between NonD and other variables.</p>
+<p><img src="multiple-imputation_files/figure-html/demo9-1.png" width="100%" /> This looks a bit better. By modelling the variable <strong>NonD</strong> using a <strong>quadratic</strong> model, rather than <strong>pmm</strong>, the imputed values better reflect the non-linear relationship between NonD and other variables.</p>
 </div>
 <div id="section-passive-imputation" class="section level3">
 <h3>Passive imputation</h3>
@@ -1039,7 +1039,7 @@ mice::complete(imp3,1)[1:5,]</code></pre>
 </div>
 <p>Let’s examine the trace plots for this imputation.</p>
 <pre class="r"><code>plot(imp3, &quot;NonD&quot;, layout = c(2, 1))</code></pre>
-<p><img src="missing-data-and-multiple-imputation_files/figure-html/demo16-1.png" width="100%" /> This looks much better than what we saw previously. The lines from the individual imputations are overlapping, and we can be more confident that the <code>MICE</code> algorithm has converged to a stationary distribution.</p>
+<p><img src="multiple-imputation_files/figure-html/demo16-1.png" width="100%" /> This looks much better than what we saw previously. The lines from the individual imputations are overlapping, and we can be more confident that the <code>MICE</code> algorithm has converged to a stationary distribution.</p>
 </div>
 <div id="section-modelling-multiply-imputed-data" class="section level3">
 <h3>Modelling multiply imputed data</h3>
