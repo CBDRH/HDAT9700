@@ -1,0 +1,3 @@
+# Ignore the rsconnect subfolders, which contain files to manage the connection to shinyapps.io
+tutorials\/\w*\/rsconnect
+
