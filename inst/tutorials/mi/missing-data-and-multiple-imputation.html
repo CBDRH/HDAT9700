@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+<meta name="progressive" content="false" />
+<meta name="allow-skip" content="false" />
+
+<title>HDAT9700 Statistical Modelling II: Missing Data and Multiple Imputation</title>
+
+
+<!-- highlightjs -->
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+<!-- taken from https://github.com/rstudio/rmarkdown/blob/67b7f5fc779e4cfdfd0f021d3d7745b6b6e17149/inst/rmd/h/default.html#L296-L362 -->
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("section-TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+<!-- end tabsets -->
+
+
+<link rel="stylesheet" href="css/tutorials.css" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+<div class="pageContent band">
+<div class="bandContent page">
+
+<div class="topics">
+
+<p><img src="images/UNSW_2017_Big_Data_landscape.jpg" style="width:75.0%" /></p>
+<div id="section-overview" class="section level2">
+<h2>Overview</h2>
+<div id="section-welcome-to-hdat9700-missing-data-and-multiple-imputation" class="section level3">
+<h3>Welcome to HDAT9700 Missing Data and Multiple Imputation!</h3>
+<p>This chapter focuses on the problem of missing data. You will learn the core skills to summarise and analyse an incomplete dataset. At the end of this chapter you will be able to</p>
+<ol style="list-style-type: decimal">
+<li>Describe patterns of missing data</li>
+<li>Distinguish between three main missing data mechanisms</li>
+<li>Implement multiple imputaton, a leading approach to rigourously address missing data</li>
+</ol>
+<p>The reference text for this chapter is “Flexible Imputation of Missing Data” by Stef Van Buuren, which is available through the <a href="https://ebookcentral-proquest-com.wwwproxy1.library.unsw.edu.au/lib/unsw/detail.action?docID=888580">UNSW library</a>.</p>
+<p>Let’s get started!</p>
+</div>
+</div>
+<div id="section-the-problem-of-missing-data" class="section level2">
+<h2>The problem of missing data</h2>
+<p>Missing data are ubiquitous in health research. There are two possible consequences:</p>
+<ol style="list-style-type: decimal">
+<li>The available sample size is reduced, resulting in less-precise estimates.<br />
+</li>
+<li>Estimates may be biased.</li>
+</ol>
+<p><strong>Issue 1</strong> <em>can</em> be ameliorated by collecting more data. This is not always an option of course, and too much missing data can lead to less precicise estimates.</p>
+<p><strong>Issue 2</strong> is an even bigger problem. Failure to account for the bias introduced through missing data can undermine findings and lead to incorrect conclusions.</p>
+</div>
+<div id="section-illustration" class="section level2">
+<h2>Illustration</h2>
+<p>Suppose we want to estimate the mean and standard deviation of height (in cm) in a population using a simple random sample of ten observations. We can simulate this scenario by drawing 10 observations from <span class="math inline">\(N(170, 10)\)</span>.</p>
+<pre class="r"><code>set.seed(123)  
+
+heights &lt;- sort(rnorm(10,170,10), decreasing = FALSE)  
+
+heights  </code></pre>
+<pre><code>##  [1] 157.3494 163.1315 164.3952 165.5434 167.6982 170.7051 171.2929 174.6092
+##  [9] 185.5871 187.1506</code></pre>
+<pre><code>## Sample mean:  170.7463</code></pre>
+<pre><code>## Sample standard error:  0.9537841</code></pre>
+<hr />
+<p>We can delete some values from the sample to simulate missing data. Notice that with observations 3, 6 and 9 recoded to missing, the sample mean is still close to the population mean, but the standard error of the mean increases: the number of observations is reduced and the sample-based estimate of the mean is less precise.</p>
+<pre class="r"><code>heights &lt;- replace(heights, c(3,6,9), NA)
+
+heights</code></pre>
+<pre><code>##  [1] 157.3494 163.1315       NA 165.5434 167.6982       NA 171.2929 174.6092
+##  [9]       NA 187.1506</code></pre>
+<pre><code>## Sample mean:  169.5393</code></pre>
+<pre><code>## Sample standard error:  1.365201</code></pre>
+<hr />
+<p>In the next example, the missing values are concentrated among taller individuals. Notice that the sample mean is biased downwards as a result.</p>
+<pre class="r"><code>heights &lt;- replace(heights, c(8,9,10), NA)
+
+heights</code></pre>
+<pre><code>##  [1] 157.3494 163.1315 164.3952 165.5434 167.6982 170.7051 171.2929       NA
+##  [9]       NA       NA</code></pre>
+<pre><code>## Sample mean:  165.7308</code></pre>
+<pre><code>## Sample standard error:  0.6860475</code></pre>
+</div>
+<div id="section-mini-exercice" class="section level2" data-progressive="TRUE">
+<h2>Mini Exercice</h2>
+<div id="section-try-the-exercise-below" class="section level3">
+<h3>Try the exercise below</h3>
+<p>In the code below, <span class="math inline">\(p\)</span> is the probability of whether a height observation is observed. <span class="math inline">\(p\)</span> is related to height according to the relationship <span class="math display">\[p = logit^{-1}(w_{1} \times height + w_{2} \times N(0,1))\]</span> The weights <span class="math inline">\(w_{1}\)</span> and <span class="math inline">\(w_{2}\)</span> dictate the extent to which the probability of being missing is related to height (<span class="math inline">\(w_{1}\)</span>) or is simply random (<span class="math inline">\(w_{2}\)</span>). To start, the parameters are set so that there is a strong relationship between height and missingness, with no random component (<span class="math inline">\(w_{1}=1, w_{2}=0\)</span>). Explore how the magnitude of bias changes when you vary these parameters. What can you deduce about the relationship between <span class="math inline">\(p\)</span>, height and the magnitude of bias?</p>
+<div class="tutorial-exercise" data-label="1_3b" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="25">
+<pre class="text"><code># Draw 100 random values of height from N(170, 10)
+heights &lt;- rnorm(100,170,10) 
+
+# Define a function to calcualte the inverse logit 
+invlogit &lt;- function(x) {exp(x)/(1+exp(x))}  
+
+# Define p, the probability of being missing, as a function of height and a random component N(0,1)
+p &lt;- invlogit(1*scale(heights) + 0*rnorm(100,0,1))
+
+# Define a missing value vector based on the probabilities in p
+missing &lt;- rbinom(100,1,p)
+
+# Define a vector of observed heights
+obs_heights &lt;- heights
+obs_heights[missing==1] &lt;- NA
+
+# Assess the relationship between height and p
+scatter.smooth(heights, p)
+print(&quot;Correlation between height and p:&quot;)
+cor(heights, p)
+
+# Calculate the mean of the observed heights
+print(&quot;Mean of the observed heights:&quot;)
+mean(obs_heights, na.rm=TRUE)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+</div>
+<div id="section-discuss" class="section level3">
+<h3>Discuss</h3>
+<div class="discuss">
+<h3 id="section-what-have-we-learned">What have we learned?</h3>
+<p>What can you deduce about the relationship between <span class="math inline">\(p\)</span>, height and the magnitude of bias?</p>
+</div>
+</div>
+<div id="section-what-have-we-learned-1" class="section level3">
+<h3>What have we learned?</h3>
+<div class="thinking">
+<h3 id="section-key-messages">Key messages</h3>
+<ul>
+<li>Setting <span class="math inline">\(w_{1}\)</span> to 0 produces unbiased estimates of the average height<br />
+</li>
+<li>Positive values of <span class="math inline">\(w_{1}\)</span> <span class="math inline">\(\Rightarrow\)</span> taller individuals are more likely to be missing <span class="math inline">\(\Rightarrow\)</span> estimate for average height biased downwards<br />
+</li>
+<li>Negative values of <span class="math inline">\(w_{1}\)</span> <span class="math inline">\(\Rightarrow\)</span> shorter individuals are more likely to be missing <span class="math inline">\(\Rightarrow\)</span> estimate for average height biased upwards</li>
+</ul>
+<p><strong><em>Missing data causes bias when the probability of being missing relates to the quantity of interest</em></strong></p>
+</div>
+</div>
+</div>
+<div id="section-patterns-of-missing-data" class="section level2">
+<h2>Patterns of missing data</h2>
+<p>Missing data can arise in many different ways, leading to distinct patterns of missing data in a dataset. Different patterns of missingness can have implications for how we address the missing data problem. It is useful to distinguish between different patterns of missing data:</p>
+<p><strong>Univariate</strong> Data are missing on a single variable.<br />
+<strong>Multivariate</strong> Data are missing on multiple variables.<br />
+<strong>Monotone</strong> Variables <span class="math inline">\(Y_j\)</span> can be arranged in such a way that that if <span class="math inline">\(Y_j\)</span> is missing then all variables <span class="math inline">\(Y_k\)</span>, where <span class="math inline">\(k&gt;j\)</span> are also missing.<br />
+<strong>File matching</strong> Data are taken from different sources, resulting in large blocks of information missing for some individuals.<br />
+<strong>General</strong> Multiple variables have missing data, and the variables can not be ordered monotonically.</p>
+<p><img src="missing-data-and-multiple-imputation_files/figure-html/1_4-1.png" width="624" /></p>
+<p><strong>Figure 1</strong> Patterns of Missing Data <em>(Adapted from Van Buuren, Ch4.)</em></p>
+<hr />
+<div id="section-unit-and-item-missing-data" class="section level3">
+<h3>Unit and Item missing data</h3>
+<p>We also distinguish between <strong>unit</strong> missing data, whereby all observations on an individual are missing, and <strong>item</strong> missing data whereby some observations are missing and some observations are available. Unit missing data can arise in probability sample surveys when a sampled individual does not participate in the survey. In this case, the sampled unit has missing values on all survey items. In contrast, item missing data arise if, for example, the sampled individual participates but skips some survey questions.</p>
+<hr />
+</div>
+</div>
+<div id="section-quiz-1" class="section level2">
+<h2>Quiz 1</h2>
+<div id="section-patterns-of-missing-data." class="section level3">
+<h3>Patterns of Missing Data.</h3>
+<div id="section-think-about-the-main-pattern-of-missing-data-that-would-arise-from-the-following-hypothetical-scenarios" class="section level4">
+<h4>Think about the main pattern of missing data that would arise from the following hypothetical scenarios</h4>
+<p><div class="panel-heading tutorial-quiz-title">Quiz 1: Patterns of Missing Data</div><div class="panel panel-default">
+<div data-label="quiz1-1" class="tutorial-question panel-body">
+<div id="quiz1-1-answer_container" class="shiny-html-output"></div>
+<div id="quiz1-1-message_container" class="shiny-html-output"></div>
+<div id="quiz1-1-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div><div class="panel panel-default">
+<div data-label="quiz1-2" class="tutorial-question panel-body">
+<div id="quiz1-2-answer_container" class="shiny-html-output"></div>
+<div id="quiz1-2-message_container" class="shiny-html-output"></div>
+<div id="quiz1-2-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div><div class="panel panel-default">
+<div data-label="quiz1-3" class="tutorial-question panel-body">
+<div id="quiz1-3-answer_container" class="shiny-html-output"></div>
+<div id="quiz1-3-message_container" class="shiny-html-output"></div>
+<div id="quiz1-3-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div></p>
+</div>
+</div>
+</div>
+<div id="section-missing-data-mechanisms" class="section level2">
+<h2>Missing Data Mechanisms</h2>
+<p>The previous section discusses patterns of missing data. It is arguably more important to consider <em>why</em> data are missing: the missing data mechanisms. Donald Rubin—the statistician who proposed and developed the theory behind multiple imputation in the 1970s—defined the following taxonomy of three types of missing data.</p>
+<p><strong>Missing Completely at Random (MCAR)</strong><br />
+Missing data are said to be MCAR if the probability of being missing is independent of the data value, and the missingness is truly random. This is quite rare, but MCAR mechanisms can arise in practice. For example, if a random sample of a Wave 1 cohort members were chosen for follow-up at wave 2, the mechanism leading to unselected sample members having no data would be MCAR.</p>
+<p><strong>Missing Not at Random (MNAR)</strong><br />
+Missing data are said to be MNAR if the probability of being missing depends on the data value. MNAR mechanisms are much more common in practice. For example, in a sample survey of healthcare utilisation, younger people (with fewer healthcare needs) might be more difficult to contact and interview. Unhelpfully, MNAR is also sometimes written as NMAR (Not Missing at Random).</p>
+<p><strong>Missing at Random (MAR)</strong><br />
+Missing data are said to be MAR if the probability of being missing is independent of the data value, <strong>conditional on the observed data</strong>. To clarify this, consider the first MNAR example above–that younger people are less likely to respond to a survey. Suppose that age is known in advance for sampled individuals (perhaps from the sampling frame, a linked data source or an earlier wave of data collection). If, within categories defined by age, the probability of being missing is independent of the data value then the missing data mechanism is said to be MAR with respect to age.</p>
+<div class="anxiety">
+<h3 id="section-confused">Confused?</h3>
+<p>It is worth acknowledging that the names given to these three mechanisms are not particularly helpful; if they seem confusing at first, you are not alone. Nonetheless, the terms MCAR, NMAR and MAR are firmly embedded in the statistical canon so it is unavoidable to learn them.</p>
+</div>
+<hr />
+<div id="section-the-missing-data-mechanism-is-usually-an-assumption" class="section level3">
+<h3>The missing data mechanism is usually an <em>assumption</em></h3>
+<p>Sometimes data are missing by design, for example if only a subset of respondents are followed-up, or if a question is only asked to random individuals to reduce response burden. In this scenario, the missing data mechanism is under the control of the researcher. However, usually when we are concerned about missing data it is because the reason for missingness is beyond our control. In this situation, the missing data mechanism is not a property of the data or the study design, but rather, an assumption we must make about the process resulting in unobserved data. In real-world situations, these assumptions are usually untestable but—as we will see—are a cornerstone of the methodological approach to handling missing data. Many formal approaches to handling missing data rely on the assumption that the data are MAR.</p>
+</div>
+</div>
+<div id="section-notation" class="section level2">
+<h2>Notation</h2>
+<p>To help formalise the theory and analysis of missing data it is useful to introduce some notation.</p>
+<p>Let <span class="math inline">\(Y\)</span> represent the desired dataset, an <span class="math inline">\(n \times p\)</span> matrix of <span class="math inline">\(n\)</span> observations on <span class="math inline">\(p\)</span> variables. Observations could be for any unit, such as hospitals or ED admissions, but without loss of generality we will assume we are dealing with people.</p>
+<p>Let <span class="math inline">\(R\)</span> represent a matrix of responses, such that individual elements of <span class="math inline">\(R\)</span>, <span class="math inline">\(r_{ij}\)</span>, are coded as 1 or 0 depending on whether the corresponding data element <span class="math inline">\(y_{ij}\)</span> is observed (<span class="math inline">\(r_{ij}=1\)</span>) or missing (<span class="math inline">\(r_{ij}=0\)</span>).</p>
+<p>Denote the observed data by <span class="math inline">\(Y_{obs}\)</span> and the missing data by <span class="math inline">\(Y_{mis}\)</span>, such that the complete dataset <span class="math inline">\(Y\)</span> can be partitioned into <span class="math inline">\(Y=(Y_{obs}, Y_{mis})\)</span>.</p>
+<p>Finally, let <span class="math inline">\(\psi\)</span> (the Greek letter <em>psi</em>, pronounced “sigh”) denote the parameters of the missing data model, which we write as <span class="math inline">\(Pr(R=0)\)</span>.</p>
+<div class="figure">
+<img src="images/MI_notation.png" alt="Figure 2 Missing data notation" style="width:75.0%" />
+<p class="caption"><strong>Figure 2</strong> Missing data notation</p>
+</div>
+<hr />
+<p>Having defined this notation, we can formally express Rubin’s taxonomy of missing data mechanisms. In the equations below, pay particular attention to the role of the observed data <span class="math inline">\(Y_{obs}\)</span> and the missing data <span class="math inline">\(Y_{mis}\)</span>.</p>
+<div id="section-mcar-missing-completely-at-random" class="section level4">
+<h4><strong>MCAR</strong> Missing Completely at Random</h4>
+<p><em><strong>The probability of being missing is independent of the missing data and the observed data</strong></em></p>
+<p><span class="math display">\[Pr(R=0|Y_{obs},Y_{mis},\psi) = Pr(R=0|\psi)\]</span></p>
+</div>
+<div id="section-mnar-missing-not-at-random" class="section level4">
+<h4><strong>MNAR</strong> Missing Not at Random</h4>
+<p><em><strong>The probability of being missing depends on observed and missing data</strong></em></p>
+<p><span class="math display">\[Pr(R=0|Y_{obs},Y_{mis},\psi) = Pr(R=0|Y_{obs},Y_{mis},\psi)\]</span></p>
+</div>
+<div id="section-mar-missing-at-random" class="section level4">
+<h4><strong>MAR</strong> Missing at Random</h4>
+<p><em><strong>The probability of being missing depends on observed data, but not on missing data</strong></em></p>
+<p><span class="math display">\[Pr(R=0|Y_{obs},Y_{mis},\psi) = Pr(R=0|Y_{obs},\psi) \]</span></p>
+<hr />
+<div class="discuss">
+<h3 id="section-discuss-1">Discuss?</h3>
+<p>Can you please give an example of a scenario that would give rise to either an MCAR, MAR or MNAR missing data mechanism?</p>
+</div>
+</div>
+</div>
+<div id="section-quiz-2" class="section level2">
+<h2>Quiz 2</h2>
+<div id="section-missing-data-mechanisms-1" class="section level3">
+<h3>Missing Data Mechanisms</h3>
+<div id="section-what-is-the-principal-missing-data-mechanism-in-the-following-hypothetical-examples" class="section level4">
+<h4>What is the principal missing data mechanism in the following hypothetical examples?</h4>
+<p><div class="panel-heading tutorial-quiz-title">Quiz 2: Missing Data Mechanisms</div><div class="panel panel-default">
+<div data-label="quiz2-1" class="tutorial-question panel-body">
+<div id="quiz2-1-answer_container" class="shiny-html-output"></div>
+<div id="quiz2-1-message_container" class="shiny-html-output"></div>
+<div id="quiz2-1-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div><div class="panel panel-default">
+<div data-label="quiz2-2" class="tutorial-question panel-body">
+<div id="quiz2-2-answer_container" class="shiny-html-output"></div>
+<div id="quiz2-2-message_container" class="shiny-html-output"></div>
+<div id="quiz2-2-action_button_container" class="shiny-html-output"></div>
+<script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
+</div>
+</div></p>
+</div>
+</div>
+</div>
+<div id="section-recap" class="section level2">
+<h2>Recap</h2>
+<div id="section-lets-recap-some-of-the-key-messages-so-far" class="section level4">
+<h4>Let’s recap some of the key messages so far</h4>
+<ol style="list-style-type: decimal">
+<li>Missing data increase variance in estimates.<br />
+</li>
+<li>Missing data can bias an estimate if the probability of being missing is related to the value of the data point.<br />
+</li>
+<li>Many formal approaches to addressing missing data rely on the MAR assumption.<br />
+</li>
+<li>Whether the missing data mechanism is MAR or NMAR depends on whether missingness is related to the observed data only (MAR) or the missing data and the observed data (NMAR)</li>
+</ol>
+</div>
+</div>
+<div id="section-practical-1-exploring-patterns-of-missing-data" class="section level2">
+<h2>Practical 1: Exploring patterns of missing data</h2>
+<p>In this practical session you will use functions from the R libraries <code>VIM</code> and <code>MICE</code> to visualise and explore patterns of missing data. The exercises are based on the <a href="http://science.sciencemag.org/content/194/4266/732/tab-pdf">sleep</a> dataset, a dataframe with sleep habits and other characteristics on 39 mammalian species. Mammals of various size and disposition are included, such as mice, bats, foxes, humans and elephants.</p>
+<p>You will learn the functions:</p>
+<ul>
+<li>md.pattern()</li>
+<li>aggr()</li>
+</ul>
+<div id="section-exercise-1.1-load-the-vim-library-and-the-sleep-data" class="section level4">
+<h4>Exercise 1.1 Load the <code>VIM</code> library and the sleep data</h4>
+<div class="tutorial-exercise" data-label="exercise1_1" data-caption="Exercise 1.1" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>data(XXX , package = &quot;VIM&quot;)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<hr />
+</div>
+<div id="section-exercise-1.2-data-exploration" class="section level4">
+<h4>Exercise 1.2 Data exploration</h4>
+<div class="tutorial-exercise" data-label="exercise1_2" data-caption="Exercise 1.2" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="8">
+<pre class="text"><code># How many variables are there in the sleep dataset?
+
+# How many observations are there in the sleep dataset?
+
+# What proportion of the data have missing values on one or more variables?</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.setup":"exercise1.1","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise1_2-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># The function complete.cases() can be used to identify variables with complete cases versus one or more missing values</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise1_2-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>summary(complete.cases(sleep))</code></pre>
+</div>
+<hr />
+</div>
+<div id="section-exercise-1.3-visualising-patterns-of-missing-data" class="section level4">
+<h4>Exercise 1.3 Visualising patterns of missing data</h4>
+<p>The <a href="https://www.rdocumentation.org/packages/VIM/versions/4.7.0"><code>VIM</code></a> (<strong>V</strong>isualization and <strong>I</strong>mputation of <strong>M</strong>issing Values) package includes a collection of visualisation techniques for incomplete data. You can read more about <code>VIM</code>, and see some examples of visualisations produced by <code>VIM</code>, in <a href="https://link.springer.com/content/pdf/10.1007%2Fs11634-011-0102-y.pdf">this journal article</a>.</p>
+The <a href="https://www.rdocumentation.org/packages/VIM/versions/4.7.0/topics/aggr"><code>aggr</code></a> function plots the proportion of missing data for all variables, as well as common patterns of missing data. Run the code below to summarise missing data in the sleep dataset. You’ll need to expand on the code to answer all of the questions.
+<div class="tutorial-exercise" data-label="exercise1_3" data-caption="Exercise 1.3" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="14">
+<pre class="text"><code>aggr(sleep)
+
+# What variable has the most missing values?
+
+
+# What is the missing data pattern observed here?
+
+
+# Can you edit the code above to sort the variables by the number of missings?
+
+
+# What proportion of the observations have missing data on all three variables NonD, Dream and Sleep?</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":7,"fig.height":5,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":672,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.setup":"exercise1.1","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise1_3-hint" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># The arguments sortVars=TRUE and numbers=TRUE will be useful)</code></pre>
+</div>
+<hr />
+</div>
+<div id="section-exercise-1.4-summarising-patterns-of-missing-data" class="section level4">
+<h4>Exercise 1.4 Summarising patterns of missing data</h4>
+<p>The <a href="https://www.rdocumentation.org/packages/mice/versions/2.46.0/topics/md.pattern"><code>md.pattern</code></a> function from the <a href="https://www.rdocumentation.org/packages/mice/versions/2.46.0"><code>mice</code></a> (<strong>M</strong>ultivariate <strong>I</strong>mputation by <strong>C</strong>hained <strong>E</strong>quations) package offers another way to summarise patterns of missing data in a dataset. Use the <code>md.pattern()</code> function to answer the question below.</p>
+<div class="tutorial-exercise" data-label="exercise1_4" data-caption="Exercise 1.4" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="6">
+<pre class="text"><code># How many records in the sleep dataset have missing data on three or more variables?
+
+library(&quot;mice&quot;)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.setup":"exercise1.1","exercise.checker":"NULL"}</script>
+</div>
+<hr />
+</div>
+<div id="section-exercise-1.5-visualising-incomplete-variables" class="section level4">
+<h4>Exercise 1.5 Visualising incomplete variables</h4>
+The <a href="https://www.rdocumentation.org/packages/VIM/versions/4.7.0/topics/histMiss"><code>histMiss</code></a> function from the <code>VIM</code> package plots a histogram that includes the proportion of missing values in a variable, and can also plot missing values in one variable by the values of another variable. The variable <strong>NonD</strong> records the hours the mammal spent asleep but not dreaming. Use <code>histMiss</code> below to explore missing values on the variable <strong>NonD</strong> with respect to the values of other variables in the dataset.
+<div class="tutorial-exercise" data-label="exercise1_5" data-caption="Exercise 1.5" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="20">
+<pre class="text"><code># This figure shows that most missing values of nonD occured for values of BodyWgt &lt;1000
+# The bar on the right indicates that no values of X were missing
+histMiss(sleep[, c(&quot;BodyWgt&quot;, &quot;NonD&quot;)])
+
+# Adapt the code above to explore missing values of NonD with respect to observed
+# values of the variables Span, Gest, Pred, Exp and Danger.
+# Are there any obvious patterns of missing data?
+
+# The skewed distribution of the variable BodyWgt masks the visualisation.
+# Can you think of a recoding that will make the distribution of missing
+# values on NonD easier to see with respect to BodyWgt?</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":7,"fig.height":7,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":672,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.setup":"exercise1.1","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise1_5-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># Try the natural log</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise1_5-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>sleep$lnBodyWgt &lt;- log(sleep$BodyWgt)
+histMiss(sleep[, c(&quot;lnBodyWgt&quot;, &quot;NonD&quot;)])</code></pre>
+</div>
+<hr />
+</div>
+<div id="section-exercise-1.6-visualising-incomplete-variables" class="section level4">
+<h4>Exercise 1.6 Visualising incomplete variables</h4>
+The <a href="https://www.rdocumentation.org/packages/VIM/versions/4.7.0/topics/marginplot"><code>marginsplot</code></a> function from the <code>VIM</code> package plots a scatterplot with additional information in the margins.
+<div class="tutorial-exercise" data-label="exercise1_6" data-caption="Exercise 1.6" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="8">
+<pre class="text"><code># Use the marginplot function to explore patterns of missing data in the dataset
+marginplot(sleep[, c(&quot;XXX&quot;, &quot;XXX&quot;)])</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":7,"fig.height":7,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":672,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.setup":"exercise1.1","exercise.checker":"NULL"}</script>
+</div>
+</div>
+</div>
+<div id="section-simple-approaches-to-handling-missing-data" class="section level2">
+<h2>Simple approaches to handling missing data</h2>
+<p>The next few slides review some simple approaches to handling missing data.</p>
+<p>One set of approaches is to exclude incomplete records or observations:</p>
+<ul>
+<li>Listwise deletion</li>
+<li>Pairwise deletion</li>
+</ul>
+<p>Another set of approaches replaces missing data with some plausible substitute:</p>
+<ul>
+<li>Mean imputation</li>
+<li>Regression imputation</li>
+<li>Stochastic regression imputation</li>
+<li>Predictive mean matching</li>
+<li>Last observation carried forward</li>
+</ul>
+</div>
+<div id="section-listwise-deletion" class="section level2">
+<h2>Listwise deletion</h2>
+<p>Under listwise deletion, all records with any missing data are excluded from the analysis. This approach is also sometimes referred to as (i) casewise deletion and (ii) complete case data</p>
+<p><strong>Pros</strong></p>
+<ul>
+<li>Convenient</li>
+<li>Produces valid estimates under MCAR mechanisms</li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul>
+<li>Potentially very wasteful of data</li>
+</ul>
+<div id="section-illustration-1" class="section level3">
+<h3>Illustration</h3>
+<p>The example below demonstrates that <strong>small proportions of missing data on individual variables can still result in a relatively large proportion of incomplete cases</strong></p>
+<p>Review the results to answer the following questions: 1. What is the range of missing data on individual variables? 2. What is the overall proportion of complete cases?</p>
+<div class="tutorial-exercise" data-label="2_1" data-caption="Listwise deletion" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="14">
+<pre class="text"><code># Generate random data
+complete &lt;- data.frame(replicate(10,rnorm(100,0,1)))
+
+# Create missing values under a MCAR mechanism
+missing &lt;- ampute(complete, prop=0.3, mech=&quot;MCAR&quot;)
+
+# What proportion of data are missing on individual variables
+aggr(missing$amp, sortVars = TRUE)
+
+# What proportion have observed data on all 10 variables?
+summary(complete.cases(missing$amp))</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+</div>
+</div>
+<div id="section-pairwise-deletion" class="section level2">
+<h2>Pairwise deletion</h2>
+<ul>
+<li>Under pairwise deletion, the mean for each variable and the (co)variance for each pairwise combination of variables is calculated using the maximum amount of data available for each calculation. The resulting mean vectors and variance/covariance matrices can then be passed to analytical methods such as regression or principal components analysis. Pairwise deletion is also referred to as available case analysis.</li>
+</ul>
+<p><strong>Pros</strong></p>
+<ul>
+<li>Uses all observed data</li>
+<li>Produces valid estimates under MCAR mechanisms</li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul>
+<li>Estimating standard errors is computationally problematic</li>
+<li>Estimates can be biased if data are not MCAR</li>
+</ul>
+<div id="section-illustration-2" class="section level3">
+<h3>Illustration</h3>
+<p>The code below generates random data, then deletes some observations under an MCAR missing data mechanism. Next, it compares the number of observations contributing to the correlation matrix under listwise deletion (complete cases) and pairwise deletion (available cases). This is done using the function <code>corr.test</code> from the library <code>psych</code> which has already been installed in the R environment.</p>
+<div class="tutorial-exercise" data-label="2_2" data-caption="Pairwise deletion" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="20">
+<pre class="text"><code># Load the psych library
+library(&quot;psych&quot;)
+
+# Generate random data
+complete &lt;- data.frame(replicate(5,rnorm(100,0,1)))
+
+# Create missing values under a MCAR mechanism
+missing &lt;- ampute(complete, prop=0.5, mech=&quot;MCAR&quot;)
+
+# The complete case correlation matrix (listwise deletion)
+cor_cc &lt;- corr.test(missing$amp, use=&quot;complete&quot;)
+
+# The available case correlation matrix (pairwise deletion)
+cor_pw &lt;- corr.test(missing$amp, use=&quot;pairwise&quot;)
+
+cor_cc$n
+
+cor_pw$n</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="discuss">
+<h3 id="section-discuss-2">Discuss?</h3>
+<ol style="list-style-type: decimal">
+<li>How many observations contribute to the correlation matrix under the complete-case analysis?</li>
+<li>How many observations contribute to the correlation matrix under the pairwise analysis?</li>
+<li>What is the distinction between complete cases and available cases?</li>
+</ol>
+</div>
+</div>
+</div>
+<div id="section-mean-imputation" class="section level2">
+<h2>Mean imputation</h2>
+<p>Under mean imputation, all missing values on a variable are replaced with the mean of that variable.</p>
+<p><strong>Pros</strong></p>
+<ul>
+<li>Fast and convenient</li>
+<li>Allows all cases to be included in analyses</li>
+<li>Yields unbiased estimates of the mean under MCAR</li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul>
+<li>Underestimates standard errors in the imputed data</li>
+<li>Biases the relationship between variables</li>
+<li>Problematic for categorical variables</li>
+</ul>
+<p><img src="missing-data-and-multiple-imputation_files/figure-html/2_3-1.png" width="624" /></p>
+<p><strong>Figure 3</strong> Mean imputation <em>(Adapted from Van Buuren, Ch1.)</em></p>
+<p>Figure 3 above illustrates mean imputation for two variables from the <strong>sleep</strong> dataset: <strong>Gest</strong> and <strong>Span</strong>. Note that <em>all</em> missing values on the variable <strong>Gest</strong> are replaced with the mean gestation time (142 days) and <em>all</em> missing values on the variable span are replaced with the mean life span (19.9 years). This is a straightforward approach, but because of the drawbacks listed above, mean imputation is generally ill-advised, unless the proportion of missing data is very small.</p>
+</div>
+<div id="section-regression-imputation" class="section level2">
+<h2>Regression imputation</h2>
+<p>Under regression imputation, missing values are replaced with predicted values from a model. The model for the incomplete variable(s) must be estimated using the observed data.</p>
+<p><strong>Pros</strong></p>
+<ul>
+<li>Produces unbiased estimates of the mean under MCAR</li>
+<li>Can produce unbiased regression estimates if the variables leading to missingness are included in the imputation model</li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul>
+<li>Underestimates standard errors in the imputed data</li>
+<li>Can bias estimates of correlation between variables included in the imputation model</li>
+</ul>
+<p><img src="missing-data-and-multiple-imputation_files/figure-html/2_4-1.png" width="624" /></p>
+<p><strong>Figure 4</strong> Regression imputation <em>(Adapted from Van Buuren, Ch1.)</em></p>
+<p>Note in Figure 4, the imputed values lie along one of two regression lines. Missing values for <strong>Gest</strong> lie on the predicted values from <span class="math inline">\(gest \sim span\)</span> and imputed values for <strong>Span</strong> lie on the predicted values from <span class="math inline">\(span \sim gest\)</span>.</p>
+</div>
+<div id="section-stochastic-regression-imputation" class="section level2">
+<h2>Stochastic regression imputation</h2>
+<p>Under regression imputation, the imputed values all lay on a regression line, thus underestimating the variability in the data. Stochastic regression imputation overcomes this by adding some random noise to the predictions. This noise is drawn from a random distribution based on the estimated model parameters.</p>
+<p><strong>Pros</strong></p>
+<ul>
+<li>Produces unbiased estimates of the mean under MCAR</li>
+<li>Can produce unbiased estimates under MAR, i.e. if the variables leading to missingness are included in the imputation model</li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul>
+<li>Underestimates standard errors in the imputed data</li>
+<li>Can result in imputations outside of the valid range of the data</li>
+</ul>
+<p><img src="missing-data-and-multiple-imputation_files/figure-html/2_5-1.png" width="624" /></p>
+<p><strong>Figure 5</strong> Stochasic regression imputation <em>(Adapted from Van Buuren, Ch1.)</em></p>
+<p>Note in Figure 5, the imputed values no longer lie exactly on the regression lines; the added noise reflects the variability in the underlying data.</p>
+</div>
+<div id="section-predictive-mean-matching" class="section level2">
+<h2>Predictive Mean Matching</h2>
+<p>Under predictive mean matching, values from incomplete cases are replaced with observed values from similar complete cases.</p>
+<ul>
+<li>To begin, a linear regression is used to estimate the predicted value of an each incomplete observation.</li>
+<li>Based on this predicted value, a set of candidate observations with similar value are selected.</li>
+<li>From this pool of candidate donors, a single value is selected at random to be imputed for the missing observation</li>
+</ul>
+<p><strong>Pros</strong></p>
+<ul>
+<li>Imputations are drawn from the observed data so they are always within plausible ranges</li>
+<li>There is no need define a model, therefore the risk of model misspecification is lower</li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul>
+<li>There is a danger that the same value will be imputed multiple times, especially when there are few complete observations that are similar to the incomplete observations.</li>
+</ul>
+</div>
+<div id="section-last-observation-carried-forward" class="section level2">
+<h2>Last Observation Carried Forward</h2>
+<p>Last Observation Carried Forward (LOCF) is used in the context of longitudinal data. The idea is simple: missing values at time <span class="math inline">\(t\)</span> are replaced with they observed value from time <span class="math inline">\(t-1\)</span>.</p>
+<p><strong>Pros</strong></p>
+<ul>
+<li>Convenient</li>
+</ul>
+<p><strong>Cons</strong></p>
+<ul>
+<li>Can yield biased estimates</li>
+</ul>
+<p><img src="missing-data-and-multiple-imputation_files/figure-html/2_7-1.png" width="624" /></p>
+<p><strong>Figure 6</strong> Imputation using LOCF <em>(Adapted from Van Buuren, Ch1.)</em></p>
+</div>
+<div id="section-practical-2-comparing-simple-approaches-to-handling-missing-data" class="section level2">
+<h2>Practical 2: Comparing simple approaches to handling missing data</h2>
+<p>In this practical session you will compare some simple approaches to handling missing data, including listwise deletion, mean and regression imputation. The exercises are based on the <a href="http://science.sciencemag.org/content/194/4266/732/tab-pdf">sleep</a> dataset.</p>
+<div id="section-exercise-2.1-load-the-sleep-data-and-examine-the-first-five-rows" class="section level4">
+<h4>Exercise 2.1 Load the sleep data and examine the first five rows</h4>
+<div class="tutorial-exercise" data-label="exercise2_1" data-caption="Exercise 2.1" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>data(XXX , package = &quot;VIM&quot;)
+
+head(XXX , n= XXX)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<hr />
+</div>
+<div id="section-exercise-2.2-the-variable-nond-contains-the-number-of-hours-that-a-mammal-slept-without-dreaming.-calculate-the-mean-and-standard-error-of-the-mean-using-casewise-deletion." class="section level4">
+<h4>Exercise 2.2 The variable NonD contains the number of hours that a mammal slept without dreaming. Calculate the mean and standard error of the mean using <strong>casewise deletion</strong>.</h4>
+<div class="tutorial-exercise" data-label="exercise2_2" data-caption="Exercise 2.2" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="5">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.setup":"exercise2.1","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise2_2-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># The standard error can be calculated by hand, or alternatively many R libraries include convenience functions to return the standard error for the mean of a variable.</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise2_2-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># The R library &#39;psych&#39; includes a nice function called &#39;describe&#39; whose outputs include the mean and the standard error of the mean.</code></pre>
+</div>
+<hr />
+</div>
+<div id="section-exercise-2.3-calculate-the-mean-and-standard-error-of-the-variable-nond-using-mean-imputation-to-fill-in-missing-values." class="section level4">
+<h4>Exercise 2.3 Calculate the mean and standard error of the variable NonD using <strong>mean imputation</strong> to fill in missing values.</h4>
+<div class="tutorial-exercise" data-label="exercise2_3" data-caption="Exercise 2.3" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="10">
+<pre class="text"><code># Create a copy of the NonD variable
+sleep$NonD.mean &lt;- XXX
+
+# Replace missing values with the mean of the observed values
+sleep$NonD.mean &lt;- replace(sleep$NonD.mean, XXX, XXX)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.setup":"exercise2.1","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise2_3-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>sleep$NonD.mean &lt;- replace(sleep$NonD.mean, is.na(sleep$NonD.mean), XXX)</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise2_3-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>sleep$NonD.mean &lt;- replace(sleep$NonD.mean, is.na(sleep$NonD.mean), mean(sleep$NonD,na.rm=TRUE))</code></pre>
+</div>
+<hr />
+</div>
+<div id="section-exercise-2.4-calculate-the-mean-and-standard-error-of-the-variable-nond-using-regression-imputation-to-fill-in-missing-values." class="section level4">
+<h4>Exercise 2.4 Calculate the mean and standard error of the variable NonD using <strong>regression imputation</strong> to fill in missing values.</h4>
+<div class="tutorial-exercise" data-label="exercise2_4" data-caption="Exercise 2.4" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="10">
+<pre class="text"><code># Fit a model for the complete values of NonD conditional on the fully observed variables
+imp.model &lt;- lm(XXX &lt;- XXX , data = XXX)
+
+# Create a copy of the NonD variable
+sleep$NonD.reg &lt;- XXX
+
+# Replace missing values with the predicted values from the fitted model
+sleep$NonD.reg &lt;- replace(XXX, XXX, XXX)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.setup":"exercise2.3","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise2_4-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># Fit a model for the complete values of NonD conditional on the fully observed variables
+imp.model &lt;- lm(NonD ~ BodyWgt + BrainWgt + Pred + Exp + Danger, data=sleep)
+
+# Create a copy of the NonD variable
+
+
+# Replace missing values with the predicted values from the fitted model</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise2_4-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># Fit a model for the complete values of NonD conditional on the fully observed variables
+imp.model &lt;- lm(NonD ~ BodyWgt + BrainWgt + Pred + Exp + Danger, data=sleep)
+
+# Create a copy of the NonD variable
+sleep$NonD.reg &lt;- sleep$NonD
+
+# Replace missing values with the predicted values from the fitted model</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise2_4-hint-3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># Fit a model for the complete values of NonD conditional on the fully observed variables
+imp.model &lt;- lm(NonD ~ BodyWgt + BrainWgt + Pred + Exp + Danger, data=sleep)
+
+# Create a copy of the NonD variable
+sleep$NonD.reg &lt;- sleep$NonD
+
+# Replace missing values with the predicted values from the fitted model
+sleep$NonD.reg &lt;- replace(sleep$NonD.reg, is.na(sleep$NonD.reg), predict(imp.model, sleep)[is.na(sleep$NonD)])</code></pre>
+</div>
+</div>
+</div>
+<div id="section-multiple-imputation" class="section level2">
+<h2>Multiple Imputation</h2>
+<p>The simple approaches described in the previous section—mean imputation, regression imputation etc—are examples of <em>univariate</em> imputations, whereby missing values are replaced with just one set of plausible values. Analysing the resulting dataset as if the filled-in values were “true” inherently underestimates the uncertainty in the data. Under multiple imputation, values of incomplete variables are imputed several times, resulting in multiple copies of the complete dataset. Analyses are then performed on each individual copy of the incomplete data and the results are pooled. Because the imputations (and therefore the estimated parameters) differ slightly with each version, the uncertainty of the imputed values is captured. The innovative idea to combine multiple sets of imputed values was pioneered by Donald B. Rubin, working with the U.S. Census Bureau in the 1970s. With considerale foresight, Rubin set out a formalised, theoretically-driven methodology, which over the past four decades has become perhaps the most widely accepted approach to handling missing data, with implementations in all major statistical packages.</p>
+<div id="section-multiple-imputation-comprises-three-distinct-stages" class="section level3">
+<h3>Multiple imputation comprises three distinct stages</h3>
+<p><strong>1. Imputation</strong> Missing values are repeatedly filled-in to generate m&gt;1 copies of the completed dataset.</p>
+<p><strong>2. Analysis</strong> The analysis of interest is performed in each of the m complete datasets</p>
+<p><strong>3. Pooling</strong> The estimates from each distinct analysis are combined to provide point estimates and standard errors which incorporate the uncertainty of the imputed values.</p>
+<p>Figure 5 below depicts these stages in the multiple imputation process for the case where m=3.</p>
+<p><img src="images/MI_Schema.PNG" /></p>
+<p><strong>Figure 5</strong> Representation of the multiple imputation process</p>
+</div>
+</div>
+<div id="section-drawing-imputations" class="section level2">
+<h2>Drawing imputations</h2>
+<p>Many of the simple imputation methods described previously (such as mean or regression imputation) are not suitable for multiple imputation. <strong>Why is this the case?</strong></p>
+<p>Rather than rely directly on model-based predictions, valid imputations should incorporate two types of uncertainty: 1. <strong>Prediction error</strong> to reflect that the model-based prediction is inherently uncertain. 2. <strong>Parameter uncertainty</strong> to reflect that the parameters of the prediction model themselves are unknown and estimated from the data.</p>
+<p>Van Buuren (Chapter 3) provides explicit algorithms for drawing imputations which incorporate both types of missingness.</p>
+<div id="section-multivariate-missing-data" class="section level3">
+<h3>Multivariate missing data</h3>
+<p>When data are missing on one variable only, it is possible to draw imputations using a univariate method, however things are more complex when mutliple variables are incomplete (which is typically the case).</p>
+<p>Van Buuren (Chapter 4) outlines three general strategies for drawing imputations for multivariate missing data:</p>
+<p><strong>Monotone Data Imputation</strong> When the pattern of missing data is monotone, the incomplete variables can be ordered in descending order of completeness, and imputation can proceed by a series of univariate imputations.</p>
+<p><strong>Joint Modelling</strong> Imputations are drawn from a multivariate model fitted to the data. Typically the multivariate normal distribution is used. Directly drawing from a multivariate distribution is more difficult when variables are non-normal, or when the incomplete data include a mix of categorical and continuous variables.</p>
+<p><strong>Iterative Chained Equations</strong> Iterative Chained Equations (ICE) involve iteratively cycling through, and drawing from, univariate distributions. This process results in draws from the correct multivariate distribution, thus avoiding the need to specify a multivariate distribution for the model, which—as mentioned—is difficult when the incomplete data include a mix of categorical and continuous variables.</p>
+<p>This approach is also referred to as:</p>
+<ul>
+<li>Fully Conditional Specification</li>
+<li>Switching Regressions</li>
+</ul>
+<p>Iterative Chained Equations is a very flexible and popular approach to drawing imputations. It will be discussed in more detail later, and will be applied in the final exercise.</p>
+</div>
+</div>
+<div id="section-pooling-estimates" class="section level2">
+<h2>Pooling estimates</h2>
+<p>In the second stage of multiple imputation, the analysis of interest is repeated on each distinct dataset. This produces <span class="math inline">\(m\)</span> estimates of the parameter of interest, which could be a mean or regression parameter for example. This parameter is denoted <span class="math inline">\(Q\)</span>, and its associated variance in each dataset is denoted <span class="math inline">\(U\)</span>. Combining information from multiply imputed datasets is straightforward using Rubin’s Rules (Rubin, 1987).</p>
+<div id="section-point-estimates-e.g.mean-regression-coefficient" class="section level3">
+<h3>Point estimates (e.g. mean, regression coefficient)</h3>
+<p>The point estimate for a parameter is simply the average parameter estimate from the <span class="math inline">\(m\)</span> imputed datasets.</p>
+<p><span class="math display">\[
+\overline{Q} = \frac{1}{m} \sum_{l=1}^{m} \hat{Q}_l
+\]</span></p>
+</div>
+<div id="section-variance" class="section level3">
+<h3>Variance</h3>
+<p>The total variance for the estimate <span class="math inline">\(Q\)</span> is <span class="math inline">\(T\)</span> and combines three sources of information (van Buuren p38):</p>
+<ol style="list-style-type: decimal">
+<li><span class="math inline">\(\overline{U}\)</span>, the variance caused by the fact that we are taking a sample rather than observing the entire population. This is the conventional statistical measure of variability. <span class="math inline">\(\overline{U}\)</span> is defined as the average variance across the <span class="math inline">\(m\)</span> imputed datasets.</li>
+</ol>
+<p><span class="math display">\[
+\overline{U} = \frac{1}{m} \sum_{l=1}^{m} \hat{U}_l
+\]</span></p>
+<ol start="2" style="list-style-type: decimal">
+<li><p><span class="math inline">\(B\)</span>, the between-imputation variance caused by the fact that there are missing values in the sample. <span class="math inline">\(B\)</span> is calculated as <span class="math display">\[
+B = \frac{1}{m-1} \sum_{l=1}^{m} (\hat{Q}_l - \overline{Q})^2
+\]</span></p></li>
+<li><p><span class="math inline">\(B/m\)</span>, the extra simulation variance caused by the fact that <span class="math inline">\(\overline{Q}\)</span> itself is estimated for finite <span class="math inline">\(m\)</span>.</p></li>
+</ol>
+Finally, the total variance <span class="math inline">\(T\)</span> associated with <span class="math inline">\(Q\)</span> is given by <span class="math display">\[
+T = \overline{U} + B + \frac{B}{m}
+\]</span>
+<div class="discuss">
+<h3 id="section-discuss-3">Discuss?</h3>
+<p>Thinking in terms of <span class="math inline">\(m\)</span> (the number of imputations) and <span class="math inline">\(B\)</span> (the between-imputation variance), when will the total variance <span class="math inline">\(T\)</span> be minimised?</p>
+</div>
+</div>
+</div>
+<div id="section-how-many-imputed-datasets" class="section level2">
+<h2>How many imputed datasets?</h2>
+<p>When performing multiple imputation the number of imputed datasets <span class="math inline">\(m\)</span> must be chosen by the analyst.</p>
+<p>There are different guidelines about how many imputations are necessary. Originally, as few as five were suggested as adequate (Rubin, 1987), a guideline based on the efficiency of the parameter estimate, which does not rise substantially when <span class="math inline">\(m\)</span> is increased beyond this.</p>
+<p>More recently, others have argued that efficiency is not the only consideration, and simulations have illustrated that important quantities such as p-values can vary substantially across independent replications when <span class="math inline">\(m\)</span> is low. In practice this means that when the number of imputed datasets is small two different analysts may get noticeably different results even when imputing the same dataset with the same imputation model (assuming they are using different random seeds). To distinguish from other sources of error this variation is termed Monte Carlo variability or simulation error.</p>
+<p>As a rule of thumb, White et al. (2011) suggest that <span class="math inline">\(m\)</span> should be approximately equal to the percentage of cases that are incomplete. So if 20% of the data were incomplete, we would use <span class="math inline">\(m=20\)</span>. van Buuren makes the practical suggestion to use <span class="math inline">\(m=5\)</span> for model building and increase afterwards as required.</p>
+</div>
+<div id="section-what-variables-should-be-included-in-the-imputation-model" class="section level2">
+<h2>What variables should be included in the imputation model?</h2>
+<p>White et al (2011) offer the following advice on which variables to include in the imputation model:</p>
+<p><strong>1. Covariates from the analysis model</strong> This also includes any interactions present in the analysis model. Additionally, analysis model variables should be included in the correct functional form, for example if age features in the analysis model as a quadratic term then the quadratic term should also be included in the imputation model.</p>
+<p><strong>2. The outcome from the analysis model</strong> The dependent variable of interest from the analysis model (your outcome), can and should be included to help impute values of incomplete independent variables.</p>
+<p><strong>3. Predictors related to the incomplete variable(s) and <em>ideally</em> to the probability of being missing</strong> Including predictors related to both the incomplete variables and the probability of being missing should improve the plausibility of the MAR assumption and result in bias reduction. Predictors related to the imputed variables only can improve the quality of predictions, thus reducing the standard error of the analysis model outputs.</p>
+</div>
+<div id="section-iterative-chained-equations" class="section level2">
+<h2>Iterative Chained Equations</h2>
+<p>Iterative Chained Equations (ICE) is a flexible approach used to draw multiple imputations from intractable multivariate distributions. Such distributions often arise in practice, i.e. when incomplete variables have unusual distributions and/or are of different types (continuous/categorical/ordinal/binary).</p>
+<p>In brief, the ICE algorithm achieves draws from a multivariate distribution by iteratively drawing from univariate distributions for each incomplete variable.</p>
+<div id="section-the-ice-algorithm" class="section level3">
+<h3>The ICE algorithm</h3>
+<ol style="list-style-type: decimal">
+<li><p>Initialise the process by filling in all missing values using some simple method;</p></li>
+<li><p>Fit a model for the most complete variable <span class="math inline">\(X_{1}\)</span>, using all remaining variables <span class="math inline">\(X_{2} \text{--} X_{n}\)</span> as predictors; <span class="math display">\[
+X_{1}^{0} \sim X_{2}^{0} + X_{3}^{0} \ldots + X_{n}^{0}
+\]</span></p></li>
+<li><p>Impute missing values of <span class="math inline">\(X_{1}\)</span> based on this fitted model;</p></li>
+<li>Fit a model for <span class="math inline">\(X_{2}\)</span> based on the updated variable <span class="math inline">\(X_{1}\)</span> and the remaining variables <span class="math inline">\(X_{3} \text{--} X_{n}\)</span>; <span class="math display">\[
+X_{2}^{0} \sim X_{1}^{1} + X_{3}^{0} \ldots + X_{n}^{0}
+\]</span></li>
+<li><p>Impute missing values of <span class="math inline">\(X_{1}\)</span> based on this fitted model;</p></li>
+<li><p>Continue in this way until all the variables have been imputed once (this constitutes one <strong>cycle</strong> of the algorithm; <span class="math display">\[
+X_{n}^{0} \sim X_{1}^{1} + X_{2}^{1} \ldots + X_{n-1}^{1}
+\]</span></p></li>
+<li><p>Iterate for a set number of cycles, taking the last set of updated values as one set of imputations. The imputed values should converge to draws from the correct multivariate distribution;</p></li>
+<li><p>Iterate steps 1-7 <span class="math inline">\(m\)</span> times to create <span class="math inline">\(m\)</span> sets of imputed values.</p></li>
+</ol>
+</div>
+<div id="section-how-many-cycles" class="section level3">
+<h3>How many cycles</h3>
+<p>As with the number of imputed datasets <span class="math inline">\(m\)</span>, the number of cycles used in the ICE algorithm must be specified by the analyst. A surprisingly small number of cycles are needed to reach convergence, e.g. 10-20. An important visual diagnostic check is to examine parameter estimates by cycle number—known as a trace plot—to ensure that the estimates have stabilised.</p>
+</div>
+<div id="section-tailoring-the-imputation-model" class="section level3">
+<h3>Tailoring the imputation model</h3>
+<p>An attractive feature of ICE is that it is possible to tailor the imputation model for individual variables. This can be done in several ways:</p>
+<ul>
+<li><p>It is possible to specify the appropriate model type for each variable (logistic for binary outcomes; multinomial logistic for categorical outcomes etc).</p></li>
+<li><p>If desired, the model predictors can also be personalised for each individual incomplete variable. This flexibility allows the user to adapt the imputation model to reflect different missing data mechanisms for different variables—gestational age might be useful in the imputation model for birthweight but not useful to predict missing values of paternal age, for example.</p></li>
+<li><p>Passive imputation allows you to impute variables based on existing imputed values in a single cycle of ICE. This allows for consistency, for example if BMI was included in the analysis model it is possible to impute BMI passively from imputed values of height and weight.</p></li>
+<li><p>Conditional imputation allows you to restrict imputations to certain categories. For example, imputations for a binary indicator of testicular cancer could be restricted to men only.</p></li>
+</ul>
+</div>
+</div>
+<div id="section-the-mice-package" class="section level2">
+<h2>The MICE package</h2>
+<p>This section will demonstrate the <code>MICE</code> package, which implements <strong>M</strong>ultiple <strong>I</strong>mputation by <strong>C</strong>hained <strong>E</strong>quations in R. Developed by Stef van Buuren, <code>MICE</code> is a very flexible package that implements a range of imputation models.</p>
+<hr />
+<p>In this demonstration we will return to the sleep dataset. We can use the <code>md.pattern()</code> function to review the pattern of missing data.</p>
+<pre class="r"><code>library(&quot;mice&quot;)
+library(&quot;VIM&quot;)
+data(sleep,package=&quot;VIM&quot;)
+md.pattern(sleep)</code></pre>
+<p><img src="missing-data-and-multiple-imputation_files/figure-html/demo1-1.png" width="864" /></p>
+<pre><code>##    BodyWgt BrainWgt Pred Exp Danger Sleep Span Gest Dream NonD   
+## 42       1        1    1   1      1     1    1    1     1    1  0
+## 9        1        1    1   1      1     1    1    1     0    0  2
+## 3        1        1    1   1      1     1    1    0     1    1  1
+## 2        1        1    1   1      1     1    0    1     1    1  1
+## 1        1        1    1   1      1     1    0    1     0    0  3
+## 1        1        1    1   1      1     1    0    0     1    1  2
+## 2        1        1    1   1      1     0    1    1     1    0  2
+## 2        1        1    1   1      1     0    1    1     0    0  3
+##          0        0    0   0      0     4    4    4    12   14 38</code></pre>
+<p>We can see that 42 records are fully observed; five variables are complete, and five variables are incomplete. The highest number of missing observations is for the variable <strong>NonD</strong> (Hours spent not dreaming) which has 14 missing observations.</p>
+<p>To impute the missing values we can use the <code>mice()</code> function:</p>
+<pre class="r"><code>imp1 &lt;- mice(sleep, seed=8102)</code></pre>
+<p>The <code>mice()</code> function returns an object of class <code>mids</code> (multiply imputed dataset), which above has been assigned to <strong>imp1</strong>. We can summarise <strong>imp1</strong> to learn more about the default parameters used when we called <code>mice()</code>.</p>
+<pre class="r"><code>summary(imp1)</code></pre>
+<pre><code>## Class: mids
+## Number of multiple imputations:  5 
+## Imputation methods:
+##  BodyWgt BrainWgt     NonD    Dream    Sleep     Span     Gest     Pred 
+##       &quot;&quot;       &quot;&quot;    &quot;pmm&quot;    &quot;pmm&quot;    &quot;pmm&quot;    &quot;pmm&quot;    &quot;pmm&quot;       &quot;&quot; 
+##      Exp   Danger 
+##       &quot;&quot;       &quot;&quot; 
+## PredictorMatrix:
+##          BodyWgt BrainWgt NonD Dream Sleep Span Gest Pred Exp Danger
+## BodyWgt        0        1    1     1     1    1    1    1   1      1
+## BrainWgt       1        0    1     1     1    1    1    1   1      1
+## NonD           1        1    0     1     1    1    1    1   1      1
+## Dream          1        1    1     0     1    1    1    1   1      1
+## Sleep          1        1    1     1     0    1    1    1   1      1
+## Span           1        1    1     1     1    0    1    1   1      1
+## Number of logged events:  7 
+##   it im  dep meth   out
+## 1  1  2 Span  pmm Sleep
+## 2  1  2 Gest  pmm Sleep
+## 3  2  3 Span  pmm Sleep
+## 4  4  4 Span  pmm Sleep
+## 5  4  4 Gest  pmm Sleep
+## 6  4  5 Span  pmm Sleep</code></pre>
+<p><strong>Note</strong></p>
+<ul>
+<li>The default number of imputed datasets is 5</li>
+<li>The univariate imputation method for each of the five incomplete variables was <strong>pmm</strong> (predictive mean matching)</li>
+<li>The predictor matrix shows which variables were included as predictors for each univariate model. Here, all other variables have been used.</li>
+</ul>
+<p>Later we will see how these default parameters can be customised by the analyst.</p>
+<p>We can use the <code>complete</code> function to view the original and imputed data. Below we have printed the first five rows of (i) the incomplete data, (ii) the first imputed dataset and (iii) the second imputed dataset. Note that the <em>NA</em>s from the incomplete data have been replaced with plausible data values in the first two imputed datasets. The actual imputed values will of course differ across the imputed datasets.</p>
+<pre class="r"><code>mice::complete(imp1,0)[1:5,]</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["BodyWgt"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["BrainWgt"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["NonD"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Dream"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Sleep"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Span"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["Gest"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["Pred"],"name":[8],"type":["int"],"align":["right"]},{"label":["Exp"],"name":[9],"type":["int"],"align":["right"]},{"label":["Danger"],"name":[10],"type":["int"],"align":["right"]}],"data":[{"1":"6654.000","2":"5712.0","3":"NA","4":"NA","5":"3.3","6":"38.6","7":"645","8":"3","9":"5","10":"3","_rn_":"1"},{"1":"1.000","2":"6.6","3":"6.3","4":"2.0","5":"8.3","6":"4.5","7":"42","8":"3","9":"1","10":"3","_rn_":"2"},{"1":"3.385","2":"44.5","3":"NA","4":"NA","5":"12.5","6":"14.0","7":"60","8":"1","9":"1","10":"1","_rn_":"3"},{"1":"0.920","2":"5.7","3":"NA","4":"NA","5":"16.5","6":"NA","7":"25","8":"5","9":"2","10":"3","_rn_":"4"},{"1":"2547.000","2":"4603.0","3":"2.1","4":"1.8","5":"3.9","6":"69.0","7":"624","8":"3","9":"5","10":"4","_rn_":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>mice::complete(imp1,1)[1:5,]</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["BodyWgt"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["BrainWgt"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["NonD"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Dream"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Sleep"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Span"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["Gest"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["Pred"],"name":[8],"type":["int"],"align":["right"]},{"label":["Exp"],"name":[9],"type":["int"],"align":["right"]},{"label":["Danger"],"name":[10],"type":["int"],"align":["right"]}],"data":[{"1":"6654.000","2":"5712.0","3":"2.1","4":"0.0","5":"3.3","6":"38.6","7":"645","8":"3","9":"5","10":"3","_rn_":"1"},{"1":"1.000","2":"6.6","3":"6.3","4":"2.0","5":"8.3","6":"4.5","7":"42","8":"3","9":"1","10":"3","_rn_":"2"},{"1":"3.385","2":"44.5","3":"10.8","4":"1.8","5":"12.5","6":"14.0","7":"60","8":"1","9":"1","10":"1","_rn_":"3"},{"1":"0.920","2":"5.7","3":"12.8","4":"3.4","5":"16.5","6":"3.2","7":"25","8":"5","9":"2","10":"3","_rn_":"4"},{"1":"2547.000","2":"4603.0","3":"2.1","4":"1.8","5":"3.9","6":"69.0","7":"624","8":"3","9":"5","10":"4","_rn_":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code>mice::complete(imp1,2)[1:5,]</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["BodyWgt"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["BrainWgt"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["NonD"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Dream"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Sleep"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Span"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["Gest"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["Pred"],"name":[8],"type":["int"],"align":["right"]},{"label":["Exp"],"name":[9],"type":["int"],"align":["right"]},{"label":["Danger"],"name":[10],"type":["int"],"align":["right"]}],"data":[{"1":"6654.000","2":"5712.0","3":"3.3","4":"0.5","5":"3.3","6":"38.6","7":"645","8":"3","9":"5","10":"3","_rn_":"1"},{"1":"1.000","2":"6.6","3":"6.3","4":"2.0","5":"8.3","6":"4.5","7":"42","8":"3","9":"1","10":"3","_rn_":"2"},{"1":"3.385","2":"44.5","3":"11.0","4":"1.5","5":"12.5","6":"14.0","7":"60","8":"1","9":"1","10":"1","_rn_":"3"},{"1":"0.920","2":"5.7","3":"13.2","4":"3.4","5":"16.5","6":"2.6","7":"25","8":"5","9":"2","10":"3","_rn_":"4"},{"1":"2547.000","2":"4603.0","3":"2.1","4":"1.8","5":"3.9","6":"69.0","7":"624","8":"3","9":"5","10":"4","_rn_":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div id="section-visualising-imputations" class="section level3">
+<h3>Visualising imputations</h3>
+<p>The <code>MICE</code> package includes several functions to help visualise imputations. Below we use the <code>stripplot()</code> function to examine the observed and imputed data for the five incomplete variables. This helps us check if any unusual values have been imputed. In this case, because the default univariate imputation method for continuous variables is <strong>PMM</strong>, the imputed values all correspond to existing data points.</p>
+<pre class="r"><code>stripplot(imp1, NonD+Dream+Sleep+Span+Gest~.imp)</code></pre>
+<p><img src="missing-data-and-multiple-imputation_files/figure-html/demo5-1.png" width="100%" /></p>
+<p>A very important diagnostic graph to examine is the <em>trace plot</em>. The trace plot is simply the value of an estimate plotted at each cycle of the <code>MICE</code> algorithm, producing a different line for each imputed dataset. Any estimate can be plotted but by default the <code>plot()</code> function shows the trace plot of the mean and SD for the imputed values of each incomplete variable. The trace plot is used to detect non-convergence of the <code>MICE</code> algorithm. The plotted lines from each imputation should “mix well”, i.e. they should move up and down the parameter space without any patterns or trends.</p>
+<p>Let’s examine the trace plot for the most incomplete variable, <strong>NonD</strong></p>
+<pre class="r"><code>plot(imp1, &quot;NonD&quot;, layout = c(2, 1))</code></pre>
+<p><img src="missing-data-and-multiple-imputation_files/figure-html/demo6a-1.png" width="100%" /> This doesn’t look good. The trace lines from the five different sets of imputations are not mixing well. This indicates that there may be problems with the algorithm, such as non-convergence.</p>
+<p>Let’s explore this further. To examine relationships between variables we can use the <code>xyplot()</code> function. This is useful to check whether the imputed values have preserved existing relationships in the observed data. Below we examine the relationship between the variables <strong>NonD</strong> (Hours asleep not dreaming) and <strong>Gest</strong> (gestation in days).</p>
+<pre class="r"><code>xyplot(imp1, NonD~Gest, xlab=&quot;Gestation (days)&quot;, ylab=&quot;Hours spent dreaming&quot;)</code></pre>
+<p><img src="missing-data-and-multiple-imputation_files/figure-html/demo6-1.png" width="100%" /></p>
+<p>Here we can see that the relationship between <strong>Gest</strong> and the imputed values of <strong>NonD</strong> depart from the observed data relationship. This is particularly true for imputed values of <strong>NonD</strong> at higher levels of <strong>Gest</strong>.</p>
+</div>
+<div id="section-changing-the-univariate-modelling-method" class="section level3">
+<h3>Changing the univariate modelling method</h3>
+<p>Let’s try a different choice of univariate imputation model for <strong>NonD</strong> to see if we can get better imputations that preserve the relationship between <strong>NonD</strong> and <strong>Gest</strong>. A quick way to specify the univariate method(s) is to edit the existing method vector. Below we edit the method vector from the previous imputation output, selecting <strong>quadratic</strong> for <strong>NonD</strong>. Using a quadratic model here may help to capture the nonlinear relationship betweeen gestation and hours asleep not dreaming variables.</p>
+<pre class="r"><code>meth1 &lt;- imp1$method
+meth2 &lt;- meth1
+meth2[&quot;NonD&quot;] &lt;- &quot;quadratic&quot;
+
+# Compare the two method vectors
+meth1</code></pre>
+<pre><code>##  BodyWgt BrainWgt     NonD    Dream    Sleep     Span     Gest     Pred 
+##       &quot;&quot;       &quot;&quot;    &quot;pmm&quot;    &quot;pmm&quot;    &quot;pmm&quot;    &quot;pmm&quot;    &quot;pmm&quot;       &quot;&quot; 
+##      Exp   Danger 
+##       &quot;&quot;       &quot;&quot;</code></pre>
+<pre class="r"><code>meth2</code></pre>
+<pre><code>##     BodyWgt    BrainWgt        NonD       Dream       Sleep        Span 
+##          &quot;&quot;          &quot;&quot; &quot;quadratic&quot;       &quot;pmm&quot;       &quot;pmm&quot;       &quot;pmm&quot; 
+##        Gest        Pred         Exp      Danger 
+##       &quot;pmm&quot;          &quot;&quot;          &quot;&quot;          &quot;&quot;</code></pre>
+<p>Now lets impute again, specifying our new personalised method vector with the <code>method=</code> option.</p>
+<pre class="r"><code>imp2 &lt;- mice(sleep, method=meth2, seed=8102)</code></pre>
+<p>Now, let’s re-examine the relationship between <strong>NonD</strong> and <strong>Gest</strong> under this new imputation model.</p>
+<pre class="r"><code>xyplot(imp2, NonD~Gest, xlab=&quot;Gestation (days)&quot;, ylab=&quot;Hours spent dreaming&quot;)</code></pre>
+<p><img src="missing-data-and-multiple-imputation_files/figure-html/demo9-1.png" width="100%" /> This looks a bit better. By modelling the variable <strong>NonD</strong> using a <strong>quadratic</strong> model, rather than <strong>pmm</strong>, the imputed values better reflect the non-linear relationship between NonD and other variables.</p>
+</div>
+<div id="section-passive-imputation" class="section level3">
+<h3>Passive imputation</h3>
+<p>We often work with variables which are derived from two or more other variables. An example is Body Mass Index (BMI) which is a function of height and weight: <span class="math inline">\(BMI = {weight \over height^2}\)</span> When imputing such variables we would like to preserve the relationship between height, weight and BMI. If all three variables were imputed, the resulting values of BMI would not neccessarily equal weight divided by height squared. To maintain the desired relationship, we can first impute values of the underlying variables (height and weight) and then use these imputed variables to derive BMI. This is called <em>passive imputation</em>.</p>
+<p>In the <strong>sleep</strong> dataset, there are missing values on three inter-related variables: <strong>NonD</strong>, <strong>Dream</strong> and <strong>Sleep</strong>. The sum of hours dreaming and hours not dreaming should of course add up to the total number of hours asleep, i.e. we want to preserve the relationship: <span class="math display">\[
+NonD=Sleep-Dream
+\]</span> We can see in the previous imputations that this is not neccessarily the case when we examine the first few rows of the first imputed dataset:</p>
+<pre class="r"><code>mice::complete(imp2,1)[1:5,]</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["BodyWgt"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["BrainWgt"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["NonD"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Dream"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Sleep"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Span"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["Gest"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["Pred"],"name":[8],"type":["int"],"align":["right"]},{"label":["Exp"],"name":[9],"type":["int"],"align":["right"]},{"label":["Danger"],"name":[10],"type":["int"],"align":["right"]}],"data":[{"1":"6654.000","2":"5712.0","3":"3.200000","4":"2.8","5":"3.3","6":"38.6","7":"645","8":"3","9":"5","10":"3","_rn_":"1"},{"1":"1.000","2":"6.6","3":"6.300000","4":"2.0","5":"8.3","6":"4.5","7":"42","8":"3","9":"1","10":"3","_rn_":"2"},{"1":"3.385","2":"44.5","3":"6.600000","4":"6.6","5":"12.5","6":"14.0","7":"60","8":"1","9":"1","10":"1","_rn_":"3"},{"1":"0.920","2":"5.7","3":"8.705745","4":"6.1","5":"16.5","6":"3.0","7":"25","8":"5","9":"2","10":"3","_rn_":"4"},{"1":"2547.000","2":"4603.0","3":"2.100000","4":"1.8","5":"3.9","6":"69.0","7":"624","8":"3","9":"5","10":"4","_rn_":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>To impute passively, we must first customise the univariate models to remove <strong>NonD</strong> as a predictor variable from the models <strong>Sleep</strong> and <strong>Dream</strong>. This is to avoid circularity, because we will impute values of <strong>NonD</strong> passively from the values of <strong>Sleep</strong> and <strong>Dream</strong>.</p>
+<p>By default, all variables are included as predictors for each incomplete variable. The <code>mice()</code> function stores this information in a matrix named <strong>predictorMatrix</strong>:</p>
+<pre class="r"><code>imp2$predictorMatrix</code></pre>
+<pre><code>##          BodyWgt BrainWgt NonD Dream Sleep Span Gest Pred Exp Danger
+## BodyWgt        0        1    1     1     1    1    1    1   1      1
+## BrainWgt       1        0    1     1     1    1    1    1   1      1
+## NonD           1        1    0     1     1    1    1    1   1      1
+## Dream          1        1    1     0     1    1    1    1   1      1
+## Sleep          1        1    1     1     0    1    1    1   1      1
+## Span           1        1    1     1     1    0    1    1   1      1
+## Gest           1        1    1     1     1    1    0    1   1      1
+## Pred           1        1    1     1     1    1    1    0   1      1
+## Exp            1        1    1     1     1    1    1    1   0      1
+## Danger         1        1    1     1     1    1    1    1   1      0</code></pre>
+<p>We can customise this matrix, to remove <strong>NonD</strong> from the list of predictor variables for <strong>Dream</strong> and <strong>Sleep</strong>.</p>
+<pre class="r"><code>predmatnew &lt;- imp2$predictorMatrix
+predmatnew[c(&quot;Dream&quot;, &quot;Sleep&quot;), &quot;NonD&quot;] &lt;-0
+predmatnew</code></pre>
+<pre><code>##          BodyWgt BrainWgt NonD Dream Sleep Span Gest Pred Exp Danger
+## BodyWgt        0        1    1     1     1    1    1    1   1      1
+## BrainWgt       1        0    1     1     1    1    1    1   1      1
+## NonD           1        1    0     1     1    1    1    1   1      1
+## Dream          1        1    0     0     1    1    1    1   1      1
+## Sleep          1        1    0     1     0    1    1    1   1      1
+## Span           1        1    1     1     1    0    1    1   1      1
+## Gest           1        1    1     1     1    1    0    1   1      1
+## Pred           1        1    1     1     1    1    1    0   1      1
+## Exp            1        1    1     1     1    1    1    1   0      1
+## Danger         1        1    1     1     1    1    1    1   1      0</code></pre>
+<p>Note that comparing the default prediction matrix to <strong>predmatnew</strong>, <strong>NonD</strong> is marked as a 0 in the rows for <strong>Dream</strong> and <strong>Sleep</strong>.</p>
+<p>The second step is to specify the formula for the passive imputation in the methods vector. To indicate the method as passive imputation we use the syntax <code>~I(formula)</code>. For example, to passively impute BMI from weight and height we would specify the method for BMI as <code>~I(weight/height^2)</code>. Lets customise the method to passively impute <strong>NonD</strong> = <strong>Sleep</strong> + <strong>Dream</strong>.</p>
+<pre class="r"><code>meth3 &lt;- meth2
+meth3[&quot;NonD&quot;] &lt;- &quot;~I(Sleep-Dream)&quot;
+meth3</code></pre>
+<pre><code>##           BodyWgt          BrainWgt              NonD             Dream 
+##                &quot;&quot;                &quot;&quot; &quot;~I(Sleep-Dream)&quot;             &quot;pmm&quot; 
+##             Sleep              Span              Gest              Pred 
+##             &quot;pmm&quot;             &quot;pmm&quot;             &quot;pmm&quot;                &quot;&quot; 
+##               Exp            Danger 
+##                &quot;&quot;                &quot;&quot;</code></pre>
+<p>We can now rerun the imputation, calling the customised predictor matrix and method vector.</p>
+<pre class="r"><code>imp3 &lt;- mice(sleep, predictorMatrix = predmatnew, method = meth3, visitSequence = &quot;monotone&quot;, seed=8102)
+mice::complete(imp3,1)[1:5,]</code></pre>
+<p>Now when we examine the imputed data values, the number of hours dreaming and non dreaming corresponds to the total number of hours asleep.</p>
+<pre class="r"><code>mice::complete(imp3,1)[1:5,]</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["BodyWgt"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["BrainWgt"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["NonD"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Dream"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Sleep"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Span"],"name":[6],"type":["dbl"],"align":["right"]},{"label":["Gest"],"name":[7],"type":["dbl"],"align":["right"]},{"label":["Pred"],"name":[8],"type":["int"],"align":["right"]},{"label":["Exp"],"name":[9],"type":["int"],"align":["right"]},{"label":["Danger"],"name":[10],"type":["int"],"align":["right"]}],"data":[{"1":"6654.000","2":"5712.0","3":"2.8","4":"0.5","5":"3.3","6":"38.6","7":"645","8":"3","9":"5","10":"3","_rn_":"1"},{"1":"1.000","2":"6.6","3":"6.3","4":"2.0","5":"8.3","6":"4.5","7":"42","8":"3","9":"1","10":"3","_rn_":"2"},{"1":"3.385","2":"44.5","3":"9.1","4":"3.4","5":"12.5","6":"14.0","7":"60","8":"1","9":"1","10":"1","_rn_":"3"},{"1":"0.920","2":"5.7","3":"14.7","4":"1.8","5":"16.5","6":"12.0","7":"25","8":"5","9":"2","10":"3","_rn_":"4"},{"1":"2547.000","2":"4603.0","3":"2.1","4":"1.8","5":"3.9","6":"69.0","7":"624","8":"3","9":"5","10":"4","_rn_":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Let’s examine the trace plots for this imputation.</p>
+<pre class="r"><code>plot(imp3, &quot;NonD&quot;, layout = c(2, 1))</code></pre>
+<p><img src="missing-data-and-multiple-imputation_files/figure-html/demo16-1.png" width="100%" /> This looks much better than what we saw previously. The lines from the individual imputations are overlapping, and we can be more confident that the <code>MICE</code> algorithm has converged to a stationary distribution.</p>
+</div>
+<div id="section-modelling-multiply-imputed-data" class="section level3">
+<h3>Modelling multiply imputed data</h3>
+<p>Recall the three stages of multiple imputation analysis:</p>
+<ul>
+<li>Imputation</li>
+<li>Analysis in parallel</li>
+<li>Pooling estimates</li>
+</ul>
+<p>So far we have focussed on Step 1—imputation. Now that we have a set of imputed datasets it is time to fit some models. The <code>MICE</code> package contains the <code>with()</code> function which allows us to analyse complete datasets. The <code>with()</code> function takes as its argument a <code>mids</code> object (i.e. the output of the <code>mice()</code> function) and an expression corresponding to the desired model to be estimated in each imputed dataset.</p>
+<p>We would fit the simple model <span class="math inline">\(Dream = \beta_{0} +\beta_{1}Pred_{2} + \beta_{2}Pred_{3} + \beta_{3}Pred_{4} + \beta_{4}Pred_{5}\)</span> as follows:</p>
+<pre class="r"><code>mod1 &lt;- with(imp3, exp=lm(Dream ~ factor(Pred)))
+mod1</code></pre>
+<pre><code>## call :
+## with.mids(data = imp3, expr = lm(Dream ~ factor(Pred)))
+## 
+## call1 :
+## mice(data = sleep, method = meth3, predictorMatrix = predmatnew, 
+##     visitSequence = &quot;monotone&quot;, seed = 8102)
+## 
+## nmis :
+##  BodyWgt BrainWgt     NonD    Dream    Sleep     Span     Gest     Pred 
+##        0        0       14       12        4        4        4        0 
+##      Exp   Danger 
+##        0        0 
+## 
+## analyses :
+## [[1]]
+## 
+## Call:
+## lm(formula = Dream ~ factor(Pred))
+## 
+## Coefficients:
+##   (Intercept)  factor(Pred)2  factor(Pred)3  factor(Pred)4  factor(Pred)5  
+##        2.8500        -0.2167        -0.5500        -1.6500        -1.6929  
+## 
+## 
+## [[2]]
+## 
+## Call:
+## lm(formula = Dream ~ factor(Pred))
+## 
+## Coefficients:
+##   (Intercept)  factor(Pred)2  factor(Pred)3  factor(Pred)4  factor(Pred)5  
+##       2.58571       -0.06571       -0.26905       -1.38571       -1.36429  
+## 
+## 
+## [[3]]
+## 
+## Call:
+## lm(formula = Dream ~ factor(Pred))
+## 
+## Coefficients:
+##   (Intercept)  factor(Pred)2  factor(Pred)3  factor(Pred)4  factor(Pred)5  
+##        2.7500        -0.2633        -0.7833        -1.5500        -1.3786  
+## 
+## 
+## [[4]]
+## 
+## Call:
+## lm(formula = Dream ~ factor(Pred))
+## 
+## Coefficients:
+##   (Intercept)  factor(Pred)2  factor(Pred)3  factor(Pred)4  factor(Pred)5  
+##        2.6000        -0.0400        -0.1833        -1.4000        -1.3857  
+## 
+## 
+## [[5]]
+## 
+## Call:
+## lm(formula = Dream ~ factor(Pred))
+## 
+## Coefficients:
+##   (Intercept)  factor(Pred)2  factor(Pred)3  factor(Pred)4  factor(Pred)5  
+##       2.60714        0.07286       -0.11548       -1.40714       -1.42857</code></pre>
+<p>As you can see, the model has been estimated five times—once in each imputed dataset. The parameter estimates are slightly different in each model, reflecting the variation introduced through imputation. The output of the <code>with()</code> function is an object of class <code>mira</code> (<strong>m</strong>ultiple <strong>i</strong>mputation <strong>r</strong>epeated <strong>a</strong>nalyses) The final step of the multiple imputation analysis is to pool these estimates using Rubin’s Rules, as discussed previously. To do this we use the <code>pool()</code> function from the <code>MICE</code> package. The <code>pool()</code> function takes an object of class <code>mira</code> as its argument.</p>
+<pre class="r"><code>out1 &lt;- pool(mod1)</code></pre>
+<p>The output of the <code>pool()</code> function is an object of class <code>mipo</code> (<strong>m</strong>ultiple <strong>i</strong>mputation <strong>p</strong>ooled <strong>o</strong>utcome). We can summarise this object to access summary statistics for the pooled analysis.</p>
+<pre class="r"><code>summary(out1)</code></pre>
+</div>
+<div id="section-further-learning" class="section level3">
+<h3>Further learning</h3>
+<p>The section has briefly demonstrated the <code>MICE</code> package, but there is much more to learn. Below are some useful resources to help you in future real-world applications.</p>
+<ul>
+<li><a href="https://www.rdocumentation.org/packages/mice/">Detailed documentation</a></li>
+<li><a href="https://gerkovink.github.io/miceVignettes/">A series of vignettes</a></li>
+<li><a href="https://ebookcentral-proquest-com.wwwproxy1.library.unsw.edu.au/lib/unsw/detail.action?docID=888580">Book (Flexible imputation of Missing Data by Stef Van Buuren)</a></li>
+</ul>
+</div>
+</div>
+<div id="section-practical-3-applying-multiple-imputation" class="section level2" data-progressive="TRUE">
+<h2>Practical 3: Applying Multiple Imputation</h2>
+Now its your turn to get hands on with the <code>MICE</code> package. In this practical session you will be analysing the <code>nhanes2</code> dataset. NHANES is the National Health and Nutrition Examination Survey, and <code>nhanes2</code> is a small subset supplied with the <code>MICE</code> package. Included are 25 observations on four variables: Age, BMI, hypertensive status, and serum cholesterol. Below is a snapshot of the data.
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["age"],"name":[1],"type":["fctr"],"align":["left"]},{"label":["bmi"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["hyp"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["chl"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"20-39","2":"NA","3":"NA","4":"NA","_rn_":"1"},{"1":"40-59","2":"22.7","3":"no","4":"187","_rn_":"2"},{"1":"20-39","2":"NA","3":"no","4":"187","_rn_":"3"},{"1":"60-99","2":"NA","3":"NA","4":"NA","_rn_":"4"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Your goal is to fit the model <span class="math inline">\(chl \sim age + hyp + bmi + bmi^{2}\)</span>, using multiple imputation to analyse all the available data. To do this you will perform the three main steps of the multiple imputation process—impute, analyse and pool—and the corresponding <code>MICE</code> functions:</p>
+<ol style="list-style-type: decimal">
+<li><code>mice()</code> to generate imputations</li>
+<li><code>with()</code> to analyses imputed datasets in parallel</li>
+<li><code>pool()</code> to combine estimates</li>
+</ol>
+<p>You will use visualisation functions to examine the imputed values. This could include the functions discussed in the previous demo: <code>plot()</code>, <code>stripplot()</code> and <code>xyplot()</code>; you can also explore other available visualisations described in the <code>MICE</code> <a href="https://www.rdocumentation.org/packages/mice/versions/3.1.0">documentation</a>.</p>
+<p><em><em>Let’s get started!</em></em></p>
+<hr />
+<div id="section-exercise-3.1-familiarise-yourself-with-the-nhanes-data.-what-is-the-pattern-of-missing-values-which-variables-are-incomplete-what-proportion-of-the-dataset-is-fully-observed" class="section level3">
+<h3>Exercise 3.1 Familiarise yourself with the NHANES data. What is the pattern of missing values? Which variables are incomplete? What proportion of the dataset is fully observed?</h3>
+<div class="tutorial-exercise" data-label="exercise3_1" data-caption="Exercise 3.1(of 8)" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="10">
+<pre class="text"><code># Explore the nhanes2 dataset
+library(&quot;mice&quot;)
+head(nhanes2)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise3_1-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># Useful commands to explore the dataset include head() nrow(), ncol(), summary()
+# Useful commands to explore the pattern of missing data include md.pattern(), ncc(), nic(), cci() and ici()</code></pre>
+</div>
+<hr />
+</div>
+<div id="section-exercise-3.2-how-does-missingness-vary-by-age-group" class="section level3">
+<h3>Exercise 3.2 How does missingness vary by age group?</h3>
+<div class="tutorial-exercise" data-label="exercise3_2" data-caption="Exercise 3.2(of 8)" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="10">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise3_2-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>## The function cci from the mice package might be useful</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise3_2-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>table(nhanes2$age, cci(nhanes2))</code></pre>
+</div>
+</div>
+<div id="section-exercise-3.3-impute-missing-values-in-nhanes-using-multiple-imputation.-examine-the-traceplot-to-check-for-chain-convergence." class="section level3">
+<h3>Exercise 3.3 Impute missing values in NHANES using multiple imputation. Examine the traceplot to check for chain convergence.</h3>
+<div class="tutorial-exercise" data-label="exercise3_3" data-caption="Exercise 3.3(of 8)" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="10">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise3_3-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># Use the mice() to impute. Use plot() to examine the chains.</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise3_3-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>imp1 &lt;- mice(nhanes2)
+plot(imp1)</code></pre>
+</div>
+</div>
+<div id="section-exercise-3.4-explore-the-chain-convergence-when-you-increase-the-chain-length-i.e.the-number-of-iterations" class="section level3">
+<h3>Exercise 3.4 Explore the chain convergence when you increase the chain length (i.e. the number of iterations)</h3>
+<div class="tutorial-exercise" data-label="exercise3_4" data-caption="Exercise 3.4(of 8)" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="10">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise3_4-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># Use the maxit= option to specify the chain length.</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise3_4-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>imp2 &lt;- mice(nhanes2, maxit=25)
+plot(imp2)</code></pre>
+</div>
+</div>
+<div id="section-exercise-3.5-explore-the-imputed-values.-are-there-any-unusual-imputations" class="section level3">
+<h3>Exercise 3.5 Explore the imputed values. Are there any unusual imputations?</h3>
+<div class="tutorial-exercise" data-label="exercise3_5" data-caption="Exercise 3.5(of 8)" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="10">
+<pre class="text"><code>imp1 &lt;- mice(nhanes2)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise3_5-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># use mice::complete() to examine the imputed datasets
+# Visualise imputations using stripplot(), xyplot(), bwplot() etc</code></pre>
+</div>
+</div>
+<div id="section-exercise-3.6-use-passive-imputation-to-impute-the-variable-bmi-squared" class="section level3">
+<h3>Exercise 3.6 Use passive imputation to impute the variable bmi-squared</h3>
+<div class="tutorial-exercise" data-label="exercise3_6" data-caption="Exercise 3.6(of 8)" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="20">
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise3_6-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># First create the bmi^2 data using the observed data. Run a dummy imputation to get the initial methods vector and predictor matrix, then edit these to impute passively</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise3_6-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="20">
+<pre class="text"><code># Create the variable bmi^2
+
+# Run a dummy imputation
+
+# Edit the imputation vector to passively impute bmi^2
+
+
+# Edit the predictor matrix to remove bmi^2 from the predictors for bmi
+
+
+# Rerun the imputation with the customised methods vector and predictor matrix</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise3_6-hint-3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="20">
+<pre class="text"><code># Create the variable bmi^2
+nhanes2$bmisq &lt;- nhanes2$bmi*nhanes2$bmi
+
+# Run a dummy imputation
+ini &lt;- mice(nhanes2)
+
+# Edit the imputation vector to passively impute bmi^2
+meth &lt;- ini$method
+meth[&quot;bmisq&quot;] &lt;- &quot;~I(bmi*bmi)&quot;
+
+# Edit the predictor matrix to remove bmi^2 from the predictors for bmi
+pred&lt;-ini$predictorMatrix
+pred[&quot;bmi&quot;, &quot;bmisq&quot;] &lt;- 0
+
+# Rerun the imputation with the customised methods vector and predictor matrix
+imp4 &lt;- mice(nhanes2, method=meth, predictorMatrix=pred)
+summary(imp4)</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise3_7-setup" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># Create the variable bmi^2
+nhanes2$bmisq &lt;- nhanes2$bmi*nhanes2$bmi
+
+# Run a dummy imputation
+ini &lt;- mice(nhanes2)
+
+# Edit the imputation vector to passively impute bmi^2
+meth &lt;- ini$method
+meth[&quot;bmisq&quot;] &lt;- &quot;~I(bmi*bmi)&quot;
+
+# Edit the predictor matrix to remove bmi^2 from the predictors for bmi
+pred&lt;-ini$predictorMatrix
+pred[&quot;bmi&quot;, &quot;bmisq&quot;] &lt;- 0
+
+# Rerun the imputation with the customised methods vector and predictor matrix
+imp4 &lt;- mice(nhanes2, method=meth, predictorMatrix=pred)
+summary(imp4)</code></pre>
+</div>
+</div>
+<div id="section-exercise-3.7-fit-the-model-of-interest-in-each-imputed-dataset" class="section level3">
+<h3>Exercise 3.7 Fit the model of interest in each imputed dataset</h3>
+Recall the model of interest is <span class="math inline">\(chl \sim age + hyp + bmi + bmi^{2}\)</span> This exercise space has been preloaded with the solution to the previous exercise: a <code>mids</code> object named <strong>imp4</strong>. Alternatively you can use your own solution from the previous exercise, but you will have to rerun your code below
+<div class="tutorial-exercise" data-label="exercise3_7" data-caption="Exercise 3.7(of 8)" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="10">
+<pre class="text"><code>is.mids(imp4)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise3_7-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># Use the function with()</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise3_7-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># mod1 &lt;- with(imp4, exp=lm(chl~age+hyp+bmi+bmisq))</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise3_8-setup" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># Create the variable bmi^2
+nhanes2$bmisq &lt;- nhanes2$bmi*nhanes2$bmi
+
+# Run a dummy imputation
+ini &lt;- mice(nhanes2)
+
+# Edit the imputation vector to passively impute bmi^2
+meth &lt;- ini$method
+meth[&quot;bmisq&quot;] &lt;- &quot;~I(bmi*bmi)&quot;
+
+# Edit the predictor matrix to remove bmi^2 from the predictors for bmi
+pred&lt;-ini$predictorMatrix
+pred[&quot;bmi&quot;, &quot;bmisq&quot;] &lt;- 0
+
+# Rerun the imputation with the customised methods vector and predictor matrix
+imp4 &lt;- mice(nhanes2, method=meth, predictorMatrix=pred)
+mod1 &lt;- with(imp4, exp=lm(chl~age+hyp+bmi+bmisq))</code></pre>
+</div>
+</div>
+<div id="section-exercise-3.8-pool-the-model-estimates.-how-does-the-mi-model-compare-to-the-complete-cases-model" class="section level3">
+<h3>Exercise 3.8 Pool the model estimates. How does the MI model compare to the complete cases model?</h3>
+This exercise space has been preloaded with the solution to the previous exercise: a <code>mira</code> object named <strong>mod1</strong>. Alternatively you can use your own solution, but you will have to rerun your code below
+<div class="tutorial-exercise" data-label="exercise3_8" data-caption="Exercise 3.8(of 8)" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="10">
+<pre class="text"><code>is.mira(mod1)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise3_8-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># Use the function pool()</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise3_8-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># pool(mod1)</code></pre>
+</div>
+
+<script type="application/shiny-prerendered" data-context="server-start">
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+
+## required packages for examples - note that RMarkdown, learnr (and RStudio!) are also required.
+library("mice")
+library("gam")
+library("lattice")
+library("VIM")
+library("tidyverse")
+
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::register_http_handlers(session, metadata = list(id = "au.edu.unsw.cbdrh.hdat9700.tutorials.missing.data.and.multiple.imputation"))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-1_3b-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-1_3b-code-editor`)), session)
+output$`tutorial-exercise-1_3b-output` <- renderUI({
+  `tutorial-exercise-1_3b-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1-1", question = structure("In a longitudinal household study, some study members drop out when they move house and can&#39;t be contacted for subsequent waves", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_707e95d",     option = "Univariate", value = "Univariate", label = structure("Univariate", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_4fcbb73",     option = "Monotone", value = "Monotone", label = structure("Monotone", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_68d359c",     option = "File Matching", value = "File Matching", label = structure("File Matching", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_2adf90",     option = "General", value = "General", label = structure("General", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("That&#39;s not the answer we were looking for. Have another go!", html = TRUE, class = c("html", "character")), incorrect = structure("That&#39;s not the answer we were looking for. Have another go!", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1-1-answer", question = "quiz1-1"), loading = structure("<strong>Loading:<\u002fstrong> \nIn a longitudinal household study, some study members drop out when they move house and can&#39;t be contacted for subsequent waves\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = TRUE, allow_retry = TRUE,     seed = 394813846.31615, options = list()), class = c("learnr_radio", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1-2", question = structure("Hospital and emergency department data are linked using a unique patient id number. But not every hospital patient has an ED visit, and not every person who visited ED has a hospital admission", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_d7bd1bd",     option = "Univariate", value = "Univariate", label = structure("Univariate", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_3b2d6b3",     option = "Monotone", value = "Monotone", label = structure("Monotone", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_3d35a7a",     option = "File Matching", value = "File Matching", label = structure("File Matching", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_13a2084",     option = "General", value = "General", label = structure("General", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("That&#39;s not the answer we were looking for. Have another go!", html = TRUE, class = c("html", "character")), incorrect = structure("That&#39;s not the answer we were looking for. Have another go!", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1-2-answer", question = "quiz1-2"), loading = structure("<strong>Loading:<\u002fstrong> \nHospital and emergency department data are linked using a unique patient id number. But not every hospital patient has an ED visit, and not every person who visited ED has a hospital admission\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = TRUE, allow_retry = TRUE,     seed = 527687580.254276, options = list()), class = c("learnr_radio", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1-3", question = structure("Survey participants often get bored and skip some questions", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_bb6d368",     option = "Univariate", value = "Univariate", label = structure("Univariate", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_d8f2b0c",     option = "Monotone", value = "Monotone", label = structure("Monotone", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_7f5df27",     option = "File Matching", value = "File Matching", label = structure("File Matching", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_634e019",     option = "General", value = "General", label = structure("General", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1-3-answer", question = "quiz1-3"), loading = structure("<strong>Loading:<\u002fstrong> \nSurvey participants often get bored and skip some questions\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = TRUE, allow_retry = TRUE,     seed = 529245184.753551, options = list()), class = c("learnr_radio", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz2-1", question = structure("In a study on antidepressants, patients with higher scores on a baseline depression and anxiety scale were less likely to return a follow up questionaire", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_1c70d16",     option = "Missing Completely at Random (MCAR)", value = "Missing Completely at Random (MCAR)",     label = structure("Missing Completely at Random (MCAR)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_63d6ace",     option = "Missing Not at Random (MNAR)", value = "Missing Not at Random (MNAR)",     label = structure("Missing Not at Random (MNAR)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_926a5a5",     option = "Missing at Random (MAR)", value = "Missing at Random (MAR)",     label = structure("Missing at Random (MAR)", html = TRUE, class = c("html",     "character")), correct = TRUE, message = structure("The data are MAR with respect to the baseline measure of depression and anxiety", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz2-1-answer", question = "quiz2-1"), loading = structure("<strong>Loading:<\u002fstrong> \nIn a study on antidepressants, patients with higher scores on a baseline depression and anxiety scale were less likely to return a follow up questionaire\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = TRUE, allow_retry = TRUE,     seed = 465773661.283107, options = list()), class = c("learnr_radio", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz2-2", question = structure("In a random sample survey for the first wave of a longitudinal study of ageing, individuals with multimorbidity were less likely to participate", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_71dc50d",     option = "Missing Completely at Random (MCAR)", value = "Missing Completely at Random (MCAR)",     label = structure("Missing Completely at Random (MCAR)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_37ce3c9",     option = "Missing Not at Random (MNAR)", value = "Missing Not at Random (MNAR)",     label = structure("Missing Not at Random (MNAR)", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_8096b44",     option = "Missing at Random (MAR)", value = "Missing at Random (MAR)",     label = structure("Missing at Random (MAR)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = structure("Health status typically will be unknown at recruitment to the first wave", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz2-2-answer", question = "quiz2-2"), loading = structure("<strong>Loading:<\u002fstrong> \nIn a random sample survey for the first wave of a longitudinal study of ageing, individuals with multimorbidity were less likely to participate\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = TRUE, allow_retry = TRUE,     seed = 760004280.646095, options = list()), class = c("learnr_radio", "tutorial_question")))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise1_1-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise1_1-code-editor`)), session)
+output$`tutorial-exercise-exercise1_1-output` <- renderUI({
+  `tutorial-exercise-exercise1_1-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise1_2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise1_2-code-editor`)), session)
+output$`tutorial-exercise-exercise1_2-output` <- renderUI({
+  `tutorial-exercise-exercise1_2-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise1_3-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise1_3-code-editor`)), session)
+output$`tutorial-exercise-exercise1_3-output` <- renderUI({
+  `tutorial-exercise-exercise1_3-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise1_4-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise1_4-code-editor`)), session)
+output$`tutorial-exercise-exercise1_4-output` <- renderUI({
+  `tutorial-exercise-exercise1_4-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise1_5-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise1_5-code-editor`)), session)
+output$`tutorial-exercise-exercise1_5-output` <- renderUI({
+  `tutorial-exercise-exercise1_5-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise1_6-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise1_6-code-editor`)), session)
+output$`tutorial-exercise-exercise1_6-output` <- renderUI({
+  `tutorial-exercise-exercise1_6-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-2_1-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-2_1-code-editor`)), session)
+output$`tutorial-exercise-2_1-output` <- renderUI({
+  `tutorial-exercise-2_1-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-2_2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-2_2-code-editor`)), session)
+output$`tutorial-exercise-2_2-output` <- renderUI({
+  `tutorial-exercise-2_2-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise2_1-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise2_1-code-editor`)), session)
+output$`tutorial-exercise-exercise2_1-output` <- renderUI({
+  `tutorial-exercise-exercise2_1-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise2_2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise2_2-code-editor`)), session)
+output$`tutorial-exercise-exercise2_2-output` <- renderUI({
+  `tutorial-exercise-exercise2_2-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise2_3-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise2_3-code-editor`)), session)
+output$`tutorial-exercise-exercise2_3-output` <- renderUI({
+  `tutorial-exercise-exercise2_3-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise2_4-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise2_4-code-editor`)), session)
+output$`tutorial-exercise-exercise2_4-output` <- renderUI({
+  `tutorial-exercise-exercise2_4-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise3_1-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise3_1-code-editor`)), session)
+output$`tutorial-exercise-exercise3_1-output` <- renderUI({
+  `tutorial-exercise-exercise3_1-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise3_2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise3_2-code-editor`)), session)
+output$`tutorial-exercise-exercise3_2-output` <- renderUI({
+  `tutorial-exercise-exercise3_2-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise3_3-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise3_3-code-editor`)), session)
+output$`tutorial-exercise-exercise3_3-output` <- renderUI({
+  `tutorial-exercise-exercise3_3-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise3_4-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise3_4-code-editor`)), session)
+output$`tutorial-exercise-exercise3_4-output` <- renderUI({
+  `tutorial-exercise-exercise3_4-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise3_5-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise3_5-code-editor`)), session)
+output$`tutorial-exercise-exercise3_5-output` <- renderUI({
+  `tutorial-exercise-exercise3_5-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise3_6-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise3_6-code-editor`)), session)
+output$`tutorial-exercise-exercise3_6-output` <- renderUI({
+  `tutorial-exercise-exercise3_6-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise3_7-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise3_7-code-editor`)), session)
+output$`tutorial-exercise-exercise3_7-output` <- renderUI({
+  `tutorial-exercise-exercise3_7-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-exercise3_8-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-exercise3_8-code-editor`)), session)
+output$`tutorial-exercise-exercise3_8-output` <- renderUI({
+  `tutorial-exercise-exercise3_8-result`()
+})
+</script>
+ <!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="dependencies">
+{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootstrap"]},{"type":"character","attributes":{},"value":["3.3.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/bootstrap"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["viewport"]}},"value":[{"type":"character","attributes":{},"value":["width=device-width, initial-scale=1"]}]},{"type":"character","attributes":{},"value":["js/bootstrap.min.js","shim/html5shiv.min.js","shim/respond.min.js"]},{"type":"character","attributes":{},"value":["css/cerulean.min.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["pagedtable"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/pagedtable-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/pagedtable.js"]},{"type":"character","attributes":{},"value":["css/pagedtable.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["textmate.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.10.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.10.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.10.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-format"]},{"type":"character","attributes":{},"value":["0.10.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmarkdown/templates/tutorial/resources"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-format.js"]},{"type":"character","attributes":{},"value":["tutorial-format.css","rstudio-theme.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["navigation"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/navigation-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tabsets.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["default.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["font-awesome"]},{"type":"character","attributes":{},"value":["5.1.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/fontawesome"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/all.css","css/v4-shims.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootbox"]},{"type":"character","attributes":{},"value":["4.4.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/bootbox"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["bootbox.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["idb-keyvalue"]},{"type":"character","attributes":{},"value":["3.2.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/idb-keyval"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["idb-keyval-iife-compat.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.10.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.10.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.10.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.0"]}]}]}
+</script>
+<!--/html_preserve-->
+<!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="execution_dependencies">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119]}},"value":[{"type":"character","attributes":{},"value":["abind","assertthat","backports","base","boot","broom","car","carData","cellranger","checkmate","class","cli","codetools","colorspace","compiler","crayon","curl","data.table","datasets","DBI","dbplyr","DEoptimR","digest","dplyr","e1071","ellipsis","evaluate","fastmap","forcats","foreach","foreign","fs","gam","generics","ggplot2","glue","graphics","grDevices","grid","gtable","haven","hms","htmltools","htmlwidgets","httpuv","httr","iterators","jomo","jsonlite","knitr","laeken","later","lattice","lazyeval","learnr","lifecycle","lme4","lmtest","lubridate","magrittr","markdown","MASS","Matrix","methods","mice","mime","minqa","mitml","modelr","munsell","nlme","nloptr","nnet","openxlsx","pan","parallel","pillar","pkgconfig","promises","purrr","R6","ranger","Rcpp","readr","readxl","reprex","rio","rlang","rmarkdown","robustbase","rpart","rprojroot","rstudioapi","rvest","scales","shiny","sp","splines","stats","stringi","stringr","survival","tibble","tidyr","tidyselect","tidyverse","tools","utils","vcd","vctrs","VIM","withr","xfun","xml2","xtable","yaml","zeallot","zip","zoo"]},{"type":"character","attributes":{},"value":["1.4-5","0.2.1","1.1.4","3.6.1","1.3-23","0.5.2","3.0-3","3.0-2","1.1.0","1.9.4","7.3-15","1.1.0","0.2-16","1.4-1","3.6.1","1.3.4","4.0","1.12.6","3.6.1","1.0.0","1.4.2","1.0-8","0.6.20","0.8.3","1.7-2","0.2.0.1","0.14","1.0.0","0.4.0","1.4.7","0.8-72","1.3.1","1.16.1","0.0.2","3.2.1","1.3.1","3.6.1","3.6.1","3.6.1","0.3.0","2.2.0","0.5.2","0.4.0","1.5.1","1.5.2","1.4.1","1.0.12","2.6-9","1.6","1.26","0.5.0","1.0.0","0.20-38","0.2.2","0.10.0","0.1.0","1.1-21","0.9-37","1.7.4","1.5","1.1","7.3-51.4","1.2-17","3.6.1","3.7.0","0.7","1.2.4","0.3-7","0.1.5","0.5.0","3.1-143","1.2.1","7.3-12","4.1.0.1","1.6","3.6.1","1.4.2","2.0.2","1.1.0","0.3.3","2.4.0","0.11.2","1.0.2","1.3.1","1.3.1","0.3.0","0.5.16","0.4.2","2.0","0.93-5","4.1-15","1.3-2","0.10","0.3.5","1.0.0","1.4.0","1.3-1","3.6.1","3.6.1","1.4.3","1.4.0","2.44-1.1","2.1.3","1.0.0","0.2.5","1.3.0","3.6.1","3.6.1","1.4-4","0.2.0","4.8.0","2.1.2","0.9","1.2.2","1.8-4","2.2.0","0.1.0","2.0.4","1.8-6"]}]}]}
+</script>
+<!--/html_preserve-->
+</div>
+</div>
+
+</div> <!-- topics -->
+
+<div class="topicsContainer">
+<div class="topicsPositioner">
+<div class="band">
+<div class="bandContent topicsListContainer">
+
+<!-- begin doc-metadata -->
+<div id="doc-metadata">
+<h2 class="title toc-ignore" style="display:none;">HDAT9700 Statistical Modelling II: Missing Data and Multiple Imputation</h2>
+</div>
+<!-- end doc-metadata -->
+
+</div> <!-- bandContent.topicsListContainer -->
+</div> <!-- band -->
+</div> <!-- topicsPositioner -->
+</div> <!-- topicsContainer -->
+
+
+</div> <!-- bandContent page -->
+</div> <!-- pageContent band -->
+
+
+
+
+<script>
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+
+</body>
+
+</html>
