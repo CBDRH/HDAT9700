@@ -1,0 +1,113 @@
+.under-the-bonnet {
+  display: block;
+  border: 1px solid black;
+  padding: 0 0.5em;
+  margin-bottom: 1em;
+}
+
+.under-the-bonnet > h3::before {
+  content: " ";
+  background: url('../images/84px-Cog-scripted-svg.png') no-repeat;
+  background-size: 60px auto;
+  width: 60px;
+  height: 86px;
+  float: left;
+  margin-right: 0.5em;
+}
+
+.family {
+  display: block;
+  border: 1px solid black;
+  padding: 0 0.5em;
+  margin-bottom: 1em;
+}
+
+.family > h3::before {
+  content: " ";
+  background: url('../images/family.png') no-repeat;
+  background-size: 60px auto;
+  width: 60px;
+  height: 86px;
+  float: left;
+  margin-right: 0.5em;
+}
+
+
+.calipers {
+  display: block;
+  border: 1px solid black;
+  padding: 0 0.5em;
+  margin-bottom: 1em;
+}
+
+.calipers > h3::before {
+  content: " ";
+  background: url('../images/calipers.jpg') no-repeat;
+  background-size: 60px auto;
+  width: 60px;
+  height: 86px;
+  float: left;
+  margin-right: 0.5em;
+}
+
+
+.discuss {
+  display: block;
+  border: 1px solid black;
+  padding: 0 0.5em;
+  margin-bottom: 1em;
+}
+
+.discuss > h3::before {
+  content: " ";
+  background: url('../images/discuss.png') no-repeat;
+  background-size: 60px auto;
+  width: 60px;
+  height: 86px;
+  float: left;
+  margin-right: 0.5em;
+}
+
+.aside {
+  display: block;
+  border: 1px solid black;
+  padding: 0 0.5em;
+  margin-bottom: 1em;
+}
+
+.aside > h3::before {
+  content: " ";
+  background: url('../images/aside-icon.png') no-repeat;
+  background-size: 60px auto;
+  width: 60px;
+  height: 86px;
+  float: left;
+  margin-right: 0.5em;
+}
+
+.anxiety {
+  display: block;
+  border: 1px solid black;
+  padding: 0 0.5em;
+  margin-bottom: 1em;
+}
+
+.anxiety > h3::before {
+  content: " ";
+  background: url('../images/anxiety.png') no-repeat;
+  background-size: 100px auto;
+  width: 100px;
+  height: 100px;
+  float: left;
+  margin-right: 0.5em;
+}
+
+.copyright {
+  color: lightgray;
+  font-size: small;
+}
+
+.mathop {
+  font-family: STIXGeneral-Regular;
+  padding-left: 0.233em;
+}
