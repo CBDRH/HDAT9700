@@ -9,6 +9,7 @@ The learnr tutorial files can be found in the subfolder `inst/tutorials`. Long f
 | Tutorial                              | Alias   | Author    |
 | :---                                  | :---    | :---      |
 | Research Design and Methods           | rdx     | Sanja     |
+| DAGS                                  | dags    | Mark      |
 | Propensity Score Matching             | psm     | Mark      |
 | Time Series Analysis                  | tsa     | Andrea    |
 | Interrupted Time Series Analysis      | its     | Andrea    |

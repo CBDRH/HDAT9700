@@ -1,5 +1,5 @@
 ---
-title: "HDAT9700 Statistical Modelling II: Missing Data and Multiple Imputation"
+title: "Missing Data and Multiple Imputation"
 tutorial: 
   id: "au.edu.unsw.cbdrh.hdat9700.tutorials.missing.data.and.multiple.imputation"
 output: learnr::tutorial
@@ -34,7 +34,7 @@ At the end of this chapter you will be able to
 2. Distinguish between three main missing data mechanisms
 3. Implement multiple imputaton, a leading approach to rigourously address missing data 
 
-The reference text for this chapter is "Flexible Imputation of Missing Data" by Stef Van Buuren, which is available through the [UNSW library](https://ebookcentral-proquest-com.wwwproxy1.library.unsw.edu.au/lib/unsw/detail.action?docID=888580).  
+The reference text for this chapter is "Flexible Imputation of Missing Data" by Stef Van Buuren, which is available online [here](https://stefvanbuuren.name/fimd/). This is an excellent reference book, but reading an entire book is clearly beyond the scope of a single chapter of this course. Key topics have been extracted and simplified in these notes but please refer to the textbook for a more rigorous treatment as required. 
 
 Let's get started!  
 
@@ -50,115 +50,172 @@ Missing data are ubiquitous in health research. There are two possible consequen
 **Issue 2** is an even bigger problem. Failure to account for the bias introduced through missing data can undermine findings and lead to incorrect conclusions.
 
 
-## Illustration
+### Missing data bias
 
-Suppose we want to estimate the mean and standard deviation of height (in cm) in a population using a simple random sample of ten observations. We can simulate this scenario by drawing 10 observations from $N(170, 10)$.
+Bias generally refers to **systematic** differences between target quantities and estimates of those quantities. Missing data bias arises when the probability of a value being missing is related to the value itself. For example, in household surveys of income, wealthy respondents may be less likely to report their income. The association between income and the probability of responding would result in a bias in estimates of average income based on the observed data. 
 
-```{r 1_1, exercise=FALSE, echo=TRUE}
-set.seed(123)  
+<div class="thinking">
 
-heights <- sort(rnorm(10,170,10), decreasing = FALSE)  
+### Consider this
 
-heights  
+What direection is the systematic missing data bias in this example? Would the average income based on the observed data be higher or lower that the true value in the full sample?
 
-```
+</div>
 
-```{r 1_1a, exercise=FALSE, echo=FALSE}
-cat("Sample mean: ", mean(heights, na.rm = TRUE))
 
-cat("Sample standard error: ", sd(heights, na.rm = TRUE)/length(heights[!is.na(heights)]))  
-```
 
-***
+## Illustration {data-progressive=TRUE}
 
-We can delete some values from the sample to simulate missing data. Notice that with observations 3, 6 and 9 recoded to missing, the sample mean is still close to the population mean, but the standard error of the mean increases: the number of observations is reduced and the sample-based estimate of the mean is less precise.  
+The app below simulates a scenario where we would like to estimate the average height in a population based on a sample of 1,000 individuals, where a certain proportion of our sample is missing data on height. By design, the population mean of height is set to **170cm**, so we can explore how our estimate varies from this known value based on two variable factors: 
 
-```{r 1_2, exercise=FALSE, echo=TRUE}
+1. The correlation between the true value of height and the probability of height being unobserved. 
+2. The proportion of missing values.
 
-heights <- replace(heights, c(3,6,9), NA)
+**Try it out below!**
 
-heights
+Using the app can you demonstrate the following three points?
 
-```
+1. If the correlation between the true value of height and the probability of height being unobserved is zero, then the estimate of height based on the observed data is unbiased **regardless of the proportion of missing data**. 
 
-```{r 1_2a, exercise=FALSE, echo=FALSE}
-cat("Sample mean: ", mean(heights, na.rm = TRUE))
+2. As the magnitude of the correlation increases, the bias increases (i.e. the gap between the known sample mean and the observed data estimate of the mean).
 
-cat("Sample standard error: ", sd(heights, na.rm = TRUE)/length(heights[!is.na(heights)]))  
-```
+3. A negative correlation results in a positive bias and a positive correlation results in a negative bias.
+
+_You can also run this app directly from the R Console by entering_ `hdat9700tutorials::run("missing-data-1")`
 
 ***
 
-In the next example, the missing values are concentrated among taller individuals. Notice that the sample mean is biased downwards as a result.
-
-
-
-```{r 1_3-setup, exercise=FALSE, echo=FALSE}
-
-set.seed(123)  
-
-heights <- sort(rnorm(10,170,10), decreasing = FALSE) 
-
+```{r, echo=FALSE}
+fluidPage(
+   
+    column(width=6,
+           plotOutput("plot1")
+           ),
+    
+    column(width=6,
+          plotOutput("plot2")
+          ),
+    column(width = 12, h3("")),
+    column(width = 12,
+       shinydashboard::valueBoxOutput("info1"), 
+       shinydashboard::valueBoxOutput("info2"), 
+       shinydashboard::valueBoxOutput("info3")
+           ),
+    column(width = 12, h3("")),
+    column(width = 5, 
+      sliderInput("rho", "Correlation between height and the chances of height being unobserved", min = -0.5, max = 0.5, step = .01, value = 0, animate = TRUE),
+      sliderInput("pct", "Proportion of missing data", min = 0, max = .5, step=.01, value = .1, animate = TRUE)
+    ),
+    column(width = 7,
+           br(),
+           helpText("A positive correlation between height and the chances of height being observed means that tall individuals are more likley to have missing data. As a result the estimate for average height will be biased downwards (lower than the known sample value)."),
+           br(),
+           helpText("A negative correlation between height and the chances of height being observed means that short individuals are more likley to have missing data. As a result the estimate for average height will be biased upwards (higher than the known sample value).")
+           )
+)
 ```
 
+```{r, context="server"}
+# Set up data s random draws simulating height
+        heights <- rnorm(1000,170,10)
+        x <- rnorm(1000)
+        dt <- data.frame(heights, x)
+        
+# Ampute data based on user input
+    test <- reactive({
+        mice::ampute(dt,
+                     prop = input$pct,
+                     patterns = c(0,1),
+                     freq = c(1),
+                     mech = "MNAR",
+                     weights = c(input$rho*2, 1 - abs(input$rho*2)))
+    })
 
-```{r 1_3, exercise=FALSE, echo=TRUE}
+    # Create a datframe indicating the missing values of height
+    df <- reactive({
+        data.frame(height = test()$data$heights, Missing = is.na(test()$amp$heights))
+    })
 
-heights <- replace(heights, c(8,9,10), NA)
+    est <- reactive({
+        data.frame(
+        e = "Mean (95% CI)",
+        mean = mean(df()$height[!df()$Missing]),
+        se = sd(df()$height[!df()$Missing])/sqrt(sum(!df()$Missing))
+        )
+    })
 
-heights
+    # histograms for complete and missing data
+    output$plot1 <- renderPlot({
 
+        ggplot(data=df(), aes(x=height, fill=Missing)) +
+            geom_histogram(alpha = 0.6, position = "identity") +
+            scale_fill_manual(values=c("#fdae6b", "darkseagreen2")) +
+            geom_vline(xintercept = mean(df()$height[df()$Missing]), color = "darkseagreen4", size = 1.5, linetype = "dashed") +
+            geom_vline(xintercept = mean(df()$height[!df()$Missing]), color = "#e6550d", size = 1.5, linetype = "dashed") +
+            coord_cartesian(ylim=c(0,100), xlim=c(140,200)) +
+            theme(legend.position = c(0.15, 0.85)) +
+            labs(x = "Height (cm)",
+                 y = "Count",
+                 title = "Distribution of height for observed and missing observations",
+                 subtitle = "Based on a sample of 1000 individuals")
+
+    })
+
+    # Plot of estimate + 95% CI
+    output$plot2 <- renderPlot({
+
+        ggplot(data = est(), aes(x = e, y = mean)) +
+            geom_linerange(aes(ymin = mean - 1.96*se, ymax = mean + 1.96*se), size=1.25) +
+            geom_point(size = 3) +
+            geom_hline(yintercept = mean(df()$height), color = "red") +
+            coord_cartesian(ylim=c(160,180)) +
+            labs(y = "Height (cm)",
+                 x = "Observed data estimate",
+                 title = "Observed data estimate for average height",
+                 subtitle = "Compared to known sample value")
+
+    })
+    
+  # Calcumate summary measures to pass to value boxes  
+  bias <- reactive({
+      round(mean(df()$height) - mean(df()$height[!df()$Missing]), digits = 1)
+  })
+  
+    height1 <- reactive({
+      round(mean(df()$height), digits = 1)
+  })
+    
+    height2 <- reactive({
+      round(mean(df()$height[!df()$Missing]), digits = 1)
+  })
+      
+ # Create value boxes to summarise bias   
+  output$info1 <- shinydashboard::renderValueBox({
+    shinydashboard::valueBox(value = height1(), subtitle = "Height in whole sample (cm)",
+    icon = shiny::icon("bar-chart"), color = "green", width = 4)
+})
+  
+  
+    output$info2 <- shinydashboard::renderValueBox({
+    shinydashboard::valueBox(value = height2(), subtitle = "Height in observed data (cm)",
+    icon = shiny::icon("bar-chart"), color = "green", width = 4)
+})
+      
+      
+output$info3 <- shinydashboard::renderValueBox({
+    shinydashboard::valueBox(value = bias(), subtitle = "Bias (cm)",
+    icon = shiny::icon("bar-chart"), color = "green", width = 4)
+})
+    
 ```
 
-```{r 1_3a, exercise=FALSE, echo=FALSE}
-cat("Sample mean: ", mean(heights, na.rm = TRUE))
-
-cat("Sample standard error: ", sd(heights, na.rm = TRUE)/length(heights[!is.na(heights)]))  
-```
-
-
-## Mini Exercice {data-progressive=TRUE}
-
-### Try the exercise below 
-
-In the code below, $p$ is the probability of whether a height observation is observed. $p$ is related to height according to the relationship 
-$$p = logit^{-1}(w_{1} \times height + w_{2} \times N(0,1))$$
-The weights $w_{1}$ and $w_{2}$ dictate the extent to which the probability of being missing is related to height ($w_{1}$) or is simply random ($w_{2}$). To start, the parameters are set so that there is a strong relationship between height and missingness, with no random component ($w_{1}=1, w_{2}=0$). Explore how the magnitude of bias changes when you vary these parameters. What can you deduce about the relationship between $p$, height and the magnitude of bias?  
-
-```{r 1_3b, exercise=TRUE, eval=FALSE, echo=TRUE, exercise.lines=25}
-# Draw 100 random values of height from N(170, 10)
-heights <- rnorm(100,170,10) 
-
-# Define a function to calcualte the inverse logit 
-invlogit <- function(x) {exp(x)/(1+exp(x))}  
-
-# Define p, the probability of being missing, as a function of height and a random component N(0,1)
-p <- invlogit(1*scale(heights) + 0*rnorm(100,0,1))
-
-# Define a missing value vector based on the probabilities in p
-missing <- rbinom(100,1,p)
-
-# Define a vector of observed heights
-obs_heights <- heights
-obs_heights[missing==1] <- NA
-
-# Assess the relationship between height and p
-scatter.smooth(heights, p)
-print("Correlation between height and p:")
-cor(heights, p)
-
-# Calculate the mean of the observed heights
-print("Mean of the observed heights:")
-mean(obs_heights, na.rm=TRUE)
-
-```
 
 ### Discuss
 
 <div class="discuss">
 
 ### What have we learned?
-What can you deduce about the relationship between $p$, height and the magnitude of bias? 
+What can you deduce about the relationship between the probability of observing values of height and the magnitude of bias? 
 
 </div>
 
@@ -168,9 +225,9 @@ What can you deduce about the relationship between $p$, height and the magnitude
 
 ### Key messages
 
-* Setting $w_{1}$ to 0 produces unbiased estimates of the average height  
-* Positive values of $w_{1}$ $\Rightarrow$ taller individuals are more likely to be missing $\Rightarrow$ estimate for average height biased downwards   
-* Negative values of $w_{1}$ $\Rightarrow$ shorter individuals are more likely to be missing $\Rightarrow$ estimate for average height biased upwards  
+* Setting the correlation to 0 produces unbiased estimates of the average height, regardless of the proportion of missing data  
+* Positive correlation means that taller individuals are more likely to be missing $\Rightarrow$ estimate for average height biased downwards   
+* Negative means that shorter individuals are more likely to be missing $\Rightarrow$ estimate for average height biased upwards  
 
 **_Missing data causes bias when the probability of being missing relates to the quantity of interest_**
 

@@ -55,7 +55,9 @@ Imports:
   mice (>= 3.7.0),
   gam (>= 1.16.1),
   lattice (>= 0.20-38),
-  VIM (>= 4.8.0)
+  VIM (>= 4.8.0),
+  dagitty (>= 0.2-2),
+  ggdag (>= 0.2.1)
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.0.2
