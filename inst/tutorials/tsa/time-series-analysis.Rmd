@@ -61,11 +61,11 @@ Each lecture will be followed by a practical session where you will write your o
 
 The prereading for this chapter is "On Time Series Analysis of Public Health and Biomedical Data" by Scott L Zeger, Rafael Irizarry and Roger D Peng available [here](https://www.annualreviews.org/doi/10.1146/annurev.publhealth.26.021304.144517).
 
-The reference text for this chapter is "Time series analysis and its applications: with R examples" (Chapters 1-3) by Robert H Shumway and David S Stoffer, which is available through the [UNSW library](https://ebookcentral-proquest-com.wwwproxy1.library.unsw.edu.au/lib/unsw/detail.action?docID=3066093).  David S Stoffer is also the author of the `astsa` R package (**A**pplied **S**tatistical **T**ime **S**eries **A**nalysis)
+The reference text for this chapter is "Time series analysis and its applications: with R examples" (Chapters 1-3) by Robert H Shumway and David S Stoffer, can be downloaded [here](https://www.stat.pitt.edu/stoffer/tsa4/) or through the UNSW library.  David S Stoffer is also the author of the `astsa` R package (**A**pplied **S**tatistical **T**ime **S**eries **A**nalysis).
 
 Some other useful resources:
 
-* Rob J Hyndman and George Athanasopoulos (Monash University) [Forecasting: Principles and Practice](https://otexts.org/fpp2/)
+* Rob J Hyndman and George Athanasopoulos (Monash University) [Forecasting: Principles and Practice](https://otexts.com/fpp2/)
 
 * Penn State [Applied Time Series Analysis](https://newonlinecourses.science.psu.edu/stat510/) 
 
@@ -87,9 +87,9 @@ To interpret time series data, it is important to understand the underlying stru
 
 A time series is a chronological sequence of measurements equally spaced through time, with one observation for every time point. The time unit can be daily, weekly, monthly, etc.; however, it is always the same for a given series. Time series data can be raw measures, such as the daily maximum temperature, or hourly blood pressure readings, or it can be a summary (aggregate) statistic, such as counts, rates, ratios, averages, or percentages. 
 
-In the context of health data, one of the advantages of time series data is that they often involve aggregate data (such as counts of hospital separations), and thus they don't necessarily require access to identifiable person-level data. Thus, these data are often easier to access, and there are currently a large amount of freely avaiable time series data available online. 
+In the context of health data, one of the advantages of time series data is that they often involve aggregate data (such as counts of hospital separations), and thus they don't necessarily require access to identifiable person-level data. Thus, these data are often easier to access as aggregate data often do not require ethics approval, and there are currently a many freely available time series datasets available online. 
 
-Time series data have several unique properties. The ordering is important, and the data cannot be rearranged. In contrast to other types of data, time series data are also well suited to visualisation. Most importantly, observations made at neighbouring time points are often correlated and thus not independent, meaning that they do not meet the assumptions necessary for standard regression analysis. Therefore, specialised methods for analysing time series data are needed.
+Time series data have several unique properties. The chronological ordering is important, and the data cannot be rearranged. Time series data are also well suited to visualisation. Most importantly, observations made at neighbouring time points are often correlated and thus not independent, meaning that they do not meet the assumptions necessary for standard regression analysis. Therefore, specialised methods for analysing time series data are needed.
 
 There are many potential uses for time series analysis in health. These include: 
 
@@ -100,12 +100,18 @@ There are many potential uses for time series analysis in health. These include:
 * **Explanatory analysis** to identify predictors of variation in outcomes; and
 * **Intervention analysis** to determine the impact of an intervention (to be covered in Chapter 4). 
 
+
+![**Figure 1.1.** An example of a time series: all cause mortality during the 1918 influenza pandemic (Source: Public domain)](images/Influenza_Pandemic.png)
+
+![**Figure 1.2.** An example of time series: smallpox, polio and measles before and after introduction of vaccination (Source: Our World in Data [https://ourworldindata.org/]](images/Vaccination.jpg)
+
+
 ***
 
 ```{r quiz1_1, echo=FALSE}
 quiz(caption = "Quiz 1.1: Definition of time series data", 
      question("Which of these would not be considered a time series?",
-    answer("Number of illict drug related ambulance calls per week over two years"),
+    answer("Number of illicit drug related ambulance calls per week over two years"),
     answer("Proportion of people taking antidepressants who discontinue use per month over 5 years"),
     answer("Percent decrease in BMI measured over 1 year in 100 individuals", correct=TRUE),
     answer("Yearly rates of smoking in males and females over 20 years"),
@@ -120,7 +126,7 @@ In this first section we will describe how to set up your time series data in R,
 
 #### Creating time series objects
 
-To start off with, your data must be in the form of an R time series (*ts*) object, rather than a data frame. A *ts* object is a vector or matrix of data sampled chronologically at equispaced points in time. Information about the time points at which the data were sampled is held in an *index*, rather than as its own variable. 
+To start off with, we will convert our data to the form of an R time series (*ts*) object, rather than a data frame. A *ts* object is a vector or matrix of data sampled chronologically at equispaced points in time. Information about the time points at which the data were sampled is held in an *index*, rather than as its own variable. 
 
 The `ts()` function converts a numeric vector or matrix into a ts object. In the case of a matrix, each column is assumed to contain a separate time series. A multivariate *ts* object is called an *mts* object. 
 
@@ -155,7 +161,7 @@ Strictly speaking, there are 52.18 weeks in a year (365.25/7). However, many tim
 
 Let's try it out.
 ```{r tsobject, exercise=TRUE, exercise.eval=FALSE, fig.height=3.5, fig.width=5, tidy=TRUE}
-# Create a vector with 48 observations taking values between 40 and 80
+# Create a vector with 48 random observations taking values between 40 and 80
 set.seed(123)
 vector1 <- sample(40:80, 48, replace=TRUE)
 
@@ -289,7 +295,7 @@ cat("Length:", length(flu))
 summary(flu, digits=2)
 ```
 
-Now we know that the series starts in January 1968 and ends in December 1978, and that the data are monthly (frequency = 12). The maximum value is 0.82 and the minimum is 0.18. 
+Now we know that the series starts in January 1968 and ends in December 1978, and that the data are monthly (frequency = 12). The maximum value is 0.82 deaths per 10,000 population and the minimum is 0.18 deaths per 10,000 population. 
 
 ***
 
@@ -301,8 +307,8 @@ plot(flu, ylab="Deaths per 10,000 people", xlab="Month", main="Pneumonia and inf
 
 What are the key features of this time series?
 
-* **Trend:** It's hard to tell if there is a trend, but overall rates appear to be decreasing over time. 
-* **Seasonality:** These data are highly seasonal, with pneumonia and influenza deaths more common in the winter than in the summer which is what we'd expect. 
+* **Trend:** There is no strong trend, but overall rates appear to be decreasing slightly over time. 
+* **Seasonality:** These data are highly seasonal, with pneumonia and influenza deaths more common in the northern hemisphere winter than in the summer which is what we'd expect. 
 * **Outliers**: Some years had higher rates of deaths than others. The 1968/69 flu season was particularly bad, leading to the deaths of approximately 1 million people worldwide. 
 
 ***
@@ -317,7 +323,7 @@ plot(austa, ylab="International visitors (millions)", xlab="Year", main="Interna
 ```
 
 * **Trend**: Here there is a very obvious increasing trend.
-* **Seasonality**: There is no seasonality. However, this is because the data are yearly. If we were to look at monthly or quarterly data, we'd see seasonal effects with higher rates in summer and lower in winter. 
+* **Seasonality**: There is no seasonality. However, this is because the data are yearly. If we were to look at monthly or quarterly data, we'd likley see seasonal effects with higher rates in summer and lower in winter. 
 * **Outliers**: Some years appear somewhat higher/lower than others but nothing that stands out.
 
 ***
@@ -384,7 +390,7 @@ This confirms that influenza deaths were much higher in December 1968 than in ot
 
 ***
 
-Now let's check the Hawaiian occupancy rates data. A second option to compare rates across seasons is to use the function `tapply()`. We can use `INDEX=summary` to request the summary statistics (min, median, mean, IQR, max) for the `hor` data. We also specify `INDEX=cycle(hor)`, which tells R that we want the summary by season, in this case quarters.
+Now let's check the Hawaiian occupancy rates data. A second option to compare rates across seasons is to use the function `tapply()`. We can use `FUN=summary` to request the summary statistics (min, median, mean, interquartile range, max) for the `hor` data. We also specify `INDEX=cycle(hor)`, which tells R that we want the summary by season, in this case quarters.
 
 ```{r season2, exercise=TRUE, exercise.eval=FALSE, fig.width=5, fig.height=3, tidy=TRUE}
 # Seasonal plot of Hawaiian occupancy rates (quarterly)
@@ -404,7 +410,7 @@ An easy way to visualise the components of a time series (trend, seasonality, er
 
 First, you need to identify whether your time series is *additive* or *multiplicative*. 
 
-* **Additive decomposition:** Use an additive model to decompose the time series if the variance is constant. An additive model is expressed as:
+* **Additive decomposition:** Use an additive model to decompose the time series if the variance is more or less constant. An additive model is expressed as:
 
 $$\text{Time series}=\text{Trend}+\text{Seasonal}+\text{Error}$$
 
@@ -439,9 +445,9 @@ dec <- decompose(h02, type="multiplicative")
 plot(dec)
 ```
 
-The first panel is the raw data. Looking at the decomposed series, we can conclude that 1) there is an increasing trend; and 2) there is significant monthly seasonality, with prescriptions greatest at the end of the year (November, December), and lowest at the beginning (January, February). This is because of the Pharmaceutical Benefits Scheme (PBS) Safety Net - once an individual or family reaches their Safety Net limit on out-of-pocket spending on medicines in a calendar year, the co-payment they must pay for each dispensing decreases, leading some individuals to stockpile their medicines at the end of the year. 
+The first panel is the raw data. Looking at the decomposed series, we can conclude that 1) there is an increasing trend; and 2) there is substantial monthly seasonality, with prescriptions greatest at the end of the year (November, December), and lowest at the beginning (January, February). This is because of the Pharmaceutical Benefits Scheme (PBS) Safety Net - once an individual or family reaches their Safety Net limit on out-of-pocket spending on medicines in a calendar year, the co-payment they must pay for each dispensing decreases for the remainder of the calendar year, leading some individuals to stockpile their medicines at the end of the year when they are cheaper. 
 
-Looking at the "random" plot, there are two values that stand out, one that is higher than expected around 1993, and one lower than expected in 2007. It may be worth investigating anything that may have happened around these times - e.g. changes in the PBS co-payments, a change to reimbursement policies, or listing of a new corticosteroid. If these are true outliers (i.e. due to external factors, not random variation), they should be controlled when modelling your time series.
+Looking at the "random" plot, there are two values that stand out, one that is higher than expected around 1993, and one lower than expected in 2007. It may be worth investigating anything that may have happened around these times - e.g. changes in the PBS co-payments, a change to reimbursement policies, or listing of a new corticosteroid. If these are true outliers (i.e. due to external factors, not random variation), they should be controlled for when modelling your time series.
 
 Using `which.min()` and `which.max()` can help identify these points, as can the seasonal plot. Note that we use the random component of the decompose series, not the raw data, as the raw data still has seasonality. 
 
@@ -496,19 +502,21 @@ You will learn the following functions:
 
 * ts()
 * start(), end(), summary()
+* head()
 * plot()
 * decompose()
 * seasonplot()/ggseasonplot()
 
 #### Exercise 1.1 Creating a ts object 
 ```{r exercise1_1, exercise.cap="Exercise 1.1", exercise=TRUE, tidy=TRUE, exercise.eval=FALSE, exercise.lines=9}
-# Check if resp is a ts object
+# Check if the data "resp" is in the format of a ts object
 class( )
 
-# If not, convert to a ts object and call the new ts object "resp_ts"
+# If not, convert to a ts object and call the new ts (or mts) object "resp_ts"
 
 
 # Check the class again
+
 
 ```
 
@@ -526,9 +534,14 @@ class( )
 ```
 ```{r exercise1_2-hint-1, exercise.eval=FALSE}
 # Check the start and end dates using start() and end()
-start()
-end()
+start(resp_ts)
+end(resp_ts)
 ```
+```{r exercise1_2-hint-2, exercise.eval=FALSE}
+# View the first few lines using head()
+head(resp_ts)
+```
+
 
 #### Exercise 1.3 Data exploration
 ```{r exercise1_3, exercise.cap="Exercise 1.3", exercise=TRUE, tidy=TRUE, exercise.lines=7, exercise.eval=FALSE, exercise.lines=6}
@@ -541,7 +554,7 @@ end()
 ```
 ```{r exercise1_3-hint-1, exercise.eval=FALSE}
 # Get the min/max/mean/median values using summary()
-summary()
+summary(resp_ts)
 ```
 
 #### Exercise 1.4 Data visualisation
@@ -557,7 +570,7 @@ plot( )
 
 ```
 ```{r exercise1_4-hint-1}
-# To plot on the graph, use the argument "plot.type="s"""
+# To plot on the same graph, use the argument "plot.type="s" "
 ```
 ```{r exercise1_4-hint-2}
 # To change the plot colours or linetype, use the arguments "col=" or "lty="
@@ -566,7 +579,7 @@ plot( )
 #### Exercise 1.5 Data decomposition
 ```{r exercise1_5, exercise=TRUE, exercise.cap="Exercise 1.5", tidy=TRUE, exercise.eval=FALSE, fig.height=4.5, fig.width=5, exercise.lines=12}
 # When you plotted your series, did you observe any trend? any seasonality? any outliers?
-# Create a plot of the decomposed time series for males,  and see if it confirms what you observed above
+# Create a plot of the decomposed time series for males, and see if it confirms what you observed above
 males <- decompose(resp_ts[,1])
 
 
@@ -599,7 +612,7 @@ males <- decompose(resp_ts[,1])
 
 Now let's talk about the statistical properties of time series data. Let's start with some basic notation. 
 
-Let $Y_t$ represent the values of your time series ($Y$) at times $t$, from $t_1$ through $t_n$, where $n$ is the number of observations in your series.
+Let $Y_t$ represent the values of your time series ($Y$) at times $t$, from $t_1$ through $t_n$, where $n$ is the number of observations or time points in your series.
 
 ***
 
@@ -609,7 +622,7 @@ To facilitate working with time series data, your time series should be **statio
 
 A time series is considered *strictly stationary* if the distribution of a sequence of *i* observations is unchanged by shifts in time. That means that the probability distribution of $Y_t$ at times $(t_1, t_2, t_3,... t_i)$ is the same as the distribution at times $(t_1+m,t_2+m,t_3+m,...t_i+m)$ (where $m$ is a constant by which times are shifted). 
 
-Why is stationarity important? A stationary series is easier to work with because it is parsimonious and stable over time; that is, it can be modelled with fewer parameters. While a stationarity series may fluctuate, it will always revert to a constant mean, meaning that it is easier to predict. However, a strictly stationary series is rare, and it is often enough to assume *weak stationarity*. 
+**Why is stationarity important?** A stationary series is easier to work with because it is stable over time and can thus be modelled with fewer parameters. While a stationarity series may fluctuate, it will always revert to a constant mean, meaning that it is easier to predict. It does not have any trend or seasonality. However, a strictly stationary series is rare, and it is often enough to assume *weak stationarity*. 
 
 A weakly stationary series has three properties:
 
@@ -635,7 +648,7 @@ plot(stat,  ylab="Stationary", ylim=c(10,30))
 ***
 #### White Noise Series
 
-A white noise series is one that is stationary, and is the simplest type of time series. 
+A stationary time series is also known as a white noise series, and is the simplest type of time series. 
 
 Here are some examples:
 
@@ -652,17 +665,20 @@ plot(wn3, ylim=c(0,150), ylab='Series 3', main=('Mean = 77, SD = 20'))
 plot(wn4, ylim=c(0,250), ylab='Series 4', main=('Mean = 120, SD = 15'))
 ```
 
-**Figure.** Examples of white noise processes
+**Figure.** Examples of white noise series (SD = standard deviation)
 
 ***
 
 #### How to deal with non-stationarity
 
-White noise processes are rare, and it is unusual that a time series is stationary to begin with. One way of dealing with non-stationarity is to apply a transformation to the data. If the variance is changing over time, this can be addressed by a log transformation ($\log(Y_t)$).
+White noise series are rare, and it is unusual that a time series is stationary to begin with. There are two main causes of non-stationarity: the presence of a trend, or non-constant variance. 
+
+One way of dealing with non-stationarity is to apply a transformation to the data. If the variance is changing over time, this can be addressed by a log transformation ($\log(Y_t)$).
 
 On the other hand, if there is a linear trend in the data, taking the first difference of the data ($Y_t-Y_{t-1}$) will usually result in a stationary series. If there is still a trend, then a second differencing will be required, but that is rare. 
 
 Let's try it with the corticosteroid data we saw earlier.
+
 ```{r, echo=FALSE, eval=TRUE, fig.height=3.5, fig.width=5, tidy=TRUE}
 plot(h02, ylab='Corticosteroid Rx', ylim=c(0,1.5))
 ```
@@ -706,7 +722,7 @@ The results are consistent that the raw data are not stationary (ADF: p=0.53, KP
 
 ***
 
-Look at the time series below. Which are stationary (i.e. white noise processes)?
+Look at the time series below. Which appear to be stationary (i.e. white noise series)?
 
 ```{r, echo=FALSE, eval=TRUE, fig.height=6, fig.width=6, tidy=TRUE}
 set.seed(42)
@@ -757,11 +773,11 @@ data(austa, package="fpp")
 lag1.plot(austa)
 ```
 
-There is virtually no autocorrelation present in the Hawaiian occupancy data (r = 0.13), whereas there is near perfect correlation in the international visitor nights data (r=0.92)
+There is virtually no first-order autocorrelation present in the Hawaiian occupancy data (r = 0.13), whereas there is near perfect correlation in the international visitor nights data (r=0.92)
 
 ***
 
-Autocorrelation at more than one lag is not uncommon in time series data. To check for autocorrelation beyond the first lag, use the `acf()` function that plots the autocorrelation function (ACF). An ACF plot is a bar chart showing the autocorrelation between $Y_t$ and $Y_{t-1}$, $Y_{t-2}$, etc. for a given number of lags. If a bar is above the dotted blue line, then the correlation is statistically significant. Note that the ACF also plots the autocorrelation at lag 0, which will always be 1 - therefore, you can ignore the first bar.
+Autocorrelation at more than one lag is not uncommon with time series data. To check for autocorrelation beyond the first lag, use the `acf()` function that plots the autocorrelation function (ACF). An ACF plot is a bar chart showing the autocorrelation between $Y_t$ and $Y_{t-1}$, $Y_{t-2}$, etc. for a given number of lags. If a bar is above or below the dotted blue line, then the correlation is statistically significant (p<0.05). Note that the ACF also plots the autocorrelation at lag 0, which will always be 1 - therefore, you can ignore the first bar.
 
 ```{r acf, exercise.eval=FALSE, exercise=TRUE,fig.width=4, fig.height=4, tidy=TRUE}
 # Load data
@@ -782,7 +798,7 @@ A useful companion to the ACF plot is the partial ACF (PACF) plot. The partial a
 pacf(austa)
 ```
 
-Here there is no significant partial autocorrelation. Therefore, the higher order autocorrelation observed in the ACF plot above was entirely due to lower order autocorrelation. 
+Here there is no significant partial autocorrelation. Therefore, the higher order autocorrelation observed in the ACF plot above was entirely due to autocorrelation at lag 1. 
 
 ***
 
@@ -884,7 +900,7 @@ plot(diff(log(h02)), ylab="Corticosteroid Rx (millions)", xlab="Month", ylim=c(-
 plot(diff(diff(log(h02)), lag=12), ylab="Corticosteroid Rx (millions)", xlab="Month", ylim=c(-1,1)) 
 ```
 
-That looks much better. Note that when taking the seasonal difference for monthly data, you lose the first 12 observations, since you can't calculate the seasonal difference for those observations. That is important to keep in mind - if you have seasonal data, in general you will need more time points. If you need both a first difference and a seasonal difference, it doesn't matter which you do first. 
+That looks much better and easier to work with. Note that when taking the seasonal difference for monthly data, you lose the first 12 observations, since you can't calculate the seasonal difference for those observations. That is important to keep in mind - if you have seasonal data, in general you will need more time points. If you need both a first difference and a seasonal difference, it doesn't matter which you do first. 
 
 ***
 
@@ -1005,9 +1021,9 @@ In an autoregressive (AR) model, the value of $Y_t$ is predicted by one or multi
 This can be expressed as:
 
 $$Y_t = c+ \phi _1 Y_{t-1} + \phi _2 Y_{t-2}+ ... + \phi _p Y_{t-p} + \epsilon _t$$
-Here, $c$ is a constant, $\phi$ is the magnitude of the autocorrelation (between -1 and 1), $p$ is the number of lags, and $\epsilon_t$ is the white noise.
+Here, $c$ is a constant, $\phi$ is the magnitude of the autocorrelation, $p$ is the lag, and $\epsilon_t$ is the error.
 
-* If $\phi=0$ then $Y_t=c + \epsilon_t$ and $Y_t$ is a white noise process.
+* If $\phi=0$ then $Y_t=c + \epsilon_t$ and $Y_t$ is a white noise series.
 
 * If $\phi \neq 0$ then the process is autocorrelated, as $Y_t$ depends on $Y_{t-1}...Y_{t-p}$.
 
@@ -1056,7 +1072,7 @@ A moving average model is when $Y_t$ depends on past values of the error $\epsil
 This can be expressed as:
 
 $$Y_t = c + \epsilon _t + \theta _1\epsilon _{t-1} + \theta _2 \epsilon _{t-2} + ... + \theta _q \epsilon _{t-q}$$
-Here $c$ is a constant, $\theta$ is the value of the autocorrelation (between -1 and 1), and $q$ is the number of lags. 
+Here $c$ is a constant, $\theta$ is the value of the autocorrelation, and $q$ is the number of lags. 
 
 * If $\theta =0$ then the process is white noise. 
 
@@ -1102,12 +1118,12 @@ acf(ma4,main=paste('\U03B8 = -0.75'), ylab="ACF 4")
 
 #### Seasonal models
 
-A pure seasonal model is when $Y_t$ depends on past values of $Y_t$ at a regular interval (the season).
+A seasonal model is when $Y_t$ depends on past values of $Y_t$ at a regular interval (the season) and is a type of autocorrelation.
 
 It can be expressed as: 
 
 $$ Y_t = c + \Phi Y_{t-s} + \epsilon_t $$
-Here $c$ is a constant, $\Phi$ is the value of the autocorrelation (between -1 and 1), and $s$ is the seasonality (e.g. 12 for monthly, 4 for quarterly). 
+Here $c$ is a constant, $\Phi$ is the value of the autocorrelation, and $s$ is the seasonality (e.g. 12 for monthly, 4 for quarterly). 
 
 ***
 
@@ -1132,7 +1148,7 @@ An ARIMA model is a combination of an **AR** model, **MA** model, and differenci
 The basic notation for describing a non-seasonal ARIMA model is $(p,d,q)$.
 
 * **p** = the order of the AR part of the model;
-* **d** = the degree of first differencing; and
+* **d** = the degree of differencing; and
 * **q** = the order of the MA part of the model.
 
 For example, a White Noise model is ARIMA(0,0,0). An AR model is ARIMA(*p*,0,0), an MA model is ARIMA(0,0,*q*), and an ARMA model is ARIMA(*p*,0,*q*).
@@ -1144,11 +1160,11 @@ If there is seasonality, the ARIMA model is expressed as: $(p,d,q)\times (P,D,Q)
 
 #### Step 1: Determine if your time series is non-stationary
 
-The first step in fitting your ARIMA model is to plot your time series to check for non-stationarity, i.e. changing variance or trends. If necessary, induce stationarity in your time series by transformation.  
+The first step in fitting your ARIMA model is to plot your time series to check for non-stationarity, i.e. changing variance or trends. 
 
-To deal with non-constant variance, apply a log transformation. Take note if a first difference or seasonal difference may be required. Generally, if a first difference is required and the data are highly seasonal, a seasonal difference will also be required. It is unusual to require more than one first/seasonal difference.
+To deal with non-constant variance, apply a log transformation. Take note if a first difference or seasonal difference may be required - you do not have the apply the differencing yourself as this will be taken care of within the ARIMA model. Generally, if a first difference is required and the data are seasonal, a seasonal difference will also be required. It is unusual to require more than one first/seasonal difference.
 
-The ACF plot can also be used to check for significant seasonality.
+The ACF plot can also be used to check for seasonality.
 
 ***
 
@@ -1158,7 +1174,7 @@ After the time series has been made stationary by transformation, the next step 
 
 Determining the values for *p* and *q* can be done by looking at the ACF and PACF plots. However, it is not always straightfoward, especially if your series requires both AR and MA terms.
 
-The table below includes guidance on selecting the most appropriate AR and MA terms.
+The table below includes guidance on selecting the most appropriate AR and MA terms. In practice, there are automated algorithms in R that will select the most appropriate orders for you based on statistial criteria, which we will see later.
 
 **Table.** Guidance for determining AR and MA orders
 
@@ -1175,13 +1191,12 @@ kable(text_tbl) %>%
   column_spec(3, width="10em")
 ```
 
-See the following [website](https://people.duke.edu/~rnau/411arim3.htm) for some useful information for identifying the order of ARIMA models.
 
 #### Step 3: Estimate the model and check model fit
 
 Next estimate your model, and check the model fit using residuals. If your model has a poor fit, then you will have to choose a different AR or MA order. In general, determining the AR and MA terms is an iterative process, involving a lot of trial and error. 
 
-Aim for the most parsimonious model (i.e. lowest AR and MA orders), that has a good fit (no remaining autocorrelation). Information criteria (AIC and BIC) can be useful in determining the best fitting model.
+Aim for the simplest model (i.e. lowest AR and MA orders), that has a good fit (no remaining autocorrelation, normally distributed residuals). Information criteria (AIC and BIC) can be useful in determining the best fitting model.
 
 ***
 
@@ -1201,7 +1216,7 @@ quiz(caption = "Quiz 3.1: Basic models",
 
 Let's work through an example.
 
-*z* is a simulated time series generated from the following AR(2) model:
+*z* is a simulated time series generated from the following AR(2) (the same as ARIMA(2,0,0)) model:
 $$Y_t = 1.5Y_{t-1} - 0.75Y_{t-2} + \epsilon_t$$
 
 ```{r ar, exercise=TRUE, exercise.eval=FALSE, fig.width=5, fig.height=4, tidy=TRUE}
@@ -1216,18 +1231,21 @@ acf2(z)
 
 We can see that the PACF plot cuts off sharply at lag 2, while the ACF plot tails off. This indicates that this is an AR model, and that *p* = 2.
 
-An alternative is to use `auto.arima()` from the `forecast` package, which will determine the *p*, *q*, *P*, *Q* values for you, based on the best AIC, AICc or BIC. You can specify several constraints, including the maximum and starting values for *p*, *q*, *d*, and the seasonal equivalents. If your data are non-stationary and/or seasonal, it is best to specify a value for *d* and *D* to start with.
+An alternative and simpler approach is to use `auto.arima()` from the `forecast` package, which will determine the *p*, *q*, *P*, *Q* values for you, based on the best AIC or BIC. You can specify several constraints, including the maximum and starting values for *p*, *q*, *d*, and the seasonal equivalents. If your time series has a trend and/or seasonality,  specify a value for *d* and *D* to start.
 
-Let's try it with the time series *z* above.
+Let's try it with the time series *z* above. As there is no trend or seasonality, no differencing is required and we will specify *d*=0 and *seasonal*=FALSE.
 ```{r arima, exercise=TRUE, exercise.eval=FALSE}
 # Automated selection specifying first order difference
-auto.arima(z, d=0)
+auto.arima(z, d=0, seasonal=FALSE)
 ```
 
-Here this gives us an ARIMA(3,0,1) model! 
+The algorithm gives us an ARIMA(3,0,1) model, which is different from ARIMA(2,0,0) we estimated from the ACF/PACF plots above.
 
 Let's see what is happening. We'll use the `sarima()` function to specify our ARIMA model from the `astsa` package. This function is useful because it also produces model fit plots.
 ```{r sarima, exercise=TRUE, exercise.eval=FALSE}
+model1 <- sarima(z, p=2, d=0, q=0)
+model2 <- sarima(z, p=3, d=0, q=1)
+
 cat("AIC Model 1", model1$AIC)
 cat("AIC Model 2", model2$AIC)
 
@@ -1237,10 +1255,27 @@ cat("BIC Model 2", model2$BIC)
 
 We see that the AIC is lower for ARIMA(3,0,1), while the BIC is lower for ARIMA(2,0,0). In fact, if we rerun `auto.arima()` and tell it to use BIC only, this is what we get:
 ```{r bic, exercise=TRUE, exercise.eval=FALSE}
-auto.arima(z, d=0, ic='bic')
+auto.arima(z, d=0, seasonal=FALSE, ic='bic')
 ```
 
 Now it gives us ARIMA(2,0,0). We also see that AR1 = 1.44, and AR2 = -0.67, not that different from the true parameters (1.5 and -0.75). 
+
+The last step is to check the model fitting by visualising the residuals.
+```{r resid, exercise=TRUE, exercise.eval=FALSE}
+sarima(z, p=2, d=0, q=0)
+
+```
+
+This produces the following:
+
+* Plot of standardised residuals
+* ACF plot of residuals
+* Normal Q-Q plot of residuals
+* Ljung-Box test for independence of observations.
+
+Note that the null hypothesis for the Ljung-Box test is that the series is independent (no autocorrelation). For this plot, we want to see all points above the blue line, as dots below the blue line indicate autocorrelation.
+
+Here, based on the ACF plot of residuals and the Ljung-Box test, we see that there is no significant autocorrelation. The residuals also appear to be normally distributed based on the Q-Q plot. Remember, in a good fitting model there are no clear patterns in the residuals, and they are normally distributed with no autocorrelation.
 
 ***
 
@@ -1248,8 +1283,9 @@ What is the lesson? Like all automated regression procedures, it should not be r
 
 * If there is a trend, choose *d*=1. It is unusual to require *d*>1.
 * If there is strong seasonality in the ACF plot and *d*=1, then choose *D*=1. 
-* Start off with AR terms only, or MA terms only, rather than both. ACF/PACF plots will help with this decision.
-* Generally you shouldn't require more than one of *P* or *Q*.
+* Start with `auto.arima()` - if the model it produces does not have a good fit, use ACF/PACF plots to help decide on the AR/MA terms.
+* Start with AR terms only, or MA terms only, rather than both. 
+* Generally you shouldn't require more than one of the seasonal *P* or *Q*.
 * Simpler models (with fewer parameters) are preferred.
 * Model fit is extremely important - always check residual plots.
 * AIC and BIC can help choose between similar models.
@@ -1300,7 +1336,6 @@ Given that different information criterion can give different results, we'll che
 # Automated AR and MA selection
 auto.arima(log(AirPassengers), d=1, D=1, ic="bic")
 auto.arima(log(AirPassengers), d=1, D=1, ic="aic")
-auto.arima(log(AirPassengers), d=1, D=1, ic="aicc")
 ```
 
 `auto.arima()` suggests ARIMA(0,1,1)x(0,1,1), regardless of information criterion used. 
@@ -1315,16 +1350,8 @@ Let's fit our model with `sarima()` and check model fit.
 sarima(log(AirPassengers), p=0, d=1, q=1, P=0, D=1, Q=1, S=12)
 ```
 
-This produces the following:
-
-* Plot of standardised residuals
-* ACF plot of residuals
-* Normal Q-Q plot of residuals
-* Ljung-Box test for independence of observations.
-
-Note that the null hypothesis for the Ljung-Box test is that the series is independent (no autocorrelation). Note that for this plot, we want to see all points above the blue line, as dots below the blue line indicate autocorrelation.
-
 Looks good! Therefore our final model is $(0,1,1)\times(0,1,1)_{12}$. 
+
 
 ***
 
