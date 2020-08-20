@@ -23,7 +23,6 @@ library("fpp")
 library("fpp2")
 library("kableExtra")
 library("magrittr")
-library("TSA")
 library("tsoutliers")
 library("lmtest")
 library("zoo")
@@ -48,8 +47,7 @@ belt.lag <- ts(belt.lag, start=c(1975,01), frequency=12)
 
 UKDD.after.lag <- ifelse(as.yearmon(time(UKDD))<'Mar 1983', 0, UKDD.time-sum(belt.lag==0))
 UKDD.after.lag <- ts(UKDD.after.lag, start=c(1975,01), frequency=12)
-UKDD.mon1 <- season(UKDD)
-UKDD.mon2 <- seasonaldummy(UKDD)
+UKDD.mon <- seasonaldummy(UKDD)
 
 alprazolam <- read.csv(file="data/alprazolam.csv", header=TRUE)
 alp <- ts(alprazolam, start=c(2014,7), end=c(2018,6), frequency=12 )
@@ -60,18 +58,18 @@ step.lag1 <-as.numeric(as.yearmon(time(alp))>='Mar 2017')
 after.lag1 <-ifelse(as.yearmon(time(alp))<'Mar 2017', 0, time-(sum(step.lag1==0)))
 alp.lag1 <- data.table::shift(alp)
 
-month <- season(alp)
+month <- seasonaldummy(alp)
 model1 <- glm(alp ~ time + month + step + after)
 model2 <- glm(alp ~ time + month + step.lag1 + after.lag1)
 
-UKDD.model1 <- glm(UKDD ~ UKDD.time + belt +  UKDD.after+ UKDD.mon1)
+UKDD.model1 <- glm(UKDD ~ UKDD.time + belt +  UKDD.after+ UKDD.mon)
 UKDD.lag <- data.table::shift(UKDD, type="lag")
-UKDD.model2 <- glm(UKDD ~ UKDD.time + belt + UKDD.after + UKDD.mon1 + UKDD.lag)
+UKDD.model2 <- glm(UKDD ~ UKDD.time + belt + UKDD.after + UKDD.mon + UKDD.lag)
 
 UKDD.after.lag <- ifelse(as.yearmon(time(UKDD))<'Mar 1983', 0, UKDD.time-sum(belt.lag==0))
 UKDD.after.lag <- ts(UKDD.after.lag, start=c(1975,01), frequency=12)
 
-UKDD.model3 <- glm(UKDD ~ UKDD.time + belt.lag + UKDD.after.lag + UKDD.mon1 + UKDD.lag)
+UKDD.model3 <- glm(UKDD ~ UKDD.time + belt.lag + UKDD.after.lag + UKDD.mon + UKDD.lag)
 
 nobelt <- data.frame(belt=rep(0, length(belt)))
 noslope <- data.frame(UKDD.after=rep(0, length(belt)))
@@ -79,15 +77,16 @@ UKDD.cf <- predict.lm(UKDD.model2, newdata=c(nobelt,noslope))
 UKDD.cf <- ts.union(UKDD, UKDD.cf)
 
 
-data(airmiles, package="TSA")
-air <- airmiles/1000000
-air.step <- ts(as.numeric(as.yearmon(time(air))>='Sep 2001'), start=c(1996,1), frequency=12)
-air.pulse <- ts(as.numeric(as.yearmon(time(air))=='Sep 2001'), start=c(1996,1), frequency=12)
-air.model1 <- sarima(air, p=0, d=1, q=1, P=0, D=1, Q=1, S=12, xreg=cbind(air.pulse,air.step), details=FALSE)
+quetiapine <- read.csv(file="data/quetiapine.csv", header=TRUE)
+quet <- as.data.frame(quetiapine[,2])
+quet.ts <- ts(quet, start=c(2011,1), end=c(2014,12), frequency=12)
+quet.step <- ts(as.numeric(as.yearmon(time(quet.ts))>='Jan 2014'), start=c(2011,1), frequency=12)
+quet.ramp <- ts(as.numeric(append(rep(0,36), seq(1,12,1))), start=c(2011,1), frequency=12)
+
+quet.model1 <- sarima(quet.ts, p=2, d=1, q=0, P=0, D=1, Q=1, S=12, xreg=cbind(quet.step, quet.ramp), details=FALSE)
 
 
 ```
-
 
 
 ## Overview
@@ -545,18 +544,13 @@ print(UKDD.after.lag)
   
 If the time series is seasonal, we will need to create dummy variables representing the seasonal component. This is so we can adjust for seasonality (i.e. seasonal autocorrelation) within our segmented regression model. 
 
-To do so, we can either use `season()` in the `TSA` package, which creates one variable representing the month as a factor. Alternatively, you can use `seasonaldummy()` in the `forecast()` package. This creates a matrix with a dummy variable for each month (0/1), with December as the reference. Try both methods to compare.
+To do so, we can  use `seasonaldummy()` in the `forecast()` package. This creates a matrix with a dummy variable for each month (0/1), with December as the reference. Try both methods to compare.
 
 ```{r dummy, exercise=TRUE, exercise.eval=FALSE, tidy=TRUE}
-# Create vector with month as factor
-UKDD.mon1 <- season(UKDD)
-print(UKDD.mon1)
-class(UKDD.mon1)
-
 # Create vector with month dummy variables
-UKDD.mon2 <- seasonaldummy(UKDD)
-head(UKDD.mon2, n=12)
-class(UKDD.mon2)
+UKDD.mon <- seasonaldummy(UKDD)
+head(UKDD.mon, n=12)
+class(UKDD.mon)
 ```
 
 If the seasonality occurs in an oscillating patterns (as with hospital admissions for influenza), this can be controlled for using harmonic terms, e.g. a combination of sine and cosine terms. 
@@ -694,8 +688,7 @@ month <-
 
 ```
 ```{r exercise2_2-hint-1}
-# To create seasonal dummy variables, use either of the following:
-season(alp)
+# To create seasonal dummy variables, use:
 seasonaldummy(alp)
 ```
 
@@ -783,13 +776,13 @@ Let's model our time series, including as predictors the vectors we created in L
 * Baseline trend (*UKDD.time*);
 * Step change (*belt*);
 * Change in trend (*UKDD.after*); and
-* Seasonal dummy variables (*UKDD.mon1*).
+* Seasonal dummy variables (*UKDD.mon*).
 
 We will use `glm()` to estimate our model. Afterwards, we will check the fit using the residual plots. We will also test for residual autocorrelation using the Durbin-Watson test (`dwtest` in the `lmtest` package). Note that the null hypothesis for the Durbin-Watson test is that the autocorrelation of the residuals is zero. Therefore, a p-value<0.05 suggests the presence of autocorrelation.
 
 ```{r model1, exercise=TRUE, exercise.eval=FALSE, fit.width=5, fit.height=5}
 # Estimate model
-UKDD.model1 <- glm(UKDD ~ UKDD.time + belt + UKDD.after + UKDD.mon1)
+UKDD.model1 <- glm(UKDD ~ UKDD.time + belt + UKDD.after + UKDD.mon)
 
 # Check residual plots
 plot(UKDD.model1)
@@ -838,7 +831,7 @@ The borderline Durbin-Watson test is a bit concerning, so let's try including a 
 UKDD.lag <- data.table::shift(UKDD, type="lag")
 
 # Rerun the model with the lag included
-UKDD.model2 <- glm(UKDD ~ UKDD.time + belt + UKDD.after + UKDD.mon1 + UKDD.lag)
+UKDD.model2 <- glm(UKDD ~ UKDD.time + belt + UKDD.after + UKDD.mon + UKDD.lag)
 
 # Test for autocorrelation again
 dwtest(UKDD.model2)
@@ -881,7 +874,7 @@ UKDD.after.lag <- ts(UKDD.after.lag, start=c(1975,01), frequency=12)
 print(UKDD.after.lag)
 
 # Rerun the model 
-UKKDD.model3 <- glm(UKDD ~ UKDD.time + belt.lag + UKDD.after.lag + UKDD.mon1 + UKDD.lag)
+UKKDD.model3 <- glm(UKDD ~ UKDD.time + belt.lag + UKDD.after.lag + UKDD.mon + UKDD.lag)
 summary(UKDD.model3)
 confint(UKDD.model3)
 ```
@@ -946,7 +939,9 @@ Essentially what ARIMA does is forecasts $Y_t$ in the absence of the interventio
 
 ***
 
-Let's use the `airmiles` time series from the `TSA` package. It includes the monthly passenger airmiles in the US from January 1996 to May 2005. The hypothesis we will test is that the terrorist attacks in September 2001 resulted in a decline in passenger airmiles.
+Let's use the time series `quet.ts`. It includes the monthly dispensings for the antipsychotic quetiapine in Australia from January 2011 to May 2014. Quetiapine is subsidised by the PBS for treatment of schizophrenia and bipolar I disorder. The lowest strength tablet is meant to be used for dose titration, but is commonly prescribed off-label for conditions such as insomnia. Note that "off-label" means prescribed for an indication other than the one for which it is approved. In January 2014, the PBS decided to eliminate repeat prescriptions for the lowest tablet strength (Brett et al. [The impact of permissive and restrictive pharmaceutical policies on quetiapine dispensing: Evaluating a policy pendulum using interrupted time series analysis.](https://onlinelibrary.wiley.com/doi/full/10.1002/pds.4408)). 
+
+The hypothesis we will test is that the change to subsidy of quetiapine was associated with a decline in its dispensing. 
 
 Let's start by exploring the data.
 
@@ -957,23 +952,18 @@ Let's start by exploring the data.
 Check for trends, non-constant variance, and seasonal effects, visually and/or using formal tests. Determine the necessary order of first differencing (*d*) and seasonal differencing (*D*).
 
 ```{r 4_234, exercise=TRUE, exercise.eval=FALSE}
-# Load data
-data(airmiles, package='TSA')
-
-# Given the large numbers, let's transform it into millions
-air <- airmiles/1000000
-
 # Plot data
-plot(air, ylab="Airmiles (millions)", xlab="Month", ylim=c(0,60), main="Passenger airmiles in the US")
+plot(quet.ts, ylab="No. dispensings", xlab="Month", ylim=c(0,40000), main="Quetiapine dispensings in Australia", col="blue")
+abline(v=2014.00, col="gray", lwd=2, lty="dashed")
 
 # Plot decomposed data
-plot(decompose(air))
+plot(decompose(quet.ts))
 
 # Plot seasonal data
-ggseasonplot(air, color=rainbow(12), year.labels=TRUE)
+ggseasonplot(quet.ts, color=rainbow(12), year.labels=TRUE)
 
 # Plot ACF plot
-acf(air)
+acf(quet.ts, lag=24)
 ```
 
 ***
@@ -981,10 +971,10 @@ acf(air)
 **What do these plots tell us?**
 
 * The plot of the raw data suggests that the variance is fairly constant over time so no log transformation is needed;
-* The plot of the decomposed series tells us that there is generally an increasing trend in the number of airmiles, and we should include a first difference (*d*);
-* The seasonal plot tells us that the number of passengers is greatest in July and lowest in February and September;
-* The seasonal plot also tell us that the number of airmiles was the lowest in September 2001 (as we'd expect);
-* The ACF plot confirms that there is significant seasonality, and we should include a seasonal difference (*D*).
+* The plot of the decomposed series tells us that prior to the intervention there is an increasing trend in the number of dispensings, and we should include a first difference (*d*);
+* The seasonal plot tells us that the number of dispensings is greatest in December and lowest in January - we also know from experience that PBS dispensing data are seasonal;
+* The seasonal plot also tell us that the number of dispensings is lower in 2014 (after the intervention) than in other years (as we predicted);
+* The ACF plot shows that there autocorrelation, however the seasonality is not evident here. However, given that we know PBS data are typically seasonal, and we should try including a seasonal difference (*D*).
 
 ***
 
@@ -992,17 +982,18 @@ acf(air)
 
 Setting up your data for an ARIMA model is very similar to a segmented regression. However, the "time since start of study" variable and seasonal dummy variables are not needed, as ARIMA deals with trends and seasonality by differencing. 
 
-Now, let's create two vectors representing the intervention effects. We hypothesise that the September 11 attacks will result in a level shift (step change) in airmiles. Further, we observed in the plots that there was a large drop (outlier) in September 2001, suggesting a pulse effect too.
+Now, let's create two vectors representing the intervention effects. Based on our visualisation, we hypothesise that the intervention resultes in a level shift (step change) and a change in slope (ramp).
 
 ```{r step11, exercise=TRUE, exercise.eval=FALSE}
 
-# Create vector for step change after September 11 attack
-air.step <- ts(as.numeric(as.yearmon(time(air))>='Sep 2001'), start=c(1996,1), frequency=12)
-print(air.step)
+# Create vector for step change after change in subsidy
+quet.step <- ts(as.numeric(as.yearmon(time(quet.ts))>='Jan 2014'), start=c(2011,1), frequency=12)
+print(quet.step)
 
-# Create vector for pulse in September 2011
-air.pulse <- ts(as.numeric(as.yearmon(time(air))=='Sep 2001'), start=c(1996,1), frequency=12)
-print(air.pulse)
+# Create vector for change in slope (ramp)
+# Note that we have 36 months prior to the intervention, and 12 months post-intervention
+quet.ramp <- ts(append(rep(0,36), seq(1,12,1)), start=c(2011,1), frequency=12)
+print(quet.ramp)
 
 ```
 
@@ -1027,21 +1018,20 @@ Using the ACF and PACF plot, identify the potential AR (*p*) and MA (*q*) orders
 
 ```{r 3298, exercise=TRUE, exercise.eval=FALSE, fig.width=5, fig.height=4}
 # Plot the ACF/PACF plots - remember to use the differenced series
-acf2(diff(diff(air), lag=12))
+acf2(diff(diff(quet.ts), lag=12))
 ```
 
-It's appears that the PACF is tailing off while the ACF drops off at lag 1, so our series is potentially the result of an MA process. Let's check with `auto.arima()` - make sure to prespecify *d* and *D* based on what we found above. 
+Hmm, the ACF and PACF aren't particularly useful in this case. Let's check with `auto.arima()` - make sure to prespecify *d* and *D* based on what we found above. 
 
-Here we also specify our external variables to include in our ARIMA model (step, pulse), using the argument `xreg=`. Note that you do not have to include the "time since start of study" variable, or the seasonal dummies, in an ARIMA model, as the differencing elminates the trend. 
+Here we also specify our external variables to include in our ARIMA model (step, ramp), using the argument `xreg=`. Note that you do not have to include the "time since start of study" variable, or the seasonal dummies, in an ARIMA model, as the differencing elminates the trend. We will also specify `stepwise=FALSE` so that `auto.arima` searches all possible models.
 
 ```{r 98098, exercise=TRUE, exercise.eval=FALSE}
 # Check for most appropriate AR/MA orders
-auto.arima(air, d=1, D=1, xreg=cbind(air.step, air.pulse), ic="bic")
-auto.arima(air, d=1, D=1, xreg=cbind(air.step, air.pulse), ic="aic")
-auto.arima(air, d=1, D=1, xreg=cbind(air.step, air.pulse), ic="aicc")
+auto.arima(quet.ts, d=1, D=1, xreg=cbind(quet.step, quet.ramp), ic="bic", stepwise=FALSE)
+auto.arima(quet.ts, d=1, D=1, xreg=cbind(quet.step, quet.ramp), ic="aic", stepwise=FALSE)
 ```
 
-All three information criteria suggest that the model is $(0,1,1)\times(0,1,1)_{12}$.
+Both AIC and BIC suggest that the model is $(2,1,0)\times(0,1,1)_{12}$.
 
 ***
 
@@ -1051,22 +1041,10 @@ Next, fit the proposed model and check the model fit. Make sure to include the s
 
 ```{r sarima1, exercise=TRUE, exercise.eval=FALSE, fig.width=6, fig.height=7}
 # Model estimation
-sarima(air, p=0, d=1, q=1, P=0, D=1, Q=1, S=12, xreg=cbind(air.pulse,air.step))
+sarima(quet.ts, p=2, d=1, q=0, P=0, D=1, Q=1, S=12, xreg=cbind(quet.step, quet.ramp))
 ```
 
-***
-
-The model fits looks good. Let's just check that a simpler model isn't better.
-```{r sarima2a, exercise=TRUE, exercise.eval=FALSE, fig.width=6, fig.height=7}
-# Try (0,1,1)x(0,1,0)12
-sarima(air, p=0, d=1, q=1, P=0, D=1, Q=0, S=12, xreg=cbind(air.pulse,air.step))
-```
-```{r sarima2b, exercise=TRUE, exercise.eval=FALSE, fig.width=6, fig.height=7}
-# Try (0,1,0)x(0,1,1)12
-sarima(air, p=0, d=1, q=0, P=0, D=1, Q=1, S=12, xreg=cbind(air.pulse,air.step))
-```
-
-Neither of those look any good - let's stick with $(0,1,1)\times(0,1,1)_{12}$.
+The model fits looks good.
 
 ***
 
@@ -1074,24 +1052,25 @@ Now, let's get our final estimates:
 
 ```{r sarima3, exercise=TRUE, exercise.eval=FALSE}
 # Model estimation 
-air.model1 <- sarima(air, p=0, d=1, q=1, P=0, D=1, Q=1, S=12, xreg=cbind(air.pulse,air.step))
+quet.model1 <- sarima(quet.ts, p=2, d=1, q=0, P=0, D=1, Q=1, S=12, xreg=cbind(quet.step, quet.ramp))
 
 # Get estimates and confidence intervals
-air.model1$fit
-confint(air.model1$fit)
+quet.model1$fit
+confint(quet.model1$fit)
 ```
 
 ***
 
 #### Final model
 
-Our final model is $(0,1,1)\times(0,1,1)_{12}$.
+Our final model is $(2,1,0)\times(0,1,1)_{12}$.
 
 The estimates of effect are:
 
-* The step variable represents an immediate reduction in passenger airmiles (-8.6 million, 95% CI -11.0 to -6.2) that was sustained for the duration of the study period;
-* The pulse variable represents 4.2 million fewer passenger airmiles (95% CI -6.5 to -1.9) in September 2001 *on top of* the level shift of -8.6 million passenger airmiles;
-* Therefore, in September 2001 there were 12.8 million (8.6 million + 4.2 million) fewer passenger airmiles than would have been expected in the absence of the attacks.
+* The step change variable represents an immediate reduction in dispensings (-3285, 95% CI -4465 to -2104) that was sustained for the duration of the study period;
+* The ramp or slope change variable means that the number of dispensings decreased by 1397 dispensings (95% CI -1606 to -1188) in each month *on top of* the step change;
+* Therefore, in January 2014 there were 4682 fewer dispensing (3285 + 1397) than would have been expected in the absence of the subsidy change. The number of dispensings post-intervention was trending downward by 1397 dispensings per month. 
+* Note that with an ARIMA model, we cannot estimate the trend or slope pre-intervention.
 
 *** 
 

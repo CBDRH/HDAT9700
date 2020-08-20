@@ -1384,7 +1384,7 @@ You will learn the functions:
 
 ```
 ```{r exercise3_1-hint-1}
-# Check for stationarity by plotting the data, and using adf.test() and kpss.test()
+# Check for stationarity by plotting the data, and using adf.test() and/or kpss.test()
 ```
 
 
@@ -1399,7 +1399,7 @@ auto.arima(p,    )
 
 ```
 ```{r exercise3_2-hint-1}
-# Prespecify "d" and "D" based on what you observed in your stationary test, and in the ACF/PACF plots
+# Prespecify "d" and "D" based on what you observed in your stationarity test, and in the ACF/PACF plots
 ```
 
 #### Exercise 3.3 Step 3 - Estimating model and checking fit
