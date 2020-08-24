@@ -1,22 +1,22 @@
 #' Launch an interactive Shiny app
 #'
-#' @param example A Shiny app
+#' @param app A Shiny app
 #' @examples
 #' run("missing-data-1")
 #' @export
-run <- function(example) {
+run <- function(app) {
   # locate all the shiny app examples that exist
   validExamples <- list.files(system.file("apps", package = "hdat9700tutorials"))
 
   validExamplesMsg <-
     paste0(
-      "Valid examples are: '",
+      "Available apps are: '",
       paste(validExamples, collapse = "', '"),
       "'")
 
   # if an invalid example is given, throw an error
-  if (missing(example) || !nzchar(example) ||
-      !example %in% validExamples) {
+  if (missing(app) || !nzchar(app) ||
+      !app %in% validExamples) {
     stop(
       'Please specify a valid app as an argument.\n',
       validExamplesMsg,
@@ -24,6 +24,6 @@ run <- function(example) {
   }
 
   # find and launch the app
-  appDir <- system.file("apps", example, package = "hdat9700tutorials")
+  appDir <- system.file("apps", app, package = "hdat9700tutorials")
   shiny::runApp(appDir, display.mode = "normal")
 }

@@ -1,5 +1,5 @@
 ---
-title: "HDAT9700: Propensity Score Matching"
+title: "HDAT 9700: Matching for Causal Inference"
 tutorial:
   id: "au.edu.unsw.cbdrh.hdat9700.tutorials.propensity.score.matching"
 output:
@@ -8,6 +8,7 @@ output:
     allow_skip: true
     css: css/tutorials.css
 runtime: shiny_prerendered
+description: "HDAT9700: Matching for Causal Inference from Observational data" 
 ---
 
 ![](images/UNSW_2017_Big_Data_landscape.jpg){width="75%"}
@@ -22,6 +23,7 @@ library("cem")
 library("optmatch")
 library("knitr")
 library("kableExtra")
+library("ggdag")
 ```
 
 
@@ -32,7 +34,7 @@ This chapter focuses on the challenge of drawing **causal inferences from observ
 
 Previously, you learned about randomised control trials (RCTs), and different approaches to randomisation, including simple, block and stratified randomisation. RCTs are the gold standard design for estimating causal effects: because treatment assignment is under the researchers' control, it is possible to balance the characteristics of treated and untreated individuals, therefore any difference in their outcomes can be ascribed to the effect of the treatment or intervention.  
 
-When analysing observational data, treatment assignment is no longer under the researchers control. As a result, treated and untreated individuals may differ in ways related to the outcome, therefore it is not straightforward to ascribe differences in the outcome to the treatment.  
+When analysing observational data (e.g. a cohort study or administrative data), treatment assignment is no longer under the researchers control. As a result, treated and untreated individuals may differ in ways related to the outcome, therefore it is not straightforward to ascribe differences in the outcome to the treatment.  
 
 In this chapter we will explore **matching** as a general approach used to improve causal inferences from observational data. In broad terms, matching is a preprocessing technique that relies on pruning or duplicating observations so that the treated and untreated groups are similar in terms of their background characteristics. 
 
@@ -42,6 +44,15 @@ At the end of this chapter you will be able to
 2. Discuss the assumptions needed to estimate causal effects from observational data
 3. Implement various approaches to matching using the R package `MatchIt` 
 
+
+### Readings
+
+#### Pre-reading
+The pre-reading (pre-viewing!) for this chapter is the video _Why Propensity Scores Should Not Be Used For Matching_ presented by [Professor Gary King](garyking.org) from Harvard University. 
+
+![](https://youtu.be/rBv39pK1iEs?t=87)
+
+#### Reference text
 The reference text for this chapter is "Matching as Nonparametric Preprocessing for Reducing Model Dependence in Parametric
 Causal Inference" by Daniel Ho, Kosuke Imai, Gary King and Elizabeth Stuart, available [here](https://gking.harvard.edu/files/matchp.pdf). This chapter also draws heavily on the work of Miguel Hernán and colleagues---references are provided at the end of the chapter. 
 
@@ -111,7 +122,7 @@ Of course we know that correlation does not imply causation. Nonetheless:
 * In the absence of confounding, observational estimates and causal estimates are the same    
 * With observational data, we can still pose and answer causal questions (provided sufficient background information is present)   
 * Even RCTs can only provided measures of association---we are just more confident in interpreting these as causal because of the experimental design.  
-* Causal inferences from a rich observational dataset can be more reliable than those from a sub-par RCT (especially if the sample is small and treatment adherence is poor)  
+* Causal inferences from a rich observational dataset can be more reliable than those from a sub-par RCT (especially if the RCT sample is small and treatment adherence is poor)  
 
 
 ## Counterfactual outcomes
@@ -238,9 +249,9 @@ $$
 Y_{a=0} \ne Y_{a=1}
 $$
 
-<div class="discuss">
+<div class="think">
 
-### Discuss...
+### Pause and think...
 Is there an individual causal effect for Barry or Katie?
 
 </div>
@@ -256,8 +267,8 @@ If these two proportions are different, the treatment $A$ has a causal effect on
 $$
 P(Y(0)=1) \ne P(Y(1)=1)
 $$
-<div class="discuss">
-### Discuss...
+<div class="think">
+### Pause and think...
 Is there a population causal effect of helping hands on development in the table below?
 
 </div>
@@ -293,14 +304,40 @@ $P(Y(1)=1) - P(Y(0)=1)$
 $P(Y(1)=1)/P(Y(0)=1)$ 
 
 
-<div class="discuss">
-### Discuss...
+<div class="think">
+### Pause and think...
 
 In the example above, what is the causal effect on (i) the additive scale and (ii) the multiplicative scale?
 
 </div>
 
-## Quantities of interest
+
+```{r quiz2, echo=FALSE}
+quiz(caption = "Quiz 2: Causal effect measures",
+  question("The causal effect on the additive scale is",
+    answer("1.0"),
+    answer("$0.67$"),
+    answer("$1.5$"),
+    answer("0.2", correct = TRUE),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  ),
+  question("The causal effect on the multiplicative scale is",
+    answer("1.0"),
+    answer("$0.67$"),
+    answer("$1.5$", correct = TRUE),
+    answer("0.2"),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  )
+)
+```
+
+
+
+## Quantities of interest {data-progressive=TRUE}
+
+### Different types of treatment effect
 Having set up this framework for causal inference, it is possible to focus on different treatment effects by comparing outcomes among different populations. Two treatment effects of particular interest are  
 
 1. **The Average Treatment Effect (ATE)**  
@@ -312,15 +349,19 @@ The ATT estimates the average effect of the treatment on *those who actually rec
 These quantities are both valid, but may be more or less of interest depending on context. For example, if a treatment is very expensive and/or invasive, it is likely to be administered to targeted subgroups rather than whole populations, and therefore the ATT is of more interest. The ATE is more applicable in estimating the effect of broad-based interventions that are rolled out to whole populations.
 
 
-<div class="discuss">
+<div class="think">
 
-### Discuss...
+### Pause and think...
 Which effect (ATT or ATE) would be more relevant when evaluating an intervention like Helping Hands? 
 
 Can you think of an example where (i) the ATE and (ii) the ATT would be more relevant?
 
 </div>
 
+### Points to note...
+
+* A program like Helping Hands is unlikely to be rolled out to an entire population,  rather a small number of known individuals will be treated. The Average Treatment effect among the Treated will therefore be more relevant. 
+* The Average Treatment Effect would be more relevant for a public health awareness campaign that is rolled out nationally on TV, radio and other media. The aim will be to reach everyone in the population but the people running the campaign are unlikely to know exactly who has been 'treated' i.e. been exposed to the advertising. 
 
 
 ## Randomisation 
@@ -337,7 +378,7 @@ In an observational study, the characteristics of a population are observed but 
 
 When the researcher doesn't have control over treatment assignment it becomes more difficult to identify causal effects. You will probably have a good intuitive sense of why this is the case...
 
-### Discussion
+### Pause and think
 
 <div class="family">
 
@@ -348,8 +389,29 @@ Can you give another example of a scenario where causal claims from a cross-sect
 
 </div>
 
-### Discussion points
-In the first scenario, assignment to the treatment---participation in Helping Hands---is not under the researchers control. Because the data are observational, we are just observing what has already happened, and children who participated in Helping Hands may have different characteristics compared to those who do not. Crucially, these differing characteristics *may also relate to child development*. For example, Helping Hands participants might come from economically disadvantaged families, or families where there are drug or alcohol issues. The observed relationship between participation and development may be attributable to these other factors, therefore we can't claim a causal effect of the program. What we can say is that Helping Hands participation is **associated** with lower development, which can be useful information depending on purpose of the modelling exercise (recall the different modelling aims discussed in Chapter 1, and the distinctions between describing, explaining and predicting).
+<div class="think">
+
+### Can you draw a DAG to describe this scenario?
+Think back on last week's lecture!
+
+</div>
+
+### Possible solution
+Because the Helping Hands program is targeted towards 'vulnerable' families there are likely to be confounding background characteristics (L variables, in our notation) that increase the chances of taking part in the program and decrease the chances of on-track development. For vulnerable families, this might include things like education, employment, physical & mental health, access to health services and other supports, parenting skills, and drug & alcohol issues. In the DAG below these confounding factors have been grouped together into a single node: 'pre-existing family vulnerabilities'.
+ 
+``` {r}
+ggdag_confounder_triangle(x="Helping hands participation", y="Development at age five", z="Pre-existing family issues", 
+                          use_labels = "label",
+                          label_col = "black",
+                          text = FALSE,
+                          x_y_associated = TRUE) +
+  theme_dag()
+```
+
+
+
+### Points to think about
+In the first scenario, assignment to the treatment---participation in Helping Hands---is not under the researchers control. Because the data are observational, we are just observing what has already happened, and as discussed above children who participated in Helping Hands may have different characteristics compared to those who do not. Crucially, these differing characteristics *may also relate to child development*. For example, Helping Hands participants might come from economically disadvantaged families, or families where there are drug or alcohol issues. The observed relationship between participation and development may be attributable to these other factors, therefore we can't claim a causal effect of the program. What we can say is that Helping Hands participation is **associated** with lower development, which can be useful information depending on purpose of the modelling exercise (recall the different modelling aims discussed in Chapter 1, and the distinctions between describing, explaining and predicting).
 
 A famous example where spurious causal claims were inferred from observation data is the [Wakefield et al study](https://www.thelancet.com/journals/lancet/article/PIIS0140-6736(97)11096-0/fulltext), published in the Lancet in 1998. In this study, the authors linked gastrointestinal disease and developmental regression to the measles, mumps, and rubella (MMR) vaccination. These results fueled doubts about the safety of the vaccine, triggering a reduction in vaccination levels in several countries. However, the results were based on an uncontrolled analysis of 12 children, all of whom were selected for having both outcomes. The lancet fully retracted the paper in 2010. You can read more about this study, its flaws, and the subsequent fallout [here](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3136032/).
 
@@ -417,9 +479,9 @@ str(lalonde)
 
 ```
 
-### Dicussion 
+### Pause and think
 
-<div class="discuss">
+<div class="think">
 ### What can we say about the data?
 There are some striking differences between the demographic characteristics of the treated and untreated groups. **What are the implications when trying to evaluate the effectiveness of the program?** 
 (Bear in mind the cultural context---USA in the mid 1970s)
@@ -445,9 +507,11 @@ What this means is that there can not exist a category $l$ of a confounder $L$ w
 $$
 Pr(A=a|L=l)>0 \; \text{for all treatments} \; a \; \text{and for all categories} \; l \epsilon L  
 $$
-<div class="family">
+<div class="think">
 
-### Discuss
+In simple terms, positivity means that it has to have been possible for every type of person to get the treatment.
+
+### Pause and think
 1. An implication of the positivity assumption is that there can't be a treatment $A$ and a category $l \epsilon L$ where $Pr(A=a|L=l)=1$. **Why?**
 
 
@@ -455,7 +519,7 @@ $$
 
 </div>
 
-### Discussion points
+### Points to consider
 1. To see why this is the case it is easiest to think in terms of a dichotomous treatment (0 or 1). If $Pr(A=1|l)=1$ then $Pr(A=0|l)=0$, and positivity does not hold.   
 
 2. If children of young mothers were always entered into the Helping Hands program then $Pr(A=1|age\le19)=1$ and $Pr(A=0|age\le19)=1$. Positivity does not hold. In simple terms, this is a problem because we can't estimate the effect of the program in the whole population because there is no comparison for children of young mothers. 
@@ -473,6 +537,8 @@ $$
 $$
 where $\tilde{p}(.)$ denotes the observed empirical density of the data.
 
+In simple terms, exchangeability means that the treated and untreated groups need to have the same background characteristics. 
+
 ***
 
 Exchangeability is much trickier when dealing with observational data. As discussed previously, when treatments aren't randomly assigned there may be self-selection or other mechanisms that result in treated and untreated groups being different *in ways that relate to the outcome being measured*. The second half of this tutorial focusses on pre-processing techniques which can be applied to observational datasets to help avoid this situation and achieve the necessary balance. 
@@ -485,14 +551,14 @@ We can never know for sure whether the assumption of exchangeability holds---the
 
 **Domain knowledge** is needed to understand what factors are important for the causal question at hand, i.e. those that relate to treatment status and to the outcome of interest.  
 
-**A theoretical model** is important to clarify what the researcher considers important and to distinguish from other variables that might be associated with the outcome but are not confounders. Graphical methods to describe theoretical models, such as Directed Acyclic Graphs (DAGs), are popular, but beyond the scope of this chapter.   
+**A theoretical model** is important to clarify what the researcher considers important and to distinguish from other variables that might be associated with the outcome but are not confounders. This is where Directed Acyclic Graphs (DAGs) are extremely useful as a tool to formalise these assumptions.   
 
 **A well-thought out research design** is essential to make sure that the relevant factors, or proxies for them, are available. For example, we can't control for a potential confounder such as maternal age if it hasn't been recorded or linked from another source.
 
 
 ### Consistency
 Consistency assumes that there is a **single well-defined version of the treatment**. It is also referred to as the no-multiple-versions-of-treatment assumption. 
-So for example, we can not estimate the causal effect of participation in the helping hands program if some families only receive parenting classes and some families only receive home visits.  
+So for example, we can not estimate the causal effect of participation in the helping hands program if some families only receive parenting classes while other families only receive home visits - this would imply two different types of treatment. 
 
 Of course, there is some wiggle-room here: even in a gold-standard intervention study some variation in treatment is unavoidable for practical reasons. In the example of Helping Hands, the same parenting class might be delivered by different instructors in different parts of the state. It is up to the researcher to decide what degree of variability in the treatment is permissable. 
 
@@ -535,9 +601,9 @@ A simple and intuitive form of matching is **1:1 exact matching**:
 * The observed confounders are matched exactly  
 * e.g. each treated child $i$ with covariates $L_{i}=(l_{1},l_{2},l_{3})$ is matched to an untreated child $j$ with the same covariate vector $L_{j}=(l_{1},l_{2},l_{3})$.  
 
-<div class="discuss">
+<div class="think">
 
-### Discuss
+### Pause and think
 What are the potential **disadvantages** of, and **barriers** to, 1:1 exact matching?
 
 </div>
@@ -570,10 +636,25 @@ In many practical situations, exact matching is not possible. For example:
 * There are too many covariates to match on all variables at the same time  
 * There are too few observations to find an exact match for each treated individual
 
-Alternative matching methods can be grouped into two classes:
+The alternative matching methods covered in this chapter can be grouped into two classes:
 
-1. Distance-based Matching  
-2. Coarsened Exact Matching
+1. Coarsened Exact Matching
+2. Distance-based Matching  
+
+### Coarsened Exact Matching  
+With Coarsened Exact Matching (CEM), we temporarily coarsen our matching variables and match using the coarsened versions. Coarsening means that we recode our variables to have wider bands, making it easier to find a match. For example, age measured in years might be coarsened to age measured in 10-year age bands; the logic being that it is easier to find a match for someone aged 30-39 than to find a match for someone who is 34 exactly. 
+
+Coarsened bands needn't be equally spaced if there are more meaningful groupings available. For example, years in education could be coarsened to Primary (1-8), High School (9-12), Undergraduate (13-15) or Postgraduate (>15). Similarly, BMI measured in $kg/m^2$ could be coarsened to the standard categories: Underweight (< 18.5); Normal (18.5 - 24.9); Overweight (25.0 - 25.99); and Obese ($\ge$ 30).
+
+The coarsened variables are only used for matching purposes; once the treatement and control groups have been balanced the analysis can proceed using the variables at the original scale of measurement. 
+
+In more detail, the steps for CEM are as follows:
+
+1. The $L$ variables, on which the matches are based, are grouped, or _coarsened_. For example age measured in years might be coarsened to five-year age groups. Years of schooling might be grouped into high school, graduate and postgraduate. 
+2. Group individuals into strata based on the coarsened data. For example, if the matching variables are sex, age and education, a single stratum might comprise males aged 30-39 with high school education. 
+3. Drop the records in any strata that do not include at least one treated and one control unit. For example if there were no treated individuals who were males aged 20-29 years with a PhD then this stratum would be excluded. 
+4. The analysis proceeds in the matched data using the original coarsened variables. For the analysis model, control units in each stratum are weighted to equal the number of treated units in that stratum. 
+
 
 ### Distance-based Matching
 Distance-based matching relies on some quantitative measure of the similarity/dissimilarity between observed individuals. Two individuals $i$ and $j$ are candidates for matching if the distance between them is suitably small, i.e. if $D(i,j) \lt \delta$. The advantage of distance-based measures is that they reduce a large set of variables into a single univariate metric. 
@@ -587,12 +668,89 @@ Two distance metrics commonly used in practice are:
 2. The propensity score  
 
 ### The Mahalanobis distance
-The Mahalanobis distance measures the average distance between two multivariate vectors $X_{i}$ and $X_{j}$ as  
+
+The Mahalanobis distance measures the average distance between two individuals $i$ and $j$ based on their multivariate vectors $X_{i}$ and $X_{j}$ as  
 
 $$
-M(X_{i}, X_{j})  = \sqrt{(X_{i}, X_{j})'S^{-1}(X_{i}, X_{j})}
+d(X_{i}, X_{j})  = \sqrt{(X_{i} - X_{j})^{T}S^{-1}(X_{i} - X_{j})}
 $$
-where $S$ is the sample covariance matrix of $X$. Note that this is analogous to the more familiar standardised difference in means $d=\frac{\bar{x_{i}}-\bar{x_{j}}}{\sigma}$ (i.e. difference in means divided by the standard deviation). 
+where $S$ is the sample variance-covariance matrix of $X$. 
+
+So here, $X_{i}$ would be a vector of responses for person $i$ - say age, income, years of education etc. $X_{j}$ would be the same set of responses for person $j$, and $X_{i} - X_{j}$ is the vector of differences between person $i$ and person $j$ on each variable. The superscript $T$ indicates the matrix operation _transpose_.
+
+While $X_{i}$ and $X_{j}$ refer to data for two individuals (or rows in your dataset),  $S$ is the variance-covariance matrix estimated from _all_ of the data, exactly as returned by R if you called the `cov()` function on your dataframe of observations. 
+
+The Mahalanobis distance has two useful properties:
+
+(i) It **standardises** the variables recorded in $X$. This means that the units used in your data have no impact on the distance - it doesn't matter if weight is recorded in pounds or kilograms or if income is recorded in dollars or '000s of dollars, the resulting distances will be the same.
+
+(ii) It takes into account the **covariance** structure in the data when calculating distance. To see what this means, consider the ponts **a** and **b** on the scatterplot of education versus salary below.
+
+```{r}
+data(cars)
+df <- rbind(cars, c(15.4, 42.98), c(20.4, 63), c(10.4, 63)) 
+lab = c(rep('', 51), letters[1:2])
+
+plotdata <- cbind(df, lab)
+
+ggplot(plotdata, aes(x=speed, y=dist)) + 
+  geom_line(data = plotdata[51:53, ], 
+            aes(x = speed, y = dist), color = c("red", "green", "pink"), 
+            arrow = arrow(angle = 15, ends = c("first", "last"), type = "closed")) +
+  ggrepel::geom_text_repel(data = plotdata, aes(x = speed, y = dist, label = lab), size=6, color = 'darkorchid4') +
+  geom_point() +
+  labs(x = 'Years of education', y = "Base salary ($ ,000s)")
+```
+
+The two points **a** and **b** are the same Euclidean distance from the centroid of the data (i.e. the red and green lines are the same length). But intuitively we can see that the point **a** has values of education and salary that correspond to the overall relationship between a and b, whereas point **b** does not fit so closely with the observed data. The Mahalanobis distance reflects this intuition and returns a closer distance for **a** to the centroid of the data compared to the distance from **b** to the centroid of the data.
+
+```{r, include=FALSE}
+data(cars)
+df <- rbind(cars, c(15.4, 42.98), c(20.4, 63), c(10.4, 63)) 
+covinv <- solve(cov(df))
+lab = c(rep('', 51), letters[1:2])
+
+p1 <- function(rw) {
+  a <- rw - c(15.4, 42.98)
+  b <- a %*% covinv
+  print(b)
+}
+
+mult1 <- apply(df, 1, p1) %>% t() %>%  as.data.frame()
+
+plotdata <- cbind(mult1, lab)
+names(plotdata) <- c("speed", "dist", "lab")
+
+flippedPlot <- ggplot(plotdata, aes(x=speed, y=dist)) + 
+  geom_line(data = plotdata[51:53, ], 
+            aes(x = speed, y = dist), color = c("red", "green", "pink"), 
+            arrow = arrow(angle = 15, ends = c("first", "last"), type = "closed")) +
+  ggrepel::geom_text_repel(data = plotdata, aes(x = speed, y = dist, label = lab), size=6, color = 'darkorchid4') +
+  geom_point() +
+  labs(x = 'Years of education (rescaled)', y = "Base salary (rescaled)")
+
+
+```
+
+An intuitive way to understand how this works is to consider the variance-covariance term $S$ in the formula for the Mahalanobis distance. If two variables are closely related, their covariance will be high. Dividing by a high number. Below is the result of $(X_{i} - X_{j})^{T}S^{-1}$. Note that 
+
+* The data re now centred on (0, 0) 
+* The magnitude of the relationship is the same (although the direction has flipped) 
+* Point *a* is much closet to the centroid of the data compared to point **b**
+
+```{r}
+flippedPlot
+```
+
+
+
+
+Another intuitive way to think about the Mahalanobis distance is to recognise the parallels between the formula above and the familiar standardised difference in means $d=\frac{\bar{x_{i}}-\bar{x_{j}}}{\sigma}$ (i.e. difference in means divided by the standard deviation). 
+
+
+
+
+
 
 <div class="calipers">
 
@@ -617,6 +775,8 @@ $$
 
 The distance-based on the propensity score for two individuals is then simply $\pi_{i}-\pi_{j}$. It is also possible to base the differences on the log scale, i.e. $\beta X_{i}-\beta X_{j}$  
 
+While it is commonplace to use a logistic regression to estimate the propensity score from observed data, any suitable model can be used, including [machine learning algorithms](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0231500).
+
 ***
 
 ### Utilising the propensity score  
@@ -629,7 +789,7 @@ Under stratification, the full sample is divided into a small number of strata (
 Under weighting, the full sample is reweighted to balance the propensity score between the treated and untreated subgroups.   
 
 ### Criticism of propensity score matching
-Propensity score matching is a very popular approach in practice, but has been subject to criticism, for example King and Nielson (2016) [Why Propensity Scores should not be used for matching](https://gking.harvard.edu/files/gking/files/psnot.pdf)
+Propensity score matching is a very popular approach in practice, but has been subject to criticism, for example King and Nielson (2016) [Why Propensity Scores should not be used for matching](https://gking.harvard.edu/files/gking/files/psnot.pdf). See the prereading linked at the start of this tutorial for more on this topic. 
 
 These criticisms stem from the fact that, once balance is achieved on the _global_ propensity score, the matching process ignores _local_ information on the individual covariates in $L$. Thus, any pruning that takes place is random. Consequently, matching based on the propensity score approximates a completely randomised experiment, whereas other methods approximate a more efficient fully blocked experiment.      
 
@@ -641,44 +801,37 @@ These criticisms stem from the fact that, once balance is achieved on the _globa
 
 Using data on child and family background, you could use a logistic regression to estimate the probability of being involved in the Helping Hands program, conditional on child and family characteristics. 
 
-Based on the estimated model parameters, you find the following probabilities for Bruce (who ultimately did partake in the program) and Sheila (who did not partake in the program). 
+Based on the estimated model parameters, you find the following probabilities for Armin (who ultimately did partake in the program) and Nina (who did not partake in the program). 
 $$
 \begin{aligned}
-\hat{\pi}_{Bruce} & = 0.715 & \\
-\hat{\pi}_{Sheila} & = 0.725 &
+\hat{\pi}_{Armin} & = 0.715 & \\
+\hat{\pi}_{Nina} & = 0.725 &
 \end{aligned}
 $$
 
 
-Based on these estimated propensity scores, matching Bruce with Sheila seems like good candidate match. Sheila, who was untreated, can supply the counterfactual for Bruce, who was treated. 
+Based on these estimated propensity scores, matching Armin with Nina seems like good candidate match. Nina, who was untreated, can supply the counterfactual for Armin, who was treated. 
 
 Suppose you dig deeper on the children's background characteristics (their $L$ values). 
 We find the following:
 
-**Bruce**  
+**Armin**  
 
 * Maternal age = 17  
 * Parental income = medium  
 
-**Sheila**
+**Nina**
 
 * Maternal age = 32  
 * Parental income = low  
 
 Clearly the two children have different background characteristics for the covariates _Maternal age_ and _Parental income_.
 
-Checking the estimated model coefficients, you confirm your suspicions: Bruce has a relatively high propensity score because he was born to a young mum; Sheila has a relatively high propensity score because she is from a low-income family.
+Checking the estimated model coefficients, you confirm your suspicions: Armin has a relatively high propensity score because he was born to a young mum; Nina has a relatively high propensity score because she is from a low-income family.
 
 Are the two children really a good match?
 
 </div>
-
-### Coarsened Exact Matching  
-Coarsened Exact Matching (CEM) works differently than matches based on distance metrics. There are three steps:
-
-1. The $L$ variables, on which the matches are based, are grouped, or _coarsened_. For example age measured in years might be coarsened to five-year age groups.
-2. Individuals with the same value of the coarsened variables are grouped together in the same stratum.
-3. Control units in each stratum are weighted to equal the number of treated units. 
 
 
 ## Practical 2
@@ -967,6 +1120,21 @@ summary( )
 summary( )
 ```
 
+### Pause and think
+
+<div class="think">
+### What are the estimates telling you?
+Before moving on, make sure you match the estimates in the model output to the parameters of interest. 
+for each model, can you identify:
+
+* The baseline estimate of earnings for non-participants?
+* The estimated effect on earnings for participants?
+
+Which estimates are more precise and why?
+ 
+</div>
+
+
 ### Interpretation 
 * In the model based on the raw data (**mod0**), the average annual earnings are \$6984, and program participation _decreases_ annual earnings by \$635 on average.  
 * In the models based on the matched data, the estimated effect of program participation is positive---a more intuitive result
@@ -974,6 +1142,22 @@ summary( )
     * \$230 based on optimal matching with the Mahalanobis distance
     * \$415 based on coarsened exact matching   
 
+
+## Summary
+
+The key message from this chapter is that it is possible to identify estimates of causal effects from observational data, provided the trhee identifiability assumptions are met. Re call these three assumptions are 
+
+1. Positvity _it has to have been possible for every type of person to get the treatment_
+2. Exchangeability _the treated and untreated groups need to have the same background characteristics_
+3. Consistency _there is a single well-defined version of the treatment_
+
+Matching is a pre-processing step which aims to construct a dataset where the treated and control individuals are balanced in terms of background variables. This helps to strengthen the assumption of *Exchangeability*. 
+
+Matching based on a *propensity score* allows many variables to be incorporated into the matching process. The 'propensity' refers to the propensity to be treated, and is typically estimated using logistic regression with the treatment indicator as the outcome. 
+
+Applying propensity scores can improve the assumption of *positivity* by encouraging the analysts to examine individuals for common support and trimming observations that don't meet this criteria. 
+
+A *criticism* of propensity score matching is that balance is achieved on the _global_ propensity score, but ignores _local_ information on the individual covariates. 
 
 ## References
 

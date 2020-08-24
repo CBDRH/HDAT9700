@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Drawing pretty DAGs in R</title>
+    <meta charset="utf-8" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/hygge.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/ninjutsu.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Drawing pretty DAGs in R
+## With ggdag
+
+---
+
+
+
+
+
+
+
+
+
+count: false
+ 
+
+.left-panel-ggdag-user[
+
+```r
+*mycoords &lt;- list(
+*       x = c(x = 0, y = 1, a = 1, b = 0),
+*       y = c(x = 0, y = 1, a = 0, b = 1)
+*   )
+*dagify(y ~ x + a + b,
+*      x ~ a + b,
+*      exposure = "x",
+*      outcome = "y",
+*      coords = mycoords)
+```
+]
+ 
+.right-panel-ggdag-user[
+
+```
+[1] "dag {\na [pos=\"1.000,0.000\"]\nb [pos=\"0.000,1.000\"]\nx [exposure,pos=\"0.000,0.000\"]\ny [outcome,pos=\"1.000,1.000\"]\na -&gt; x\na -&gt; y\nb -&gt; x\nb -&gt; y\nx -&gt; y\n}\n"
+attr(,"class")
+[1] "dagitty"
+```
+]
+
+---
+count: false
+ 
+
+.left-panel-ggdag-user[
+
+```r
+mycoords &lt;- list(  
+        x = c(x = 0, y = 1, a = 1, b = 0),  
+        y = c(x = 0, y = 1, a = 0, b = 1)  
+    )  
+dagify(y ~ x + a + b,  
+       x ~ a + b,  
+       exposure = "x",  
+       outcome = "y",  
+       coords = mycoords) %&gt;%  
+* node_parents("x")
+```
+]
+ 
+.right-panel-ggdag-user[
+
+```
+# A DAG with 4 nodes and 5 edges
+#
+# Exposure: x
+# Outcome: y
+#
+# A tibble: 6 x 9
+  name      x     y direction to     xend  yend circular parent
+  &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;fct&gt;     &lt;chr&gt; &lt;int&gt; &lt;int&gt; &lt;lgl&gt;    &lt;fct&gt; 
+1 a         1     0 -&gt;        x         0     0 FALSE    parent
+2 a         1     0 -&gt;        y         1     1 FALSE    parent
+3 b         0     1 -&gt;        x         0     0 FALSE    parent
+4 b         0     1 -&gt;        y         1     1 FALSE    parent
+5 x         0     0 -&gt;        y         1     1 FALSE    child 
+6 y         1     1 &lt;NA&gt;      &lt;NA&gt;     NA    NA FALSE    &lt;NA&gt;  
+```
+]
+
+---
+count: false
+ 
+
+.left-panel-ggdag-user[
+
+```r
+mycoords &lt;- list(  
+        x = c(x = 0, y = 1, a = 1, b = 0),  
+        y = c(x = 0, y = 1, a = 0, b = 1)  
+    )  
+dagify(y ~ x + a + b,  
+       x ~ a + b,  
+       exposure = "x",  
+       outcome = "y",  
+       coords = mycoords) %&gt;%  
+  node_parents("x") %&gt;%  
+* ggplot()
+```
+]
+ 
+.right-panel-ggdag-user[
+&lt;img src="flipbook-ggdag_files/figure-html/ggdag_user_3_output-1.png" width="576" /&gt;
+]
+
+---
+count: false
+ 
+
+.left-panel-ggdag-user[
+
+```r
+mycoords &lt;- list(  
+        x = c(x = 0, y = 1, a = 1, b = 0),  
+        y = c(x = 0, y = 1, a = 0, b = 1)  
+    )  
+dagify(y ~ x + a + b,  
+       x ~ a + b,  
+       exposure = "x",  
+       outcome = "y",  
+       coords = mycoords) %&gt;%  
+  node_parents("x") %&gt;%  
+  ggplot() +  
+* aes(x = x) +
+* aes(y = y)
+```
+]
+ 
+.right-panel-ggdag-user[
+&lt;img src="flipbook-ggdag_files/figure-html/ggdag_user_4_output-1.png" width="576" /&gt;
+]
+
+---
+count: false
+ 
+
+.left-panel-ggdag-user[
+
+```r
+mycoords &lt;- list(  
+        x = c(x = 0, y = 1, a = 1, b = 0),  
+        y = c(x = 0, y = 1, a = 0, b = 1)  
+    )  
+dagify(y ~ x + a + b,  
+       x ~ a + b,  
+       exposure = "x",  
+       outcome = "y",  
+       coords = mycoords) %&gt;%  
+  node_parents("x") %&gt;%  
+  ggplot() +  
+  aes(x = x) +  
+  aes(y = y) +  
+* geom_dag_point()
+```
+]
+ 
+.right-panel-ggdag-user[
+&lt;img src="flipbook-ggdag_files/figure-html/ggdag_user_5_output-1.png" width="576" /&gt;
+]
+
+---
+count: false
+ 
+
+.left-panel-ggdag-user[
+
+```r
+mycoords &lt;- list(  
+        x = c(x = 0, y = 1, a = 1, b = 0),  
+        y = c(x = 0, y = 1, a = 0, b = 1)  
+    )  
+dagify(y ~ x + a + b,  
+       x ~ a + b,  
+       exposure = "x",  
+       outcome = "y",  
+       coords = mycoords) %&gt;%  
+  node_parents("x") %&gt;%  
+  ggplot() +  
+  aes(x = x) +  
+  aes(y = y) +  
+  geom_dag_point() +  
+* geom_dag_edges() +
+* aes(xend = xend) +
+* aes(yend = yend)
+```
+]
+ 
+.right-panel-ggdag-user[
+&lt;img src="flipbook-ggdag_files/figure-html/ggdag_user_6_output-1.png" width="576" /&gt;
+]
+
+---
+count: false
+ 
+
+.left-panel-ggdag-user[
+
+```r
+mycoords &lt;- list(  
+        x = c(x = 0, y = 1, a = 1, b = 0),  
+        y = c(x = 0, y = 1, a = 0, b = 1)  
+    )  
+dagify(y ~ x + a + b,  
+       x ~ a + b,  
+       exposure = "x",  
+       outcome = "y",  
+       coords = mycoords) %&gt;%  
+  node_parents("x") %&gt;%  
+  ggplot() +  
+  aes(x = x) +  
+  aes(y = y) +  
+  geom_dag_point() +  
+  geom_dag_edges() +  
+  aes(xend = xend) +  
+  aes(yend = yend) +  
+* geom_dag_text(col = "white", size = 6)
+```
+]
+ 
+.right-panel-ggdag-user[
+&lt;img src="flipbook-ggdag_files/figure-html/ggdag_user_7_output-1.png" width="576" /&gt;
+]
+
+---
+count: false
+ 
+
+.left-panel-ggdag-user[
+
+```r
+mycoords &lt;- list(  
+        x = c(x = 0, y = 1, a = 1, b = 0),  
+        y = c(x = 0, y = 1, a = 0, b = 1)  
+    )  
+dagify(y ~ x + a + b,  
+       x ~ a + b,  
+       exposure = "x",  
+       outcome = "y",  
+       coords = mycoords) %&gt;%  
+  node_parents("x") %&gt;%  
+  ggplot() +  
+  aes(x = x) +  
+  aes(y = y) +  
+  geom_dag_point() +  
+  geom_dag_edges() +  
+  aes(xend = xend) +  
+  aes(yend = yend) +  
+  geom_dag_text(col = "white", size = 6) +  
+* geom_dag_edges_link(arrow = grid::arrow())
+```
+]
+ 
+.right-panel-ggdag-user[
+&lt;img src="flipbook-ggdag_files/figure-html/ggdag_user_8_output-1.png" width="576" /&gt;
+]
+
+---
+count: false
+ 
+
+.left-panel-ggdag-user[
+
+```r
+mycoords &lt;- list(  
+        x = c(x = 0, y = 1, a = 1, b = 0),  
+        y = c(x = 0, y = 1, a = 0, b = 1)  
+    )  
+dagify(y ~ x + a + b,  
+       x ~ a + b,  
+       exposure = "x",  
+       outcome = "y",  
+       coords = mycoords) %&gt;%  
+  node_parents("x") %&gt;%  
+  ggplot() +  
+  aes(x = x) +  
+  aes(y = y) +  
+  geom_dag_point() +  
+  geom_dag_edges() +  
+  aes(xend = xend) +  
+  aes(yend = yend) +  
+  geom_dag_text(col = "white", size = 6) +  
+  geom_dag_edges_link(arrow = grid::arrow()) +  
+* aes(color = parent)
+```
+]
+ 
+.right-panel-ggdag-user[
+&lt;img src="flipbook-ggdag_files/figure-html/ggdag_user_9_output-1.png" width="576" /&gt;
+]
+
+---
+count: false
+ 
+
+.left-panel-ggdag-user[
+
+```r
+mycoords &lt;- list(  
+        x = c(x = 0, y = 1, a = 1, b = 0),  
+        y = c(x = 0, y = 1, a = 0, b = 1)  
+    )  
+dagify(y ~ x + a + b,  
+       x ~ a + b,  
+       exposure = "x",  
+       outcome = "y",  
+       coords = mycoords) %&gt;%  
+  node_parents("x") %&gt;%  
+  ggplot() +  
+  aes(x = x) +  
+  aes(y = y) +  
+  geom_dag_point() +  
+  geom_dag_edges() +  
+  aes(xend = xend) +  
+  aes(yend = yend) +  
+  geom_dag_text(col = "white", size = 6) +  
+  geom_dag_edges_link(arrow = grid::arrow()) +  
+  aes(color = parent) +  
+* theme_dag()
+```
+]
+ 
+.right-panel-ggdag-user[
+&lt;img src="flipbook-ggdag_files/figure-html/ggdag_user_10_output-1.png" width="576" /&gt;
+]
+
+---
+count: false
+ 
+
+.left-panel-ggdag-user[
+
+```r
+mycoords &lt;- list(  
+        x = c(x = 0, y = 1, a = 1, b = 0),  
+        y = c(x = 0, y = 1, a = 0, b = 1)  
+    )  
+dagify(y ~ x + a + b,  
+       x ~ a + b,  
+       exposure = "x",  
+       outcome = "y",  
+       coords = mycoords) %&gt;%  
+  node_parents("x") %&gt;%  
+  ggplot() +  
+  aes(x = x) +  
+  aes(y = y) +  
+  geom_dag_point() +  
+  geom_dag_edges() +  
+  aes(xend = xend) +  
+  aes(yend = yend) +  
+  geom_dag_text(col = "white", size = 6) +  
+  geom_dag_edges_link(arrow = grid::arrow()) +  
+  aes(color = parent) +  
+  theme_dag() +  
+* scale_color_hue(
+*   breaks  = c("parent", "child")
+*   )
+```
+]
+ 
+.right-panel-ggdag-user[
+&lt;img src="flipbook-ggdag_files/figure-html/ggdag_user_11_output-1.png" width="576" /&gt;
+]
+
+&lt;style&gt;
+.left-panel-ggdag-user {
+  color: #777;
+  width: 38.6138613861386%;
+  height: 92%;
+  float: left;
+  font-size: 80%
+}
+.right-panel-ggdag-user {
+  width: 59.4059405940594%;
+  float: right;
+  padding-left: 1%;
+  font-size: 80%
+}
+.middle-panel-ggdag-user {
+  width: 0%;
+  float: left;
+  padding-left: 1%;
+  font-size: 80%
+}
+&lt;/style&gt;
+
+
+
+
+&lt;style type="text/css"&gt;
+.remark-code{line-height: 1.5; font-size: 100%}
+
+@media print {
+  .has-continuation {
+    display: block;
+  }
+}
+&lt;/style&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"ratio": "14:8",
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
