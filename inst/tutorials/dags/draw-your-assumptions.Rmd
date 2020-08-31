@@ -27,184 +27,15 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```
 
-
-## Useful links
-http://www.dagitty.net/learn/graphs/table2-fallacy.html
-http://www.dagitty.net/learn/graphs/roles.html
-
-Game on terminology
-http://www.dagitty.net/learn/graphs/index.html
-
-## Notes from the Harvardx course
-
-"This introductory course to causal diagrams teaches you how to translate expert knowledge into a causal diagrams. By the end of the course you will be able:
-
-To draw causal diagrams under different assumptions
-To identify common biases using causal diagrams
-To guide data analysis using causal diagrams"
-
-
-Babies example
-- Babies born to mothers who smoked are more likely to die
-- BUT among low weight babies, those whose mothers smoked are less likely to die
-
-- "Use simple pictures tho think about causal questions
-- Ok answer comes later!
-
-
-Correlation versus causation
-Counderfactuals
-"Quantifying casual effects requires the comparison of the same or similar treatments"
-"there may be association without causation"
-"casusal diagrams represent association and causation simultaneously"
-
-
-The first lesson of the course introduces you to causal diagrams. You will learn the anatomy of a DAG and the rules of D-separation.
-
-Learning Objectives
-After this lesson you should be able to:
-
-1. Identify the features of a causal DAG
-
-2. Understand the rules of d-separation
-
-3. Construct a causal DAG that reflects assumptions of how treatments, outcomes, and other factors relate to one another
-
-4. Distinguish between different structural sources of bias
-
-
-Estrogen and uterine cancer problem
-- Assocaition between estrogen and endometrial cancer observed
-- Estrogen use causes uterine bleeding so women went to Drs to investigate, leading to more diagnoses of otherwise unobserved cancers
-- 'Referred to as ascertainment bias"
-- What about restricting to women who bleed?
-
-
- 
- 
-Causal diagrams
-- Nodes connected by arrows (or directed edges)
-- It is acyclic (can't go in cycles)
-- Time goes from left to right; the future can't affect the past
-- Causal Markov condition (all common causes included)
-- A square box representes conditioning
-- DAG for RCT rather than DAG for retrospective cohort study
-- DAGs represent causal graphs and statistical models
-- "Casusal graphs do not need to include mediators to estimate the effect of A on Y"
-
-
-Example: smoking, yellow fingers and lung cancer
-- A shared common cause between A and Y leads us to expect an association between A and Y, even if A does not cause Y
-- e.g. there will be an assocation between yellow fingers and cancer, but no yellow fingers does not cause cancer
-- The flow of association between A and Y is blocked when we condition on a common cause L. 
-
-Colliders
-- Common effects
-- Common effects of A and Y will not induce an association
-- Conditioning on a common effect of A and Y will induce an asscoiation between A and Y
-- This is known as selection bias
-- Similarly, conditioning on something affected by a collider will induce an association between A and Y
-
-
-
-Structural sources of association
-- cause and effect
-- common causes
-- conditioning on common effects
-Other important source of association, but not structural
-- Chance
-
-Causal graph theory
-- Descendents (child/grandchild/parent/grandparent)
-
-
-
-D (direction) seperation Rules
-
-"Two variables are D-seperated if all paths between them have been blocked
-
-1. "If there are no variables being conditioned on,
-a path is blocked if and only if two arrowheads on the path
-collide at some variable on the path."
-
-2. "Any path that contains a noncollider that has been conditioned on is blocked"
-
-3. "A collider that has been conditioned on does not block a path."
-
-4. "A collider that has a descendant that has been conditioned on
-does not block a path."
-
-
-
-Faithfulness
-- If the effect of A and Y is opposite in the population it could be the case that although A causes Y, there is no association between A and Y
-- "Then we say that the joint distribution of the data is not faithful to the casual DAG"
-
-
-
-Confounding
-Common causes of exposure and outcome result in confounding bias
-
-Confounding is the bias
-Counfounders are variables used to block the backdoor path(s)
-
-Backdoor path 
-The backdoor path between a hypotesised cause (A) and outcome (Y) is a path that connects A and Y without using any of the arrows that leave from Y. 
-
-Backdoor path criterion
-We can estimate the causal effect of A on Y if we can block all the backdoor path
-
-"To deal with confounding we need to use expert knowledge"
-
-M-bias
-
-Sometimes we won't have the observed confounder so we can use surrogate or proxy confounders
-
-Ways to control for confounding
-- These approachesa ssume you can measure all confounders L (not all approaches assume this e.g.)
-- stratification
-- multivariate regression
-- matching
-- matching with propensity score
- - inverse probability weighting
- - standardisation (g-formula)
- - g-estimation
-
-
-"Causal DAGs allow us to identify inconsistencies between our beliefs and our actions"
-
-
-
-Limitations
- - can't show interactions
- - can't identify whether causes only apply to some people
- - don't convey numerical information
- 
- 
-## Selection bias
- 
- Smoking and dementia example
- 
- - For selection to call bias it needs to be realted tot he treatment and the outcome
- 
- Example of hormone therapy and cancer:
- - Case control studies, by design, select based on the outcome, e.g. cancer patient more likely to be selected
- - If there is an association between hormone therapy and selection then a bias will be introduced.
- - In this example, controls were selected from women in hospital for hip-fracture (can't run away from interviewer hahaha)
- - But hormone therapy reduces the risk of hip-fracture, therefore there was an arrow from hormone therapy to hip fracture, and as a result an open pathway between hormone therapy and selection. 
- - Controls were less likely to have taken hormone therapy. Therefore, even if there was no association between hip fracture and cancer, the selection would make it seem as if there is. 
- 
- 
-### Follow up studies
- - Eligibility
- - Loss to folow up
- 
- - For example of treatment for AIDS - if sicker individuals were more likely to drop out of the study, and sicker individuals were more likely to drop out of the study, this could inuduce a bias for the effect of treatment on AIDS. 
- 
 ## Overview  
-Welcome to HDAT9700 Statistical Modelling II - Causal inference and DAGs! 
+Welcome to HDAT9700 Statistical Modelling II - Directed Acyclic Graphs (DAGs)! 
 
-In this chapter you will start to think about how different models are used based on what sort of questions they are answering. 
+In this chapter you will learn how to represent assumptions about casual mechansims using a special type of graph: a Directed Acyclic Graph, or DAG. DAGs are useful because they allow us to formalise our assumptions and can help inform variable selection for causal models. 
+
+In this chapter you will learn how to:
+
+* Represent common causal structures using a DAG 
+* Identify adjustment variables using a DAG
 
 ***
 
@@ -216,15 +47,15 @@ The tweetorial focuses on **"the importance of being clear about your question &
 
 Ellie's tweetorial was prompted by a disparaging tweet about [this](https://www.nature.com/articles/bjc2017146.pdf) study, which explores the relationship between frozen shoulder and the risk of cancer. The disparaging tweet criticised the study for failing to adjust for confounding. In her tweetorial, Ellie explains that this was a descriptive study, not one addressing a causal question and that in fact adjusting for confounding may well have led to the wrong answer to the question at hand.
 
-This pre-reading should help you understand that we always need to be clear about the purpose of our models, as our purpose dictates how we specify the model. 
+This pre-reading should help you understand that we always need to be clear about the purpose of our models, as our purpose dictates how we specify the model and what variables we should control for. 
 
 
-### Core reading:
+### Core readings:
 
 * [Miguel A. Hernán, John Hsu & Brian Healy (2019) A Second Chance to Get
 Causal Inference Right: A Classification of Data Science Tasks, _Chance_, 32(1), 42-49](https://doi.org/10.1080/09332480.2019.1579578)
 
-* A paper on DAGs
+* [Etminan M, Collins GS, Mansournia MA. Using Causal Diagrams to Improve the Design and Interpretation of Medical Research. Chest. 2020 Jul 1;158(1):S21-8.](https://doi.org/10.1016/j.chest.2020.03.011)
 
 ### Additional resources: 
 
@@ -232,6 +63,8 @@ Causal Inference Right: A Classification of Data Science Tasks, _Chance_, 32(1),
 Also, if you haven't already, check out the related [video](https://www.youtube.com/watch?time_continue=1&v=vWH_HNfQVRI&vq=large), linked at the end of the last tutorial.
 
 * [dagitty.net](http://www.dagitty.net/learn/): A great website explaing DAGs and related topics, with built-in applets to test your knowledge
+
+* An excellent [YouTube video series on Causality and DAGs](https://www.youtube.com/playlist?list=PLcTBLulJV_AKmUTH-nUsxxFyRQoWnUzxU) presented by Assistant Professor Nick Huntington-Klein from Seattle University. This is a series of 14 videos that starts from the very basics of causal thinking with DAGs.
 
 * The Causal Inference Podcast, hosted by Ellie Murray and Lucy D'Agostino McGowan. Check out the first episode: [Talking target trials with Miguel Hernán](https://casualinfer.libsyn.com/casual-inference-talking-target-trials-with-miguel-hernan-episode-01)
 
@@ -256,22 +89,12 @@ The table below (from [Hernán et al 2019](https://doi.org/10.1080/09332480.2019
 
 
 ```{r quiz1, echo=FALSE}
-quiz(caption = "Quiz: Variation across disciplines ",
-  question("**Prediction** has traditionally been associated with which of the following disciplines? (Select all that apply)",
-    answer("Finance"),
-    answer("Psychology"),
-    answer("Bioinformatics", correct = TRUE),
-    answer("Education"),
-    answer("Environmental science"),
-    answer("Natural language processing"),
-    answer("Microeconomics"),   
-    incorrect = "Prediction is the domain of finance, bioinfomatics and natural language processing. The fields of psychology, education, environmental sciences and microeconnomics are primarily concerned with questions of a causal nature."
-  ),
+quiz(caption = "Quiz",
   question("Which modeling tasks are relevant to Health Data Science (Select all that apply)",
     answer("Description", correct = TRUE),
     answer("Prediction", correct = TRUE),
     answer("Causal inference", correct = TRUE),
-    incorrect = "All three tasks are relevant to a career in Health Data Science. Machine Learning I (HDAT9500) is primarily concerned with prediction. Topics in Statistical Modelling II (HDAT 9700) touch on description, prediction and causal inference. The important thing is choosing the most relevant approach for the research question."
+    incorrect = "All three tasks are relevant to a career in Health Data Science. Machine Learning I (HDAT9500) is primarily concerned with prediction. Topics in Statistical Modelling II (HDAT9700) touch on description, prediction and causal inference. The important thing is choosing the most relevant approach for the research question."
   )
 )
 ```
@@ -529,10 +352,10 @@ Try testing yourself on DAG terminology using this applet on [dagitty.net](http:
 
 ## Confounding variables
 
-### Recall the definition
+### Definition
 Confounding arises when there is a variable **Z** that influences the exposure of interest **X** _and_ the outcome of interest **Y**. We say that the relationship between **X** and **Y** is _confounded_ and that **Z** is the _confounder_.
 
-Depending on the discipline, confounding is also referred to as a third variable or a lurking variable. 
+Depending on the discipline, a confounder is also referred to as a third variable or a lurking variable. 
 
 
 ### Example
@@ -557,19 +380,30 @@ ggdag_confounder_triangle(x="Maternal age", y="Birth weight", z="Socioeconomic s
 A mediating variable **M** is a variable that lies on the causal pathway between an exposure **X** and outcome **Y**.
 
 ### Example
-A researcher might hypothesise that quality of sleep is a mediating variable between exercise (exposure) and mood (outcome). 
+A researcher might hypothesise that quality of sleep is a mediating variable between exercise (exposure) and mood (outcome). We might assume that exercise will improve sleep quality, and a good night's sleep will in turn improve mood.
 
 ### How does this look in a DAG?
 
 ```{r}
-ggdag_mediation_triangle(x="Exercise", y="Mood", m="Sleep quality", 
+ggdag_mediation_triangle(x="Exercise", y="Mood", m="Sleep quality",
                           use_labels = "label",
                           label_col = "black") +
   geom_dag_edges_link(arrow = grid::arrow(type = 'closed')) + 
   theme_dag()
 ```
 
-*** 
+Here there is no connecting arrow going from exercise to mood. Our DAG reflects the assumption that all of the effect of exercise is mediated through quality of sleep. This would be an indirect effect of exercise on mood. However, we might also hypothesis a direct effect, perhaps caused by the release of endorphins. In that case we would have both an indirect path ($\text{Exercise} \rightarrow \text{Sleep quality} \rightarrow \text{Mood}$) and a direct path ($\text{Exercise} \rightarrow \text{Mood}$)
+
+```{r}
+ggdag_mediation_triangle(x="Exercise", y="Mood", m="Sleep quality",
+                         x_y_associated = TRUE,
+                          use_labels = "label",
+                          label_col = "black") +
+  geom_dag_edges_link(arrow = grid::arrow(type = 'closed')) + 
+  theme_dag()
+```
+
+***
 
 <div class="aside">
 
@@ -585,7 +419,7 @@ The table below provides a quick summary of these three concepts. If you come ac
 tab <- data.frame(
   type = c("Effect modification",
             "Interaction",
-            "Modification"),
+            "Mediation"),
   
   aim = c("Separate exposure effects according to another variable",
           "Evaluate individual and joint effects of exposures",
@@ -607,7 +441,6 @@ tab %>%
 
 
 ## Collider variables
-
 ### Definition
 A collider is a common effect of two variables. 
 
@@ -617,6 +450,7 @@ Suppose a researcher is interested in whether respiratory syncytial virus infect
 ### How does this look in a DAG?
 ```{r}
 ggdag_collider_triangle(x="RSV infection", y="Asthma", m="ED admission", 
+                          x_y_associated = TRUE,
                           use_labels = "label",
                           label_col = "black") +
   geom_dag_edges_link(arrow = grid::arrow(type = 'closed')) + 
@@ -643,9 +477,11 @@ Now that you know how to represent and recognise different types of relationship
 This definition introduces two new concepts that we also have to define: _backdoor_ paths, and what makes an _open_ path.
 
 #### 1. Backdoor paths
-**Definition:** A backdoor path between X and Y is a path that leaves through a parent of X and points to Y.
+**Definition:** A backdoor path between X and Y is a path that leaves through a parent of X and ultimately points to Y.
 
-For example, the path **icecream sales** $\leftarrow$ **sunshine** $\rightarrow$ **sunburn** is a backdoor path between icecream sales and sunburn.
+An easy way to identify a backdoor path is to start with any arrows **pointing into the exposure**, and see if you can trace a path from there to the outcome. 
+
+For example, the path $\text{icecream sales} \leftarrow \text{sunshine} \rightarrow \text{sunburn}$ is a backdoor path between icecream sales and sunburn.
 ```{r}
 ggdag_confounder_triangle(x="icecream sales", y="sunburn", z="sunshine", 
                           use_labels = "label",
@@ -655,10 +491,26 @@ ggdag_confounder_triangle(x="icecream sales", y="sunburn", z="sunshine",
 
 You will recognise this as an example of confounding. In this case, the presence of sunshine induces a correlation or _dependence_ between icecream and sunburn. The "d" in d-connected stands for **dependence**! 
 
+#### 1b. Frontdoor paths
+While we are at it, lets also define frontdoor paths. These are any paths that start with an arrow **pointing from the exposure** and ending at the outcome. The causal effect of interest $\text{X} \rightarrow \text{Y}$  is one frontdoor path, but if mediators are present there will be more than one front door path. In the mediation example you saw earlier, both pathways are frontdoor paths because they start with an arrow pointing from the exposure (Exercise) and end up at the outcome (Mood).
+
+```{r}
+ggdag_mediation_triangle(x="Exercise", y="Mood", m="Sleep quality",
+                         x_y_associated = TRUE,
+                          use_labels = "label",
+                          label_col = "black") +
+  geom_dag_edges_link(arrow = grid::arrow(type = 'closed')) + 
+  theme_dag()
+```
+
+Both paths are front door paths: 
+* $\text{Exercise} \rightarrow \text{Sleep quality} \rightarrow \text{Mood}$) 
+* ($\text{Exercise} \rightarrow \text{Mood}$)
+
 
 #### 2. Open paths
 
-A path between two nodes X and Y is open if the path carries information or dependence between X and Y. We can open or close a path between two nodes by controlling for an intermediate variables. In most contexts, conditioning will mean stratifying by a variable or adding the variable to a regression model.
+A path between two nodes X and Y is open if the path carries information or dependence between X and Y. We can open or close a path between two nodes by controlling for intermediate variables. In most contexts, conditioning will mean stratifying by a variable or adding the variable to a regression model.
 
 Importantly, however, whether or not controlling for an intermediate variable Z opens the the pathway or closes the pathway depends on the role of Z. The table below outlines what happens in three different scenarios.
 
@@ -701,47 +553,377 @@ Note that conditioning on a mediator or a confounder will CLOSE the path between
 
 Having read through the section above, you should be comfortable with the idea of: 
 
-1. A backdoor path 
+1. A backdoor path (and a front door path)
 2. An open or closed path
 
-Now, recall the definition of d-separation: 
+To estimate the TOTAL effect of X on Y you need to control for a set of variables that can close any backdoor paths, but do not close the frontdoor paths.
 
-> Two variables in a DAG are said to be d-separated if there are no open backdoor paths between them 
+To estimate the DIRECT effect of X on Y you need to control for a set of variables that close any backdoor paths and close any frontdoor paths (except the path $\text{X} \rightarrow \text{Y}$). 
 
 
-<div class="under-the-bonnet">
+## Worked example
 
-### Apply the concept of d-separation to inform variable selection in causal models
+In this section we will use the principle of d-separation and backdoor paths to identify a minimal set of adjustment variables that will aloow us to estimate the effect of Exercise on Mood based on the following DAG. 
 
-In order to estimate the causal effect of an exposure X on an outcome Y, we have to make sure that X and Y are d-separated. That is, there can be no open backdoor paths between X and Y. 
+```{r}
+coords <- list(
+  x = c(a = -1, b = 5, c = 2, d = 1, e = 2.5, f = 3, g = 2),
+  y = c(a = 2, b = 2, c = 1, d = 3, e = 2.3, f = 3, g = 0)
+)
+
+dag7 <- dagify(a~d,
+               a~f,
+               b~a,
+               g~a,
+               b~c,
+               b~e,
+               b~f,
+               g~b,
+               c~a,
+               e~d,
+               labels = c(a="exercise",
+                          b="mood",
+                          c="sleep quality",
+                          d="club member",
+                          e="social interaction",
+                          f="season",
+                          g="blood pressure"),
+               exposure = "a",
+               outcome = "b",
+               coords = coords) 
+ggdag_status(dag7, use_labels = "label", text = FALSE) + 
+  theme_dag()
+```
+
+This DAG captures several plausible assumptions:
+
+* Exercise has a direct effect on mood but also an indirect effect via sleep quality 
+* Exercise also has an effect on blood pressure 
+* Being a club member has an effect on exercise 
+* The season also has an effect on exercise (perhaps people exercise less during cold weather) 
+* Being a club member has an effect on social interactions 
+* Social interactions have an effect on mood (hopefully a positive one!) 
+* Season has an effect on mood (sunlight can have a positive effect on mood)
+* Mood has an effect on blood pressure (perhaps being calmer and happier decreases stress-induced high blood pressure)
+
+### Identifying backdoor paths
+In order to estimate the **total** effect of exercise on mood we need to close all the available backdoor paths. If we are interested in the **direct** effect of mood on exercise we additionally need to close any frontdoor paths, other than the main causal pathway $\text{Exercise} \rightarrow \text{Mood}$. So let's start by identifying all of the backdoor and frontdoor paths between Exercise and Mood.
+
+#### Backdoor paths 
+To identify backdoor paths, start with all the **arrows pointing into the exposure** exercise, and trace all paths that lead from there back to the outcome Mood. There are two arrows pointing into Exercise: one from Club Member and one from Season. The corresponding backdoor paths are: 
+
+* $\text{Exercise} \leftarrow \text{Club member} \rightarrow \text{Social interactions} \rightarrow \text{Mood}$ 
+* $\text{Exercise} \leftarrow \text{Season} \rightarrow \text{Mood}$ 
+
+
+#### Frontdoor paths 
+To identify frontdoor paths, start with all the **arrows pointing away from the exposure** exercise, and trace all paths that lead from there to the outcome Mood. There are three arrows pointing from Exercise: one directly to Mood, one to Sleep quality and one to Blood pressure. The corresponding frontdoor paths are: 
+
+* $\text{Exercise} \rightarrow \text{Mood}$ 
+* $\text{Exercise} \rightarrow \text{Sleep quality} \rightarrow \text{Mood}$ 
+* $\text{Exercise} \rightarrow \text{Blood pressure} \leftarrow \text{Mood}$ 
+
+
+### Identifying adjustment sets
+
+#### Total effect 
+To estimate the total effect of Exercise on Mood we must close all of the backdoor paths. To close a path it is sufficient to control for any single variable along that path. 
+
+* To close the path $\text{Exercise} \leftarrow \text{Club member} \rightarrow \text{Social interactions} \rightarrow \text{Mood}$ we could control for Club membership OR we could control for number of social interactions. Note that controlling for either variable is sufficient to close the path. We could also control for both variables; this isn't necessary to close the path, but it won't do any harm. 
+* To close the path $\text{Exercise} \leftarrow \text{Season} \rightarrow \text{Mood}$ we would need to control for Season.
+
+Thus, there are two possible minimal adjustment sets to identify the total effect of Exercise on Mood: 
+
+1. Club membership and Season 
+
+```{r}
+dag7 %>% adjust_for(c('d', 'f')) %>% ggdag_adjust(use_labels = "label", text = FALSE) + theme_dag()
+```
+
+2. Number of Social interactions and Season 
+
+```{r}
+dag7 %>% adjust_for(c('e', 'f')) %>% ggdag_adjust(use_labels = "label", text = FALSE) + theme_dag()
+```
+
+
+#### Direct effect 
+To estimate the direct effect of Exercise on Food we must also consider alternative frontdoor paths other than the path of interest. 
+
+We identified three front door paths. The first was the path * $\text{Exercise} \rightarrow \text{Mood}$. this is the causal path of interst so we don't have to do anything here (obviously we will include our exposure and outcome in the model).
+
+The second frontdoor path was $\text{Exercise} \rightarrow \text{Sleep quality} \rightarrow \text{Mood}$. This path implies that part of the effect of exercise is mediated through sleep quality. In order to estiamte the direct effect of execise we must close this pathway, i.e. control for sleep quality in our analysis.
+
+The third frontdoor path is $\text{Exercise} \rightarrow \text{Blood pressure} \leftarrow \text{Mood}$. Notice that an arrow points from Exercise to Blood pressure and an arrow points from Mood to Blood pressure. So the node Blood pressure is a collider on the pathway $\text{Exercise} \rightarrow \text{Blood pressure} \leftarrow \text{Mood}$. Recall that controlling for a collider _opens_ the pathway, so in this case we do not have to for Blood pressure, the pathway is already closed!
+
+Thus, there are two possible minimal adjustment sets to identify the direct effect of Exercise on Mood: 
+
+1. Club membership, Season and Sleep quality
+
+```{r}
+dag7 %>% adjust_for(c('c', 'd', 'f')) %>% ggdag_adjust(use_labels = "label", text = FALSE, collider_lines = FALSE) + theme_dag()
+```
+
+2. Number of Social interactions, Season and Sleep quality
+
+```{r}
+dag7 %>% adjust_for(c('c', 'e', 'f')) %>% ggdag_adjust(use_labels = "label", text = FALSE, collider_lines = FALSE) + theme_dag()
+```
+
+*** 
+
+Now try the exercise to practice this yourself!
+
+
+## Exercise
+
+<div class="shiny">
+
+### Explore this further
+Explore the concept of d-separation and backdoor paths adjustment further using this [interactive Shiny app](https://cbdrh.shinyapps.io/backdoor-paths/). The app can also be launched by entering `hdat9700tutorials::run('backdoor-paths')` at the console. 
+
+This app will generate a random DAG and you must identify which variables to control for in order to estimate causal effect of the exposure on the outcome. You can vary the DAG complexity, and choose to focus on the total effect or the direct effect (you should practice both modes. 
 
 </div>
 
+## Selection Biases 
+
+Many different types of biases arise from mechanisms that result in some individuals being recorded in our data and available for analysis, while data other individuals is unavailable. These biases are referred to as Selection Biases.
+
+In this section we will take a closer look at one type of selection bias - nonresponse bias - and see how this can be represented as a type of collider bias. 
+
+### Survey nonresponse bias
+
+Suppose a researcher is interested in estimating the effect of wearing a face mask (x) on the risk on contracting COVID-19 (y) using data from a random-digit-dialling telephone survey. Survey respondents were asked whether they had been wearing a face mask in public during the last month and if they had tested positive for the coronavirus. Of course, there are numerous factors that we would need to include in our DAG to address this research question, including the number and type of contacts, individual characteristics like age, sex and smoking status, and the quality and correct use of masks. For the this example, we will zoom in on one aspect: survey participation.
+
+There is a large literature documenting the many ways that survey respondents (those who agreed to participate in a survey) differ from survey nonrespondents (those who decline to participate or can't even be contacted). Like any survey we can assume this telephone survey suffered from a degree of nonresponse. In this context, we could imagine that survey respondents are more likely to wear masks, a correlation arising as a result of a latent variable: compliant personality type. Compliant people may be more likely to wear masks and more likely to agree to a survey request, resulting in an association (although not a causal relationship) between mask wearing and survey participation. 
+
+We can also imagine that individuals with a recent coronavirus diagnosis may be more likely to participated in a telephone COVID-19 survey, perhaps because they have a personal interest in the topic, or they are easier to contact because they are self-isolating at home.
+
+These assumptions about the key exposure, outcome and participation status could be represented with the DAG below.
+
+```{r}
+
+coords <- list(
+  x = c(x = 1, y = 3, z = 0, m = 1),
+  y = c(x = 0.7, y = 0.7, z = .5, m = 0)
+)
+
+dag6 <- dagify( m ~ y, y ~ x, x ~ z, m ~ z,
+               exposure = 'x',
+               outcome = 'y',
+               latent = 'z',
+                labels = c(x="Mask",
+                            y="COVID-19",
+                            z="Compliant",
+                            m="Participation"),
+                coords = coords) %>% 
+  adjust_for('m')
+
+ggdag(dag6, use_labels = "label", collider_lines = FALSE) + 
+  theme_dag() 
+
+```
+
+When we estimated the effect of mask wearing on COVID-19 using data from respondents only, we are effectively controlling for response status. To see this, consider the  hypothetical scenario where data is available for respondents and nonrespondents alike. In this case, stratifying on response status and performing the analysis among survey respondents only is the same as only having data for survey respondents in the first place. 
+
+Looking at the DAG above, it should be clear that survey participation (m) is a collider on the path $z \rightarrow m \leftarrow y$. And what happens when we condition on a collider? As you have learned in the section on Collider Variables, controlling for response status will **open** the pathway $z \rightarrow m \leftarrow y$. In addition, assuming compliant personality type is a latent, unobserved variable, we will be unable to close the pathway $ x \leftarrow z \rightarrow m $.  Thus there will be an open backdoor pathway between the exposure (x) and the outcome (y): $x \leftarrow z \rightarrow m \leftarrow y$.
+
+Under this set of assumptions, our exposure and outcome would not be d-separated and our estimated causal effect of mask-wearing on the risk of contracting COVID-19 would likely be biased. 
 
 
 
+```{r}
 
-## Quiz
+coords <- list(
+  x = c(x = 1, y = 3, z = 0, m = 1),
+  y = c(x = 0.7, y = 0.7, z = .5, m = 0)
+)
 
-## Selection Bias 
+dag6 <- dagify( m ~ y, y ~ x, x ~ z, m ~ z,
+               exposure = 'x',
+               outcome = 'y',
+               latent = 'z',
+                labels = c(x="Mask",
+                            y="COVID-19",
+                            z="Compliant",
+                            m="Participation"),
+                coords = coords) %>% 
+  adjust_for('m')
 
-## Quiz
+ggdag_adjust(dag6, use_labels = "label", collider_lines = FALSE) + 
+  theme_dag()
+
+```
 
 ## M-Bias
-Tweetorial from Dr Ellie Murray ([@EpiEllie](twitter.com/EpiEllie)) focuses on **"applying conclusions about causation to results obtained via methods designed only for finding correlations"**. This example shows a real-world example of M-bias in play, which erroneously led some to conclude that being a current smoker was protective of COVID-19 hospital deaths. Find it [here](https://twitter.com/EpiEllie/status/1258607277357006849)
+
+M-bias is a common structure of bias that arises when collider bias is transmitted between ancestors of the exposure and outcome. When presented as a DAG, this structure results in an M shape as shown:
+
+```{r}
+ggdag_m_bias() + theme_dag()
+```
+
+It should be clear by now that adjusting for m would open a backdoor path between a and y in this DAG, as below:
+
+```{r}
+m_bias() %>% adjust_for('m') %>% ggdag_adjust() + theme_dag()
+```
+
+M-bias emphasises a key point of this lecture: just because a variable is available and correlated with the exposure and outcome, doesn't necessarily mean we should adjust for that variable in a causal model. This is still true **even for variables that are "pre-treatment" variables**, as is the case in M-bias.
+
+### Example 
+
+Below is a plausible example of M-bias presented by (Liu et al, 2020)[https://doi.org/10.1093/aje/kws165] where the exposure us SSRI use (SSRI = selective serotonin reuptake inhibitor, a common antidepressant).
+
+```{r}
+ggdag_m_bias(x="SSRI Use", 
+             y = "Lung cancer",
+             a = "Depression",
+             b = "Ever smoker",
+             m = "Coronary artery disease",
+                          use_labels = "label",
+                          label_col = "black") +
+                          theme_dag()
+```
+
+If this DAG were a reasonable representation of the data generation mechanism, coronary artery disease would be associated with SSRI Use and Lung cancer in an observational dataset. However, adjusting for coronary artery disease would suggest an apparent effect of SSRI use on Lung cancer, even if one didn't exist.
+
+```{r}
+
+m_bias(x="SSRI Use", 
+             y = "Lung cancer",
+             a = "Depression",
+             b = "Ever smoker",
+             m = "Coronary artery disease") %>% 
+             adjust_for('m') %>% 
+             ggdag_adjust(use_labels = "label",
+                          label_col = "black") +
+                          theme_dag()
+```
 
 ## Exercise
-Draw DAG consistent with two different hypotheses and estimate the corresponding model 
+
+
+For this exercise, you need to read through a second tweetorial from [Dr Ellie Murray](twitter.com/EpiEllie)) (@EpiEllie), then answer the question below. This tweetorial focuses on **"applying conclusions about causation to results obtained via methods designed only for finding correlations"** and illustrates a real-world scenario where M-bias was potentially contributing to counter-intuitive (or misunderstood) results in a study of COVID-19 hospital deaths. Find it [here](https://twitter.com/EpiEllie/status/1258607277357006849).
+
+Once you have read through the tweetorial, consider the following question.
+
+```{r, fig.width = 3, fig.height=3}
+ggdag_m_bias() + theme_dag()
+```
+
+```{r quiz4, echo=FALSE}
+quiz(caption = "Quiz: M-Bias",
+     question("What are the correct labels for the nodes in the DAG above to best reflect the example discussed in @EpiEllie's tweetorial",
+              answer("x = 'COVID-19 death', a = 'Social determinants of health', m = 'Smoking history', b = 'Heart disease', y = 'Current smoking'"),
+              answer("x = 'COVID-19 death', a = 'Social determinants of health', m = 'Heart disease', b = 'Smoking history', y = 'Current smoking'"),
+              answer("x = 'Current smoking', a = 'Social determinants of health', m = 'Smoking history', b = 'Heart disease', y = 'COVID-19 death'"),
+              answer("x = 'Current smoking', a = 'Social determinants of health', m = 'Heart disease', b = 'Smoking history', y = 'COVID-19 death'"),
+              answer("x = 'Current smoking', a = 'Smoking history', m = 'Heart disease', b = 'Social determinants of health', y = 'COVID-19 death'", correct = TRUE, message = "Although the complete DAG is likely much more complicated."),
+              incorrect = "Not quite right, try again!",
+              allow_retry = TRUE,
+              random_answer_order = TRUE
+     )
+)
+```
+
+You can use the code below to help visualise different possible answers, or to just take a sneak peek at the syntax for coding DAGs in R.
+
+```{r m-bias, exercise = TRUE, exercise.lines = 12}
+
+# Choices: COVID-19 death, Social determinants of health; Smoking history; Heart disease; Current smoking
+ggdag_m_bias(x="Hmm", 
+             y = "Not sure",
+             a = "Could be",
+             b = "Maybe",
+             m = "Mehnunuh",
+             use_labels = "label",
+             label_col = "black") +
+              theme_dag()
+
+```
+
 
 
 ## Extra: Coding DAGs in R
 
-### Coding DAGS in R: Overview 
+### DAGitty
+
+[DAGitty](http://dagitty.net/dags.html) is an online tool that allows you to easily create DAGs in a point-and-click fashion, without any coding required. Conveniently, DAGitty also automatically creates R code that will allow you to recreate the DAG you draw in DAGitty within R. In this section, you will see an example of how to copy the model code from DAGitty into an R environment for further manipulation with the `dagitty` and `ggdag` R packages. 
+
+Below is a mirror to the DAGitty interface . Note that if you are reading this tutorial in the RStudio viewer pane you will need to show it in a browser window to view it properly. Alternatively, you can just go to [dagitty.net/dags.html](http://www.dagitty.net/dags.html).
+
+```{r}
+shiny::tags$iframe(style="height:800px; width:100%; scrolling=yes", src="http://www.dagitty.net/dags.html")
+```
+
+You can read the **How to...** section if you would like to learn how to creat your own DAG. In order to reproduce the DAG you create in R, scroll down to the box titled **Model code**. Copy this syntax to your clipboard and paste it between the single quotes as indicated in the interactive chunk below.
+
+```{r dagitty1, exercise = TRUE, exercise.lines = 30}
+# Load libraries
+library(dagitty)
+library(ggdag)
+
+# Copy-paste model code from DAGitty online tool
+modelCode <- 'paste the DAGitty model code here'
+
+# Use dagitty to create a dagitty graph object from the model code
+dagittyObject <- dagitty::dagitty(modelCode)
+
+# Pass the dagitty object to ggdag
+ggdag(dagittyObject)
+
+# Add '+ theme_dag()' to the above code. What changes?
+
+# Try passing the object to ggdag_status(). What's different?
+
+
+```
+
+
+*** 
+
+### Coding DAGS in R
 The DAGs in this tutorial are created using the `ggdag` package. If you are interested in learning more about how to draw DAGs in this way, check out the vignette on the package [here](https://cran.r-project.org/web/packages/ggdag/vignettes/intro-to-ggdag.html).
 
 
-### Demonstration
-Navigate through the slides below to see an example of `ggdag` in action. 
+### DAGs for common structures
+
+The `ggdag` package includes a set of convenience functions to quickly create DAGs with common bias structures. You can explore these below.
+
+#### Confounding
+```{r ggdag2, exercise = TRUE, exercise.lines = 8}
+
+ggdag_confounder_triangle(x="icecream sales", y="sunburn", z="sunshine", 
+                          use_labels = "label",
+                          label_col = "black") +
+                          theme_dag()
+
+```
+
+#### Mediation
+```{r ggdag3, exercise = TRUE, exercise.lines = 8}
+
+ggdag_mediation_triangle(x="Exercise", y="Mood", m="Sleep quality", 
+                          use_labels = "label",
+                          label_col = "black") +
+                          theme_dag()
+
+```
+
+#### Collider
+```{r ggdag4, exercise = TRUE, exercise.lines = 8}
+
+ggdag_collider_triangle(x="RSV infection", y="Asthma", m="ED admission", 
+                          use_labels = "label",
+                          label_col = "black") +
+                          theme_dag()
+
+```
+
+### Building up the elements of a DAG
+For more complex DAGs, it might be necessary to use the bespoke `geom_dag_*` functions that come with `ggdag` to tailor the elements of your desired DAG. Click through the slides below to see an example of this in action. 
 
 ```{r, out.width='100%', out.height='100%'}
 knitr::include_url("images/flipbook-ggdag.html")
@@ -785,12 +967,49 @@ dagify(y ~ x + a + b,
     breaks  = c("parent", "child")
     ) 
 ```
- 
+
 You might notice that this code differs slightly from the code in the flipbook slides above. The flipbook code uses _slow ggplot_ as described by the `flipbookr` package developer Evangeline Reynolds in her [blog](https://evangelinereynolds.netlify.app/post/slow-ggplot/). Slow ggplot is an approach to writing ggplot code that focuses on incremental changes, for example, instead of specifying `aes(x=xy, y=y, xend=xend, yend=yend, color=parent)` in a single line, slow ggplot separates out each aesthetic element to a separate line, to emphasise how that element affects the graph. The editable code above dispenses with the slow ggplot syntax, and is more typical of how you will write R code in the wild.    
  
  
 ## Summary 
  
- 
- 
- 
+DAGs are a useful tool that allow us to formalise our assumptions about causal mechanisms under study. Dong so has many advantages:
+* Express expert knowledge explicitly 
+* Facilitate discussions about variable selection with co-authors 
+* Communicate your assumptions to readers 
+
+### D-separation
+In order to estimated the causal path between an exposure X and an outcome Y, the nodes X and Y should be **d-separated**. This means that there should be **no open backdoor paths** between X and Y. 
+
+* To close a confounding path ($X \leftarrow C \rightarrow Y$) or a mediating path ($X \rightarrow M \rightarrow Y$) we can condition on the confounder C or mediator M. 
+* Conversely, conditioning on a collider ($X \rightarrow C \leftarrow Y$) will open the pathway 
+
+### Limitations
+
+Causal inference is hard. DAGs can help, but they are no silver bullet. First of all, DAGs that truly represent causal mechanisms of interest are likely to be much more complicated that the simple scenarios presented in this chapter. Check out the posited DAG below, presented in the study _Risk factors for unsuccessful dog ownership: An epidemiologic study in Taiwan_ by [Weng et al 2006](doi:10.1016/j.prevetmed.2006.06.004). Woof.  
+
+ ![](images/dog-ownership-dag.png){width="75%"}
+
+It should be clear that any useful DAG needs to be informed by knowledge and understanding about the mechanism at hand. Consulting with experts is essential when developing a DAG...
+
+![](images/prof-frankie.png){width="75%"}
+
+
+***
+
+DAGs are also limited in terms of what they can represent. For example: 
+
+* DAGs don't contain information about the magnitude or direction of association between nodes. If an arrow points from X to Y we don't know if this is a strong negative effect or a weak positive one. In some contexts, the edges of a DAG are annotated with a number to indicate the magnitude and direction of the implied effect. 
+
+* It is not simple to represent statistical interaction or effect modification in a DAG.
+
+* A DAG does not show if a cause only applies to some individuals
+
+
+*** 
+
+Despite some limitations, DAGs are a powerful tool. Next time you are faced with a research question ask yourself, is this a casual question? If the answer is yes, before looking at any data see if you can draw the main elements of a DAG. To quote Miguel Hernán,
+> Draw your assumptions before your conclusions
+
+
+

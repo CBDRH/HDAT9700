@@ -15,7 +15,7 @@ library(dplyr)
 ui <- fluidPage(
 
     # Application title
-    titlePanel("Backdoor paths, alright!"),
+    titlePanel("Test your understanding of the backdoor path criterion"),
 
     # Sidebar with a slider input for number of bins
     sidebarLayout(
@@ -24,7 +24,12 @@ ui <- fluidPage(
             sliderInput("connectivity", "Set the degree of connectivity", value = 0.5, min = 0.2, max = 0.8, step = 0.1),
             helpText("Choosing a low number of nodes with low connectivity will produce a trivial or boring DAG. On the other hand,
                      choosing a high number of nodes with high connectivity will result in a very complex DAG"),
+            radioButtons("effect", "What effect are you intersted in?", choices = c('total', 'direct'), selected = 'direct', inline = TRUE),
+            helpText("For the total effect, just focus on closing backdoor paths. For the direct effect you will also need to
+                     look at frontdoor paths, i.e. control for mediators."),
+            br(),
             actionButton("userGenerate", "Generate DAG"),
+            br(), br(),
             uiOutput("answerSet"),
             hr(),
             actionButton("userSubmit", "Submit answer"),
@@ -47,17 +52,11 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
 
-# Update the outcome based on the chosen number of nodes
-outcome <- reactive({
-    paste0('x', input$nodes)
-})
-
 
 # Update instructions
 output$instructions <- renderUI({
 
- text <- paste("Specify a minimal sufficient adjustment set that will close any backdoor paths and allow
-               you to identify the direct effect of x1 (exposure) on", outcome(), "(outcome).")
+ text <- object$text
 
  h3(text)
 
@@ -66,25 +65,40 @@ output$instructions <- renderUI({
 # reactive values for object
 object <- reactiveValues()
 
+# reactive for buttons
 button <- reactiveValues(generate = 1, submit = 0, reveal = 0)
+
+# reactive for choice of exposure and outcome
+sample <- reactiveValues( )
 
 # Actions when user hits generate button
 observeEvent(input$userGenerate, {
 
+    # Reset button status
     button$submit <- 0
     button$reveal <- 0
     button$generate <- 1
+    object$solutionID <- 1
+
+    # Reset exposure and outcome
+    sample$draw <- base::sample(seq(1,input$nodes), 2)
+    sample$exposure <- paste0('x', min(sample$draw))
+    sample$outcome <- paste0('x', max(sample$draw))
+
+    # Update the instructional text
+    object$text <- paste("Specify a minimal sufficient adjustment set that will close any backdoor paths and allow
+               you to identify the", toupper(input$effect), "effect of", sample$exposure, "(exposure) on", sample$outcome, "(outcome).")
 
     object$rd <- dagitty::randomDAG(input$nodes, input$connectivity)
 
-    # This text will ractively update to specify the largest node as the outcome
-    sub <- paste0( "x1 -> ", outcome(), "\n x1 [exposure] ", outcome(), "[outcome] }\n")
+    # This text will reactively update to refer to the randomly chosen exposure and outcome
+    sub <- paste0(sample$exposure, " -> ", sample$outcome, "\n", sample$exposure, " [exposure] ", sample$outcome, "[outcome] }\n")
 
     # This updates the text of the Random DAG specification to include exposure and outcome specified in dagitty syntax
     object$rd0 <- gsub("}\n", sub, object$rd) %>% dagitty() %>% adjust_for(NULL)
 
     # This finds the minimal viable adjustment sets
-    object$adjSets <- adjustmentSets(object$rd, exposure = 'x1', outcome = outcome(), type = 'minimal', effect = 'direct')
+    object$adjSets <- adjustmentSets(object$rd, exposure = sample$exposure, outcome = sample$outcome, type = 'minimal', effect = input$effect)
 
     # This counts and stores the number of solutions
     object$nSets <- length(object$adjSets)
@@ -93,8 +107,8 @@ observeEvent(input$userGenerate, {
     object$question <- ggdag_status(object$rd0) + theme_dag() + ggpubr::border()
 
     # Update the possible control variables
-    object$choiceNames <- c("No adjustment needed", paste0('x', seq(2,input$nodes-1)))
-    object$choiceValues <- c("NULL", paste0('x', seq(2,input$nodes-1)))
+    object$choiceNames <- c("No adjustment needed", paste0('x', seq(1,input$nodes)))
+    object$choiceValues <- c("NULL", paste0('x', seq(1,input$nodes)))
     updateCheckboxGroupInput(session, "ans", choiceNames = object$choiceNames, choiceValues = object$choiceValues)
 
     # Update the selected solutions (always revert to 1)
@@ -110,7 +124,13 @@ observeEvent(input$userSubmit, {
 # Reveal button logic
 observeEvent(input$userReveal, {
     button$reveal <- abs(button$reveal - 1)
+    })
+
+# Solution to view (reverts to 1 every time the generate button is clicked)
+observeEvent(input$solutionID, {
+  object$solutionID <- input$solutionID
 })
+
 
 
 # Plot the randomly generated DAG
@@ -134,11 +154,9 @@ output$solutionDAG <- renderPlot({
 
     req(object$rd0)
 
-    index <- max(1, as.numeric(input$solutionID))
-
-    x <- object$adjSets[[index]]
+    x <- object$adjSets[[object$solutionID]]
     df <- object$rd0 %>% adjust_for(x)
-    p <- ggdag_adjust(df, exposure = 'x1', outcome = outcome()) + theme_dag()
+    p <- ggdag_adjust(df, exposure = sample$exposure, outcome = sample$outcome) + theme_dag()
 
     if (button$reveal==1) {
         p
@@ -211,7 +229,11 @@ marks <- reactive({
 
         mark <- "Incorrect :("
 
-        if (length(object$adjSets[[1]]) == 0 & all(input$ans == "NULL")) {
+        if (length(input$ans) == 0) {
+          mark <- "Incorrect :("
+        }
+
+        else if (length(object$adjSets[[1]]) == 0 & all(input$ans == "NULL")) {
             mark <- "Correct!"
         }
 
