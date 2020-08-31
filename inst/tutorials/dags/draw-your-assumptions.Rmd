@@ -717,17 +717,16 @@ dag6 <- dagify( m ~ y, y ~ x, x ~ z, m ~ z,
                             y="COVID-19",
                             z="Compliant",
                             m="Participation"),
-                coords = coords) %>% 
-  adjust_for('m')
+                coords = coords) 
 
-ggdag(dag6, use_labels = "label", collider_lines = FALSE) + 
+ggdag(dag6, use_labels = "label") + 
   theme_dag() 
 
 ```
 
 When we estimated the effect of mask wearing on COVID-19 using data from respondents only, we are effectively controlling for response status. To see this, consider the  hypothetical scenario where data is available for respondents and nonrespondents alike. In this case, stratifying on response status and performing the analysis among survey respondents only is the same as only having data for survey respondents in the first place. 
 
-Looking at the DAG above, it should be clear that survey participation (m) is a collider on the path $z \rightarrow m \leftarrow y$. And what happens when we condition on a collider? As you have learned in the section on Collider Variables, controlling for response status will **open** the pathway $z \rightarrow m \leftarrow y$. In addition, assuming compliant personality type is a latent, unobserved variable, we will be unable to close the pathway $ x \leftarrow z \rightarrow m $.  Thus there will be an open backdoor pathway between the exposure (x) and the outcome (y): $x \leftarrow z \rightarrow m \leftarrow y$.
+Looking at the DAG above, it should be clear that survey participation (m) is a collider on the path $z \rightarrow m \leftarrow y$. And what happens when we condition on a collider? As you have learned in the section on Collider Variables, controlling for response status will **open** the triplet $z \rightarrow m \leftarrow y$. In addition, assuming compliant personality type is a latent, unobserved variable, we will be unable to close the pathway $ x \leftarrow z \rightarrow m $.  Thus there will be an open backdoor pathway between the exposure (x) and the outcome (y): $x \leftarrow z \rightarrow m \leftarrow y$.
 
 Under this set of assumptions, our exposure and outcome would not be d-separated and our estimated causal effect of mask-wearing on the risk of contracting COVID-19 would likely be biased. 
 
@@ -740,19 +739,17 @@ coords <- list(
   y = c(x = 0.7, y = 0.7, z = .5, m = 0)
 )
 
-dag6 <- dagify( m ~ y, y ~ x, x ~ z, m ~ z,
-               exposure = 'x',
-               outcome = 'y',
-               latent = 'z',
-                labels = c(x="Mask",
-                            y="COVID-19",
-                            z="Compliant",
-                            m="Participation"),
-                coords = coords) %>% 
-  adjust_for('m')
+dag6 <- dagify(y ~ x, x ~ z, m ~ y + z,
+                exposure = 'x',
+                outcome = 'y', 
+               coords = coords) 
 
-ggdag_adjust(dag6, use_labels = "label", collider_lines = FALSE) + 
+dag6 %>% 
+  adjust_for('z') %>% 
+  dplyr::mutate(adjusted = c(rep('unadjusted', 4), 'adjusted')) %>% # Had to do this manually because of error when passing 'm' to adjust_for
+  ggdag_adjust() +
   theme_dag()
+
 
 ```
 
