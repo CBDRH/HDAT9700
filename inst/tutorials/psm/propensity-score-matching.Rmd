@@ -879,7 +879,7 @@ match2 <- matchit( )
 Adapt the above code to implement exact matching based on the variable **age**. (Note that exact matching in `MatchIt` includes _all_ valid matches, so it is not possible to choose a ratio) 
 
 ``` {r ex6, exercise=TRUE}
-match3 <- matchit( )
+#match3 <- matchit( )
 
 ```
 

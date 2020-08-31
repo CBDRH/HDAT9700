@@ -16,13 +16,13 @@ chapter1 <- function() {
 }
 
 
-#' Chapter 2. Draw your assumptions before your conclusions
+#' Chapter 2. Directed Acyclic Graphs (DAGs)
 #'
 #' Launch the tutorial for chapter 2
 #'
 #' @export
 chapter2 <- function() {
-  learnr::run_tutorial("test", utils::packageName())
+  learnr::run_tutorial("dags", utils::packageName())
 }
 
 
