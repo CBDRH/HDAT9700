@@ -3,4 +3,8 @@
 .RData
 .Ruserdata
 
+# Ignore plots created by the tutorials
 inst/tutorials/**/figure-html/
+
+# ignore the rendered html file
+inst/tutorials/*/*.html/
