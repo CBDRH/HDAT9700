@@ -278,9 +278,9 @@ At this stage, we need to tell R how we would like it to deal with the missing d
 
 ```{r 5,  exercise=TRUE, eval=FALSE, echo=TRUE, exerciese.lines=8}
 # Create a non-hierarchical intercept only model for the 
-# Incontinence data by correcting the values of XXX in the code below. 
+# Incontinence data by correcting the values of 'XXX' in the code below. 
 
-intercept<-gls(Incontinence_Score ~ XXX, 
+intercept<-gls(Incontinence_Score ~ ''XXX'', 
 data = longIncontinenceData, method = "ML", na.action = na.exclude)
 summary(intercept)
 ```
@@ -321,11 +321,11 @@ modelname <-lme(Outcome_variable  ~ 1, data=dataset, random=~1|Level_2_Variable)
 
 ```{r 6, exercise=TRUE, exercise.eval=FALSE, exercise.lines=13}
 # Create a variance components model on the incontinence data 
-# by correcting the values XXX in the code below. 
+# by correcting the values 'XXX' in the code below. 
 
-randomIntercept <-lme(Incontinence_Score ~ XXX, 
+randomIntercept <-lme(Incontinence_Score ~ 'XXX', 
                       data = longIncontinenceData, 
-                      random = XXX, 
+                      random = 'XXX', 
                       method ="ML", 
                       na.action = na.exclude, 
                       control = list(opt="optim")) 
@@ -372,7 +372,7 @@ where $b_{1}X_{ij}$ is the fixed regression coefficient for the effect of time f
 
 ```{r 8, exercise=TRUE, exercise.eval=FALSE, exercise.lines=15}
 #Update the random intercept model above to include time as a fixed effect
-TimeRI <- lme(Incontinence_Score ~ XXX, 
+TimeRI <- lme(Incontinence_Score ~ 'XXX', 
               data = longIncontinenceData, 
               random = ~1|Person, 
               method ="ML", 
@@ -432,11 +432,11 @@ In the case of longitudinal or other random effects, it is possible to specify t
 # The correlation structure is specified with the code: 
 # correlation = corAR1(0, form = ~Time|Person).
 
-TimeRS <-lme(Incontinence_Score ~ XXX, 
+TimeRS <-lme(Incontinence_Score ~ 'XXX', 
         data = longIncontinenceData, 
-        random = XXX, 
+        random = 'XXX', 
         method ="ML", na.action = na.exclude, 
-        control = list(opt="optim"), correlation = XXX) 
+        control = list(opt="optim"), correlation = 'XXX') 
 summary(TimeRS)
 
 #use the intervals() function to obtain confidence intervals for your estimates
@@ -490,7 +490,7 @@ The variable Time^2 can be entered into R as the expression "I(Time^2)".
 # Run a growth curve analysis in R of the effect of time on 
 # incontinence score, using an i) quadratic, and ii) cubic function. 
 
-TimeQuadratic <-lme(Incontinence_Score ~ XXX, 
+TimeQuadratic <-lme(Incontinence_Score ~ 'XXX', 
               data = longIncontinenceData, 
               random = ~1|Person, method ="ML", 
               na.action = na.exclude, 
@@ -542,7 +542,7 @@ boxplot_treatment
 # incontinence score between people who received 
 # radiotherapy vs. people who received surgery?
 
-TimeTreatment <-lme(Incontinence_Score ~ XXX)
+TimeTreatment <-lme(Incontinence_Score ~ 'XXX')
 summary(TimeTreatment)
 
 #For the model above, assess whether your model meets the assumptions of multilevel linear regression. 
@@ -567,7 +567,7 @@ TimeTreatment <-lme(Incontinence_Score ~ Time + I(Time^2) + Treatment,
 # received surgery? How would you specify your growth curve model 
 # to test this? (Hint: add an interaction term to the model)
 
-TimeTreatmentInteraction <-lme(Incontinence_Score ~ XXX)
+TimeTreatmentInteraction <-lme(Incontinence_Score ~ 'XXX')
 summary(TimeTreatmentInteraction)
 
 # Which parts of the output for this model would you report in a manuscript for pulication?
@@ -609,7 +609,7 @@ boxplot_clinic
 ```{r 15, exercise=TRUE, exercise.eval=FALSE, exercise.lines=20}
 # How would you change the R code for the growth curve model (Model #6 above) to 
 # incorporate a the level 3 random variable "Clinic"?
-TimeClinic <-lme(Incontinence_Score ~ XXX)
+TimeClinic <-lme(Incontinence_Score ~ 'XXX')
 summary(TimeClinic)   
 
 # Use a likelihood ratio test to determine whether the addition of the 
