@@ -36,53 +36,53 @@ chapter3 <- function() {
 }
 
 
-#' Chapter 4. Multilevel Modelling (Part I)
+#' Chapter 4. Growth Curve Modelling
 #'
 #' Launch the tutorial for chapter 4
 #'
 #' @export
 chapter4 <- function() {
-  learnr::run_tutorial("mlm1", utils::packageName())
+  learnr::run_tutorial("tsa", utils::packageName())
 }
 
 
-#' Chapter 5. Multilevel Modelling (Part II)
+#' Chapter 5. Interrupted Time Series Analysis
 #'
 #' Launch the tutorial for chapter 5
 #'
 #' @export
 chapter5 <- function() {
-  learnr::run_tutorial("mlm2", utils::packageName())
+  learnr::run_tutorial("its", utils::packageName())
 }
 
 
-#' Chapter 6. Growth Curve Modelling
+#' Chapter 6. Multilevel Modelling (Part I)
 #'
 #' Launch the tutorial for chapter 6
 #'
 #' @export
 chapter6 <- function() {
-  learnr::run_tutorial("mlm3", utils::packageName())
+  learnr::run_tutorial("mlm1", utils::packageName())
 }
 
 
-#' Chapter 7. Time Series Analysis
+#' Chapter 7. Multilevel Modelling (Part II)
 #'
 #' Launch the tutorial for chapter 7
 #'
 #' @export
 chapter7 <- function() {
-  learnr::run_tutorial("tsa", utils::packageName())
+  learnr::run_tutorial("mlm2", utils::packageName())
 }
 
 
-#' Chapter 8. Interrupted Time Series Analysis
+#' Chapter 8. Multilevel Modelling (Part III)
 #'
 #' Launch the tutorial for chapter 8
 #'
 #' @export
 chapter8 <- function() {
-  learnr::run_tutorial("its", utils::packageName())
+  learnr::run_tutorial("mlm3", utils::packageName())
 }
 
 
