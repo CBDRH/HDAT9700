@@ -910,11 +910,11 @@ In this practical session you will compare some simple  approaches to handling m
 ```
 
 ```{r exercise2_3-hint-1, exercise.eval=FALSE}
-# sleep$NonD.mean <- replace(sleep$NonD.mean, is.na(sleep$NonD.mean), XXX)
+# sleep$NonD.mean <- replace(sleep$NonD, is.na(sleep$NonD), XXX)
 ```
 
 ```{r exercise2_3-hint-2, exercise.eval=FALSE}
-sleep$NonD.mean <- replace(sleep$NonD.mean, is.na(sleep$NonD.mean), mean(sleep$NonD,na.rm=TRUE))
+sleep$NonD.mean <- replace(sleep$NonD, is.na(sleep$NonD), mean(sleep$NonD,na.rm=TRUE))
 ```
 
 ***
