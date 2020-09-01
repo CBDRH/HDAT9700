@@ -8,7 +8,7 @@ output:
     allow_skip: true
     css: css/tutorials.css
 runtime: shiny_prerendered
-description: "HDAT9700: Matching for Causal Inference from Observational data" 
+description: "Review the conditions required to make causal inferencees from observational data and implement matching as a pre-processing approach to uncover randomised studies hidden within observational datasets." 
 ---
 
 ![](images/UNSW_2017_Big_Data_landscape.jpg){width="75%"}

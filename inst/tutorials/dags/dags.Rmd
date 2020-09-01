@@ -8,7 +8,7 @@ output:
     allow_skip: true
     css: css/tutorials.css
 runtime: shiny_prerendered
-description: "HDAT9700: Directed Acyclic Graphs (DAGs)" 
+description: "Learn how to use Directed Acyclic Graphs (DAGs) as a way to formalise domain knowledge, represent assumptions about causal relationships and inform model selection when building causal models." 
 ---
 
 ![](images/UNSW_2017_Big_Data_landscape.jpg){width="75%"}
