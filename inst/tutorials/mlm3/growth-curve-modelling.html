@@ -296,11 +296,11 @@ boxplot
 <p>At this stage, we need to tell R how we would like it to deal with the missing data. Missing data are coded in the Incontinence file as “NA”. We include the code na.action = na.exclude in the model to tell R that we would like it to exclude only the specific missing values, not the entire patient with missing values.</p>
 <div class="tutorial-exercise" data-label="5" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># Create a non-hierarchical intercept only model for the 
-# Incontinence data by correcting the values of &#39;XXX&#39; in the code below. 
+# Incontinence data by correcting the values of XXX in the code below. 
 
-intercept&lt;-gls(Incontinence_Score ~ &#39;&#39;XXX&#39;&#39;, 
-data = longIncontinenceData, method = &quot;ML&quot;, na.action = na.exclude)
-summary(intercept)</code></pre>
+# intercept&lt;-gls(Incontinence_Score ~ XXX, 
+# data = longIncontinenceData, method = &quot;ML&quot;, na.action = na.exclude)
+# summary(intercept)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="5-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
@@ -328,16 +328,16 @@ summary(intercept)</code></pre>
 <p>modelname &lt;-lme(Outcome_variable ~ 1, data=dataset, random=~1|Level_2_Variable)</p>
 <div class="tutorial-exercise" data-label="6" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="13">
 <pre class="text"><code># Create a variance components model on the incontinence data 
-# by correcting the values &#39;XXX&#39; in the code below. 
+# by correcting the values XXX in the code below. 
 
-randomIntercept &lt;-lme(Incontinence_Score ~ &#39;XXX&#39;, 
-                      data = longIncontinenceData, 
-                      random = &#39;XXX&#39;, 
-                      method =&quot;ML&quot;, 
-                      na.action = na.exclude, 
-                      control = list(opt=&quot;optim&quot;)) 
-
-summary(randomIntercept)</code></pre>
+# randomIntercept &lt;-lme(Incontinence_Score ~ XXX, 
+#                       data = longIncontinenceData, 
+#                       random = XXX, 
+#                       method =&quot;ML&quot;, 
+#                       na.action = na.exclude, 
+#                       control = list(opt=&quot;optim&quot;)) 
+# 
+# summary(randomIntercept)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="6-solution" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
@@ -369,14 +369,14 @@ anova(intercept, randomIntercept)
 <p><img src="images/model3.png" style="width:75.0%" /></p>
 <div class="tutorial-exercise" data-label="8" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="15">
 <pre class="text"><code>#Update the random intercept model above to include time as a fixed effect
-TimeRI &lt;- lme(Incontinence_Score ~ &#39;XXX&#39;, 
-              data = longIncontinenceData, 
-              random = ~1|Person, 
-              method =&quot;ML&quot;, 
-              na.action = na.exclude, 
-              control = list(opt=&quot;optim&quot;)) 
-
-summary(TimeRI)
+# TimeRI &lt;- lme(Incontinence_Score ~ XXX, 
+#               data = longIncontinenceData, 
+#               random = ~1|Person, 
+#               method =&quot;ML&quot;, 
+#               na.action = na.exclude, 
+#               control = list(opt=&quot;optim&quot;)) 
+# 
+# summary(TimeRI)
 
 #Is there a significant effect of time on urinary incontinence. What is the direction of this effect?</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
@@ -414,16 +414,16 @@ summary(TimeRI)
 
 # The correlation structure is specified with the code: 
 # correlation = corAR1(0, form = ~Time|Person).
-
-TimeRS &lt;-lme(Incontinence_Score ~ &#39;XXX&#39;, 
-        data = longIncontinenceData, 
-        random = &#39;XXX&#39;, 
-        method =&quot;ML&quot;, na.action = na.exclude, 
-        control = list(opt=&quot;optim&quot;), correlation = &#39;XXX&#39;) 
-summary(TimeRS)
-
-#use the intervals() function to obtain confidence intervals for your estimates
-intervals(TimeRS)
+# 
+# TimeRS &lt;-lme(Incontinence_Score ~ XXX, 
+#         data = longIncontinenceData, 
+#         random = XXX, 
+#         method =&quot;ML&quot;, na.action = na.exclude, 
+#         control = list(opt=&quot;optim&quot;), correlation = XXX) 
+# summary(TimeRS)
+# 
+# #use the intervals() function to obtain confidence intervals for your estimates
+# intervals(TimeRS)
 
 # Compare the random intercepts model (TimeRI) to the 
 # random intercepts and slope model (TimeRS) using the anova() function
@@ -461,13 +461,13 @@ intervals(TimeRS)
 <pre class="text"><code># Run a growth curve analysis in R of the effect of time on 
 # incontinence score, using an i) quadratic, and ii) cubic function. 
 
-TimeQuadratic &lt;-lme(Incontinence_Score ~ &#39;XXX&#39;, 
-              data = longIncontinenceData, 
-              random = ~1|Person, method =&quot;ML&quot;, 
-              na.action = na.exclude, 
-              control = list(opt=&quot;optim&quot;), 
-              correlation = corAR1(0, form = ~1|Person))  
-summary(TimeQuadratic)
+# TimeQuadratic &lt;-lme(Incontinence_Score ~ XXX, 
+#               data = longIncontinenceData, 
+#               random = ~1|Person, method =&quot;ML&quot;, 
+#               na.action = na.exclude, 
+#               control = list(opt=&quot;optim&quot;), 
+#               correlation = corAR1(0, form = ~1|Person))  
+# summary(TimeQuadratic)
 
 #Which model (quadratic or cubic) better fits the data?
 
@@ -509,8 +509,8 @@ boxplot_treatment</code></pre>
 # incontinence score between people who received 
 # radiotherapy vs. people who received surgery?
 
-TimeTreatment &lt;-lme(Incontinence_Score ~ &#39;XXX&#39;)
-summary(TimeTreatment)
+# TimeTreatment &lt;-lme(Incontinence_Score ~ XXX)
+# summary(TimeTreatment)
 
 #For the model above, assess whether your model meets the assumptions of multilevel linear regression. </code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
@@ -531,8 +531,8 @@ summary(TimeTreatment)
 # received surgery? How would you specify your growth curve model 
 # to test this? (Hint: add an interaction term to the model)
 
-TimeTreatmentInteraction &lt;-lme(Incontinence_Score ~ &#39;XXX&#39;)
-summary(TimeTreatmentInteraction)
+# TimeTreatmentInteraction &lt;-lme(Incontinence_Score ~ XXX)
+# summary(TimeTreatmentInteraction)
 
 # Which parts of the output for this model would you report in a manuscript for pulication?</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
@@ -568,8 +568,9 @@ boxplot_clinic</code></pre>
 <div class="tutorial-exercise" data-label="15" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="20">
 <pre class="text"><code># How would you change the R code for the growth curve model (Model #6 above) to 
 # incorporate a the level 3 random variable &quot;Clinic&quot;?
-TimeClinic &lt;-lme(Incontinence_Score ~ &#39;XXX&#39;)
-summary(TimeClinic)   
+
+# TimeClinic &lt;-lme(Incontinence_Score ~ XXX)
+# summary(TimeClinic)   
 
 # Use a likelihood ratio test to determine whether the addition of the 
 # variable clinic improves the fit of the model.  </code></pre>
@@ -673,7 +674,7 @@ learnr:::register_http_handlers(session, metadata = list(id = "au.edu.unsw.cbdrh
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1-1", question = structure("In the context of multilevel models, what do we mean by a random regression coefficient?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_657ad5d",     option = "A regression coefficient that is assumed to be different in the population and the sample",     value = "A regression coefficient that is assumed to be different in the population and the sample",     label = structure("A regression coefficient that is assumed to be different in the population and the sample", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_efef4cd",     option = "A regression coefficient that varies across different samples",     value = "A regression coefficient that varies across different samples",     label = structure("A regression coefficient that varies across different samples", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_5003e32",     option = "A regression coefficient that is assumed to vary across groups",     value = "A regression coefficient that is assumed to vary across groups",     label = structure("A regression coefficient that is assumed to vary across groups", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_2f9b161",     option = "A regression coefficient that is a random value rather than an estimated value",     value = "A regression coefficient that is a random value rather than an estimated value",     label = structure("A regression coefficient that is a random value rather than an estimated value", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1-1-answer", question = "quiz1-1"), loading = structure("<strong>Loading:<\u002fstrong> \nIn the context of multilevel models, what do we mean by a random regression coefficient?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = TRUE, allow_retry = TRUE,     seed = 1302972137.89326, options = list()), class = c("learnr_radio", "tutorial_question")))
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1-1", question = structure("In the context of multilevel models, what do we mean by a random regression coefficient?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_5446d4b",     option = "A regression coefficient that is assumed to be different in the population and the sample",     value = "A regression coefficient that is assumed to be different in the population and the sample",     label = structure("A regression coefficient that is assumed to be different in the population and the sample", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_5880b97",     option = "A regression coefficient that varies across different samples",     value = "A regression coefficient that varies across different samples",     label = structure("A regression coefficient that varies across different samples", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_d22fd0b",     option = "A regression coefficient that is assumed to vary across groups",     value = "A regression coefficient that is assumed to vary across groups",     label = structure("A regression coefficient that is assumed to vary across groups", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_a7f7134",     option = "A regression coefficient that is a random value rather than an estimated value",     value = "A regression coefficient that is a random value rather than an estimated value",     label = structure("A regression coefficient that is a random value rather than an estimated value", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1-1-answer", question = "quiz1-1"), loading = structure("<strong>Loading:<\u002fstrong> \nIn the context of multilevel models, what do we mean by a random regression coefficient?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = TRUE, allow_retry = TRUE,     seed = 972476283.547155, options = list()), class = c("learnr_radio", "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
@@ -705,7 +706,7 @@ output$`tutorial-exercise-4-output` <- renderUI({
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz2-1", question = structure("A researcher was interested in the effects of information about exercises that relieve back pain delivered in two different ways. Several doctors within the same hospital delivered the information to multiple patients. How many levels are there in this hierarchical data structure?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_3a655ba",     option = "1", value = "1", label = structure("1", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_52c22a8",     option = "2", value = "2", label = structure("2", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_bcaadd2",     option = "3", value = "3", label = structure("3", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_8a3cacc",     option = "4", value = "4", label = structure("4", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz2-1-answer", question = "quiz2-1"), loading = structure("<strong>Loading:<\u002fstrong> \nA researcher was interested in the effects of information about exercises that relieve back pain delivered in two different ways. Several doctors within the same hospital delivered the information to multiple patients. How many levels are there in this hierarchical data structure?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = TRUE, allow_retry = TRUE,     seed = 716260272.166465, options = list()), class = c("learnr_radio", "tutorial_question")))
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz2-1", question = structure("A researcher was interested in the effects of information about exercises that relieve back pain delivered in two different ways. Several doctors within the same hospital delivered the information to multiple patients. How many levels are there in this hierarchical data structure?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_7c8a4f9",     option = "1", value = "1", label = structure("1", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_3c40ded",     option = "2", value = "2", label = structure("2", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_70586fb",     option = "3", value = "3", label = structure("3", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_9958526",     option = "4", value = "4", label = structure("4", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz2-1-answer", question = "quiz2-1"), loading = structure("<strong>Loading:<\u002fstrong> \nA researcher was interested in the effects of information about exercises that relieve back pain delivered in two different ways. Several doctors within the same hospital delivered the information to multiple patients. How many levels are there in this hierarchical data structure?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = TRUE, allow_retry = TRUE,     seed = 494778509.269601, options = list()), class = c("learnr_radio", "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
@@ -786,7 +787,7 @@ output$`tutorial-exercise-15-output` <- renderUI({
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz3-1", question = structure("The researchers who are conducting the incontinence study have hired you to analyse thier data and report the results. Which of the regression models would you report to the researchers as the final model.", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_d2926f8",     option = "intercept (non-hierarchical interpect-only model)",     value = "intercept (non-hierarchical interpect-only model)",     label = structure("intercept (non-hierarchical interpect-only model)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_eba915e",     option = "TimeRI (random intercept model)", value = "TimeRI (random intercept model)",     label = structure("TimeRI (random intercept model)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_8d24954",     option = "TimeRS (longitudinal random intercept and slopes model)",     value = "TimeRS (longitudinal random intercept and slopes model)",     label = structure("TimeRS (longitudinal random intercept and slopes model)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_b8495b1",     option = "TimeQuadratic (longitudinal random intercept model with quadratic term for time)",     value = "TimeQuadratic (longitudinal random intercept model with quadratic term for time)",     label = structure("TimeQuadratic (longitudinal random intercept model with quadratic term for time)", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_383a6f0",     option = "TimeCubic (longitudinal random intercept model with cubic term for time)",     value = "TimeCubic (longitudinal random intercept model with cubic term for time)",     label = structure("TimeCubic (longitudinal random intercept model with cubic term for time)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_e23c71a",     option = "TimeTreatment (longitudinal random intercept model with quadratic term for time and treatments as a fixed effect)",     value = "TimeTreatment (longitudinal random intercept model with quadratic term for time and treatments as a fixed effect)",     label = structure("TimeTreatment (longitudinal random intercept model with quadratic term for time and treatments as a fixed effect)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_e6c50b9",     option = "TimeTreatmentInteraction (longitudinal random intercept model with quadratic term for time and a time by treatment interaction)",     value = "TimeTreatmentInteraction (longitudinal random intercept model with quadratic term for time and a time by treatment interaction)",     label = structure("TimeTreatmentInteraction (longitudinal random intercept model with quadratic term for time and a time by treatment interaction)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_6cd6850",     option = "TimeClinic (longitudinal random intercept model with quadratic term for time and random intercept for clinic)",     value = "TimeClinic (longitudinal random intercept model with quadratic term for time and random intercept for clinic)",     label = structure("TimeClinic (longitudinal random intercept model with quadratic term for time and random intercept for clinic)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz3-1-answer", question = "quiz3-1"), loading = structure("<strong>Loading:<\u002fstrong> \nThe researchers who are conducting the incontinence study have hired you to analyse thier data and report the results. Which of the regression models would you report to the researchers as the final model.\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 421178124.303874, options = list()), class = c("learnr_radio", "tutorial_question")))
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz3-1", question = structure("The researchers who are conducting the incontinence study have hired you to analyse thier data and report the results. Which of the regression models would you report to the researchers as the final model.", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_24b8078",     option = "intercept (non-hierarchical interpect-only model)",     value = "intercept (non-hierarchical interpect-only model)",     label = structure("intercept (non-hierarchical interpect-only model)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_88265c4",     option = "TimeRI (random intercept model)", value = "TimeRI (random intercept model)",     label = structure("TimeRI (random intercept model)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_b997d63",     option = "TimeRS (longitudinal random intercept and slopes model)",     value = "TimeRS (longitudinal random intercept and slopes model)",     label = structure("TimeRS (longitudinal random intercept and slopes model)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_265027c",     option = "TimeQuadratic (longitudinal random intercept model with quadratic term for time)",     value = "TimeQuadratic (longitudinal random intercept model with quadratic term for time)",     label = structure("TimeQuadratic (longitudinal random intercept model with quadratic term for time)", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_727d428",     option = "TimeCubic (longitudinal random intercept model with cubic term for time)",     value = "TimeCubic (longitudinal random intercept model with cubic term for time)",     label = structure("TimeCubic (longitudinal random intercept model with cubic term for time)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_84d5239",     option = "TimeTreatment (longitudinal random intercept model with quadratic term for time and treatments as a fixed effect)",     value = "TimeTreatment (longitudinal random intercept model with quadratic term for time and treatments as a fixed effect)",     label = structure("TimeTreatment (longitudinal random intercept model with quadratic term for time and treatments as a fixed effect)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_d46fda2",     option = "TimeTreatmentInteraction (longitudinal random intercept model with quadratic term for time and a time by treatment interaction)",     value = "TimeTreatmentInteraction (longitudinal random intercept model with quadratic term for time and a time by treatment interaction)",     label = structure("TimeTreatmentInteraction (longitudinal random intercept model with quadratic term for time and a time by treatment interaction)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_bf79e1e",     option = "TimeClinic (longitudinal random intercept model with quadratic term for time and random intercept for clinic)",     value = "TimeClinic (longitudinal random intercept model with quadratic term for time and random intercept for clinic)",     label = structure("TimeClinic (longitudinal random intercept model with quadratic term for time and random intercept for clinic)", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz3-1-answer", question = "quiz3-1"), loading = structure("<strong>Loading:<\u002fstrong> \nThe researchers who are conducting the incontinence study have hired you to analyse thier data and report the results. Which of the regression models would you report to the researchers as the final model.\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 1736384044.69143, options = list()), class = c("learnr_radio", "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
