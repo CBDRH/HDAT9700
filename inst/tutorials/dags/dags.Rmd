@@ -22,7 +22,7 @@ library(ggdag)
 library(ggpubr)
 library(flipbookr)
 library(kableExtra)
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
 
 
 ```
@@ -923,7 +923,7 @@ ggdag_collider_triangle(x="RSV infection", y="Asthma", m="ED admission",
 For more complex DAGs, it might be necessary to use the bespoke `geom_dag_*` functions that come with `ggdag` to tailor the elements of your desired DAG. Click through the slides below to see an example of this in action. 
 
 ```{r, out.width='100%', out.height='100%'}
-knitr::include_url("images/flipbook-ggdag.html")
+knitr::include_url("images/flpbk-ggdag.html")
 ```
 
 Note that:

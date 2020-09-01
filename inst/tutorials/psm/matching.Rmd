@@ -1,7 +1,7 @@
 ---
-title: "HDAT 9700: Matching for Causal Inference"
+title: "HDAT9700: Matching for Causal Inference"
 tutorial:
-  id: "au.edu.unsw.cbdrh.hdat9700.tutorials.propensity.score.matching"
+  id: "au.edu.unsw.cbdrh.hdat9700.tutorials.matching"
 output:
   learnr::tutorial:
     progressive: false
