@@ -61,7 +61,7 @@ Each lecture will be followed by a practical session where you will write your o
 
 The prereading for this chapter is "On Time Series Analysis of Public Health and Biomedical Data" by Scott L Zeger, Rafael Irizarry and Roger D Peng available [here](https://www.annualreviews.org/doi/10.1146/annurev.publhealth.26.021304.144517).
 
-The reference text for this chapter is "Time series analysis and its applications: with R examples" (Chapters 1-3) by Robert H Shumway and David S Stoffer, can be downloaded [here](https://www.stat.pitt.edu/stoffer/tsa4/) or through the UNSW library.  David S Stoffer is also the author of the `astsa` R package (**A**pplied **S**tatistical **T**ime **S**eries **A**nalysis).
+For those wanting more detail, I suggest "Time series analysis and its applications: with R examples" (Chapters 1-3) by Robert H Shumway and David S Stoffer, which can be downloaded [here](https://www.stat.pitt.edu/stoffer/tsa4/) or through the UNSW library. The content goes beyond what is covered in this Chapter, but there are a lot of examples and R code for those who are interested.  David S Stoffer is also the author of the `astsa` R package (**A**pplied **S**tatistical **T**ime **S**eries **A**nalysis).
 
 Some other useful resources:
 
@@ -89,7 +89,7 @@ A time series is a chronological sequence of measurements equally spaced through
 
 In the context of health data, one of the advantages of time series data is that they often involve aggregate data (such as counts of hospital separations), and thus they don't necessarily require access to identifiable person-level data. Thus, these data are often easier to access as aggregate data often do not require ethics approval, and there are currently a many freely available time series datasets available online. 
 
-Time series data have several unique properties. The chronological ordering is important, and the data cannot be rearranged. Time series data are also well suited to visualisation. Most importantly, observations made at neighbouring time points are often correlated and thus not independent, meaning that they do not meet the assumptions necessary for standard regression analysis. Therefore, specialised methods for analysing time series data are needed.
+Time series data have several unique properties. The chronological ordering is important. Time series data are also well suited to visualisation. Most importantly, observations made at neighbouring time points are often correlated and thus not independent, meaning that they do not meet the assumptions necessary for standard regression analysis. Therefore, specialised methods for analysing time series data are needed.
 
 There are many potential uses for time series analysis in health. These include: 
 
@@ -101,9 +101,9 @@ There are many potential uses for time series analysis in health. These include:
 * **Intervention analysis** to determine the impact of an intervention (to be covered in Chapter 4). 
 
 
-![**Figure 1.1.** An example of a time series: all cause mortality during the 1918 influenza pandemic (Source: Public domain)](images/Influenza_Pandemic.png)
+![**Figure.** An example of a time series: all cause mortality during the 1918 influenza pandemic (Source: Public domain)](images/Influenza_Pandemic.png)
 
-![**Figure 1.2.** An example of time series: smallpox, polio and measles before and after introduction of vaccination (Source: Our World in Data [https://ourworldindata.org/]](images/Vaccination.jpg)
+![**Figure.** An example of time series: smallpox, polio and measles before and after introduction of vaccination (Source: Our World in Data [https://ourworldindata.org/]](images/Vaccination.jpg)
 
 
 ***
@@ -174,6 +174,23 @@ plot(x1)
 ```
 
 Good work, you've created your first time series!
+
+Note that with a ts object, the date or time information is stored in an index (not as a separate variable). We can access it by using `time()`. Try it:
+
+
+```{r time, exercise=TRUE, exercise.eval=FALSE}
+# Extract time information
+time(x1)
+```
+
+As you can see, the ts object index stores time as a fraction, not a date. To convert the time index to date formats, we can use `as.Date()`, `as.yearmon()`, `as.yearqtr()` which are part of the `zoo` package.
+
+```{r time2, exercise=TRUE, exercise.eval=FALSE}
+# Extract time information
+as.Date(time(x1))
+
+as.yearmon(time(x1))
+```
 
 ***
 
@@ -250,9 +267,9 @@ mort <- lap[,c(2:3)]
 plot(mort, plot.type="m", xlab="Week", col="blue", lty="solid", main="LA Respiratory and Cardiovascular Mortality, 1970-1979")
 
 # Plot 2: single plot with customisation
-plot(mort, plot.type="s", ylab="Deaths", xlab="Week", col=c("blue","red"), lty=c("solid","dashed"), ylim=c(0, 150), main="LA Respiratory and Cardiovascular Mortality, 1970-1979")
+plot(mort, plot.type="s", ylab="Deaths", xlab="Week", col=c("blue","red"), lty=c("solid","solid"), ylim=c(0, 150), main="Fig 1: LA Respiratory and Cardiovascular Mortality, 1970-1979")
 # Add a legend
-legend("topright", legend=c("Respiratory","Cardiovascular"), col=c("blue","red"), lty=c("solid","dashed"), cex=.8)
+legend("topright", legend=c("Respiratory","Cardiovascular"), col=c("blue","red"), lty=c("solid","solid"), cex=.8)
 ```
 
 Think about when you would prefer each of these types of plots - what are the strengths and weaknesses of each?
@@ -473,10 +490,10 @@ Another use for `decompose()` is to "seasonally adjust" your data by removing th
 deseason <- h02/dec$seasonal
 
 # Combine the original time series with the deseasoned time series 
-h02_d <- ts.union(h02, deseason)
+h02.d <- ts.union(h02, deseason)
 
 # Plot them both on the same graph
-plot(h02_d, plot.type="s", ylim=c(0,1.5), col=c("blue","red"), lty=c("solid","dashed"), ylab="Corticosteroid Rx (millions)", xlab="Month")
+plot(h02.d, plot.type="s", ylim=c(0,1.5), col=c("blue","red"), lty=c("solid","dashed"), ylab="Corticosteroid Rx (millions)", xlab="Month")
 legend("topleft", legend=c("Observed","Seasonally adjusted"), col=c("blue","red"), lty=c("solid","dashed"))
 ```
 
@@ -485,10 +502,10 @@ legend("topleft", legend=c("Observed","Seasonally adjusted"), col=c("blue","red"
 You can also plot the smoothed trend along with the raw data.
 ```{r trend, exercise=TRUE, exercise.eval=FALSE, fig.height=4, fig.width=5,tidy=TRUE,  exercise.setup="dec"}
 # Combine the original time series with the trend information
-h02_t <- ts.union(h02, dec$trend)
+h02.t <- ts.union(h02, dec$trend)
 
 # Plot them both on the same graph
-plot(h02_t, plot.type="s", ylim=c(0,1.5), col=c("blue","red"), lty=c("solid","dashed"), ylab="Corticosteroid Rx (millions)", xlab="Month")
+plot(h02.t, plot.type="s", ylim=c(0,1.5), col=c("blue","red"), lty=c("solid","dashed"), ylab="Corticosteroid Rx (millions)", xlab="Month")
 legend("topleft", legend=c("Observed","Trend"), col=c("blue","red"), lty=c("solid","dashed"))
 ```
 
@@ -874,12 +891,12 @@ plot(h02, ylim=c(0,1.5), ylab="Corticosteroid Rx (millions)", xlab="Month")
 
 # Aggregate from monthly to quarterly data
 # nfrequency is the new frequency, FUN is the function
-h02_qtr <- aggregate(h02, nfrequency=4, FUN=sum)
-plot(h02_qtr, ylim=c(0,4), ylab="Corticosteroid Rx (millions)", xlab="Quarter")
+h02.qtr <- aggregate(h02, nfrequency=4, FUN=sum)
+plot(h02.qtr, ylim=c(0,4), ylab="Corticosteroid Rx (millions)", xlab="Quarter")
 
 # Aggregate from monthly to yearly data
-h02_yr <- aggregate(h02, nfrequency=1, FUN=sum)
-plot(h02_yr, ylim=c(0,15), ylab="Corticosteroid Rx (millions)", xlab="Year")
+h02.yr <- aggregate(h02, nfrequency=1, FUN=sum)
+plot(h02.yr, ylim=c(0,15), ylab="Corticosteroid Rx (millions)", xlab="Year")
 ```
 
 Compare the three plots, and think about the pros and cons of each one. 
@@ -1209,6 +1226,9 @@ quiz(caption = "Quiz 3.1: Basic models",
     answer("A PACF plot that tails off indicates that an MA term is needed", correct=FALSE),
     random_answer_order = FALSE, allow_retry = TRUE))
 ```
+
+
+![**Figure.** Flow chart for ARIMA model selection (Source:Adapted from Hyndman and Athanasopoulous https://otexts.com/fpp2/)](images/flow.png)
 
 ***
 
