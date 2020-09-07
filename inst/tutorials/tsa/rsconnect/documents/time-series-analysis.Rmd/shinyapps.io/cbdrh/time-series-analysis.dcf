@@ -5,9 +5,8 @@ account: cbdrh
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1643110
-bundleId: 2718620
+bundleId: 3601444
 url: https://cbdrh.shinyapps.io/time-series-analysis/
-when: 1578633112.02058
+when: 1599464485.00789
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: data/.DS_Store|images/.DS_Store

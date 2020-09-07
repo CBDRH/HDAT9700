@@ -31,49 +31,46 @@ library("gridExtra")
 library("prais")
 
 data(UKDriverDeaths)
-UKDD <- window(UKDriverDeaths, start=c(1975,1)) %>% ts(start=c(1975,01), frequency=12)
-
-belt <- as.numeric(as.yearmon(time(UKDD))>='Feb 1983') %>% ts(start=c(1975,1), frequency=12)
-
-UKDD.time <- seq(from=1, to=length(UKDD)) %>% ts(start=c(1975,01), frequency=12)
-
-belt.after <- ifelse(as.yearmon(time(UKDD))<'Feb 1983', 0, UKDD.time-sum(belt==0)) %>% ts(start=c(1975,01), frequency=12)
-
-belt.lag <- as.numeric(as.yearmon(time(UKDD))>='Mar 1983') %>% ts(start=c(1975,01), frequency=12)
-
-belt.after.lag <- ifelse(as.yearmon(time(UKDD))<'Mar 1983', 0, UKDD.time-sum(belt.lag==0)) %>% ts(start=c(1975,01), frequency=12)
+UKDD <- window(UKDriverDeaths, start=c(1975,1)) %>% ts(start=c(1975,1), frequency=12)
+belt <- append(rep(0,sum(as.Date(UKDD)<'1983-02-01')),rep(1,sum(as.Date(UKDD)>='1983-02-01'))) %>% ts(start=c(1975,1), frequency=12)
+UKDD.time <- seq(1, length(UKDD)) %>% ts(start=c(1975,01), frequency=12)
+belt.after <- append(rep(0,sum(as.Date(UKDD)<'1983-02-01')),seq(1,sum(as.Date(UKDD)>='1983-02-01')))%>% ts(start=c(1975,01), frequency=12)
+belt.lag <- append(rep(0,sum(as.Date(UKDD)<'1983-03-01')),rep(1,sum(as.Date(UKDD)>='1983-03-01'))) %>% ts(start=c(1975,1), frequency=12)
+belt.after.lag <- append(rep(0,sum(as.Date(UKDD)<'1983-03-01')),seq(1,sum(as.Date(UKDD)>='1983-03-01')))%>% ts(start=c(1975,01), frequency=12)
 UKDD.mon <- seasonaldummy(UKDD)
 
 alprazolam <- read.csv(file="data/alprazolam.csv", header=TRUE)
 alp <- ts(alprazolam, start=c(2014,7), end=c(2018,6), frequency=12 )
-step <- as.numeric(as.yearmon(time(alp))>='Feb 2017')
+step <- append(rep(0,sum(as.Date(alp)<'2017-02-01')),rep(1,sum(as.Date(alp)>='2017-02-01')))
 time <- seq(from=1, to=length(alp))
-after <-ifelse(as.yearmon(time(alp))<'Feb 2017', 0, time-(sum(step==0)))
-step.lag1 <-as.numeric(as.yearmon(time(alp))>='Mar 2017')
-after.lag1 <-ifelse(as.yearmon(time(alp))<'Mar 2017', 0, time-(sum(step.lag1==0)))
+after <- append(rep(0,sum(as.Date(alp)<'2017-02-01')), seq(1,sum(as.Date(alp)>='2017-02-01')))
+step.lag1 <- append(rep(0,sum(as.Date(alp)<'2017-03-01')),rep(1,sum(as.Date(alp)>='2017-03-01')))
+after.lag1 <- append(rep(0,sum(as.Date(alp)<'2017-03-01')), seq(1,sum(as.Date(alp)>='2017-03-01')))
 
 month <- seasonaldummy(alp)
-model1 <- glm(alp ~ time + month + step + after)
-model2 <- glm(alp ~ time + month + step.lag1 + after.lag1)
+model1 <- lm(alp ~ time + month + step + after)
+model2 <- lm(alp ~ time + month + step.lag1 + after.lag1)
 
-UKDD.model1 <- glm(UKDD ~ UKDD.time + belt + belt.after+ UKDD.mon)
-UKDD.model2 <- glm(UKDD ~ UKDD.time + belt + belt.after + UKDD.mon)
-
-belt.after.lag <- ifelse(as.yearmon(time(UKDD))<'Mar 1983', 0, UKDD.time-sum(belt.lag==0)) %>% ts(start=c(1975,01), frequency=12)
-
-UKDD.model3 <- glm(UKDD ~ UKDD.time + belt.lag + belt.after.lag + UKDD.mon )
+UKDD.model1 <- lm(UKDD ~ UKDD.time + belt + belt.after + UKDD.mon)
+UKDD.model2 <- lm(UKDD ~ UKDD.time + belt.lag + belt.after.lag + UKDD.mon)
 
 nobelt <- data.frame(belt=rep(0, length(belt)))
 noslope <- data.frame(belt.after=rep(0, length(belt)))
-UKDD.cf <- predict.lm(UKDD.model2, newdata=c(nobelt,noslope))
+UKDD.cf <- predict.lm(UKDD.model1, newdata=c(nobelt,noslope))
 UKDD.cf <- ts.union(UKDD, UKDD.cf)
 
 smallpox <- read.csv(file="data/smallpox.csv", header=TRUE) 
+sp <- ts(smallpox[,2], start=1750, frequency=1)
+sp.time <- seq(1, length(sp))
+sp.vax <- append(rep(0,sum(time(sp)<'1796')), rep(1,sum(time(sp)>='1796')))
+sp.after <- append(rep(0,sum(time(sp)<'1796')), seq(1,sum(time(sp)>='1796')))
+sp.model1 <- lm(log(sp) ~ sp.time + sp.vax + sp.after)
+sp.model2 <- sarima(log(sp), p=1, d=0, q=0, xreg=cbind(sp.time, sp.vax, sp.after))
 
 quetiapine <- read.csv(file="data/quetiapine.csv", header=TRUE)
 quet <- as.data.frame(quetiapine[,2]) %>% ts(start=c(2011,1), end=c(2014,12), frequency=12)
-quet.step <- ts(as.numeric(as.yearmon(time(quet))>='Jan 2014'), start=c(2011,1), frequency=12)
-quet.ramp <- ts(as.numeric(append(rep(0,36), seq(1,12,1))), start=c(2011,1), frequency=12)
+quet.step <- ts(append(rep(0,sum(as.Date(quet)<'2014-01-01')),rep(1,sum(as.Date(quet)>='2014-01-01'))), start=c(2011,1), frequency=12)
+quet.ramp <- ts(append(rep(0,sum(as.Date(quet)<'2014-01-01')),seq(1,sum(as.Date(quet)>='2014-01-01'))), start=c(2011,1), frequency=12)
 
 quet.model1 <- sarima(quet, p=2, d=1, q=0, P=0, D=1, Q=1, S=12, xreg=cbind(quet.step, quet.ramp), details=FALSE)
 
@@ -230,7 +227,7 @@ ITS analysis is most useful for evaluation of large-scale, population-level inte
 
 Ideally, the intervention to be assessed should occur at a well defined point in time (as opposed to a gradual roll-out). If an intervention occurs over a set period in time (e.g. several months), that period can be excluded from the modelling, or modelled separately. However, there should be a clearly defined "before" period and "after" period to make valid causal inference.
 
-In some cases, there may also be an "anticipatory" period. For example, when alprazolam (a benzodiazpine used to treat panic disorder) was rescheduled from a "Prescription-Only" medicine to a "Controlled Drug" on 1 February 2014, the decision was actually announced on 28 June 2013. Therefore, prescribing started to decline prior to the actual intervention date. In this scenario, it may be appropriate to model this "anticipatory" period so that it can be estimated along with the impact of the actual implementation of the intervention. 
+In some cases, there may also be an "anticipatory" period. For example, when alprazolam (a benzodiazepine used to treat panic disorder) was rescheduled from a "Prescription-Only" medicine to a "Controlled Drug" on 1 February 2014, the decision was actually announced on 28 June 2013. Therefore, prescribing started to decline prior to the actual intervention date. In this scenario, it may be appropriate to model this "anticipatory" period so that it can be estimated along with the impact of the actual implementation of the intervention. 
 
 ![**Figure 1.3.** Alprazolam prescribing in Australia (Schaffer et al. 2016. *JAMA Intern Med*)](images/schaffer_alprazolam.png)
 
@@ -392,7 +389,7 @@ $$T_t=  1,2,3,...i $$
 The intervention variable ($X_t$) is defined as 0 before the intervention and 1 after:
 
 $$ X_t= \begin{cases} 0, & \text{if} \;t<T_I \\1, & \text{if}\;t \geq T_I \end{cases} $$
-The time since the intervention ($A_t$) is defined as 0 before the intervention and increases by 1 after:
+The time since the intervention ($R_t$) is defined as 0 before the intervention and increases by 1 after:
 
 $$ R_t =  \begin{cases} 0, & \text{if} \;t<T_I \\1,2,3,...i, & \text{if}\;t \geq T_I \end{cases} $$
 A pulse is defined as 1 at the time of the intervention, and 0 otherwise:
@@ -490,17 +487,17 @@ print(belt.after)
 
 #### Delayed effects
 
-If you suspect that the impact of the intervention has been delayed, you can deal with this by creating new intervention variables that are shifted by 1, 2, etc. To determine the most appropriate lag, you can create several models with the intervention starting at different lags - the most appropriate model would be the one where the intervention variable has the smallest p-value. Information criteria (AIC, BIC) can also be used to compare models. Note that it is better to create a new intervention variable, rather than just "lagging" the original one, as the latter will result in the first observation being dropped. Don't forget to also recreate the "time since intervention" variable to start lagged at one month too!
+If you suspect that the impact of the intervention has been delayed, you can deal with this by creating new intervention variables that are shifted by 1, 2, etc. To determine the most appropriate lag, you can create several models with the intervention starting at different lags - the most appropriate model would be the one with the lowest AIC or BIC. Note that it is better to create a new intervention variable, rather than just "lagging" the original one, as the latter will result in the first observation being dropped. Don't forget to also recreate the "time since intervention" variable to start lagged at one month too!
 
 It is important to only consider lagged or delayed effects when it makes sense from a practical or clinical perspective - given what you know about the intervention and outcome, is it possible that the impact could be delayed?
 
 ```{r shift, exercise=TRUE, exercise.eval=FALSE}
 # Create vector for introduction of seatbelt law, lagged by one month
-belt.lag <- append(rep(0,sum(as.Date(UKDD)<='1983-03-01')), rep(1,sum(as.Date(UKDD)>'1983-03-01'))) %>% ts(start=c(1975,01), frequency=12)
+belt.lag <- append(rep(0,sum(as.Date(UKDD)<='1983-02-01')), rep(1,sum(as.Date(UKDD)>'1983-02-01'))) %>% ts(start=c(1975,01), frequency=12)
 print(belt.lag)
 
 # Create vector for time since intervention
-belt.after.lag <- append(rep(0,sum(as.Date(UKDD)<='1983-03-01')), seq(1,sum(as.Date(UKDD)>'1983-03-01'))) %>% ts(start=c(1975,01), frequency=12)
+belt.after.lag <- append(rep(0,sum(as.Date(UKDD)<='1983-02-01')), seq(1,sum(as.Date(UKDD)>'1983-03-01'))) %>% ts(start=c(1975,01), frequency=12)
 print(belt.after.lag)
 ```
 
@@ -526,9 +523,9 @@ If the seasonality occurs in an oscillating patterns (as with hospital admission
 
 #### Autocorrelation 
 
-Recall that one of the key assumptions of a linear regression is that the residuals are independent and not correlated. After fitting your segmented regression model, you need to check for autocorrelation of the residuals. The best way to do this is using the Durbin-Watson or Ljung-Box test, which we will cover later. 
+Recall that one of the key assumptions of a linear regression is that the residuals are independent and not correlated. Sometimes, adjusting for trend and seasonality will be enough to eliminate autocorrelation. 
 
-If there is remaining autocorrelation after adjusting for trend and seasonality, you may have to incorporate autoregressive terms. Recall that in an autoregressive model, the outcome is predicted using past values of the outcome itself. If there is only first-order autocorrelation, then you can use the Prais-Winsten estimator, which we will see later. However, if there is higher order autocorrelation you may want to consider an ARIMA model which we will discuss in Lecture 3.
+After fitting your segmented regression model, you need to check for autocorrelation of the residuals. The best way to do this is using the Ljung-Box test, which we will cover later. If there is remaining autocorrelation after adjusting for trend and seasonality, you may have to incorporate autoregressive terms. Recall that in an autoregressive model, the outcome is predicted using past values of the outcome itself. We will discuss how to do this in Lecture 3.
 
 
 ***
@@ -548,7 +545,7 @@ quiz(caption = "Quiz 2.2: Dummy variables and lag variables ",
  
 ### Visualising interventions
 
-When performing an ITS analysis, you should indicate the date of the intervention together with the raw data. We'll do it below using `abline()`. 
+When performing an ITS analysis, when you plot the raw data you should indicate the date of the intervention. We'll do it below using `abline()`. 
 
 Note that `as.Date()` doesn't work with `abline()` - so instead we'll use the numeric version of the date. If you aren't sure what that is, you can check using `time()`.
 
@@ -624,7 +621,7 @@ after <-
 ```
 ```{r exercise2_1-hint-1}
 # To create intervention variable use:
-step <- append(rep(0,sum(as.Date(UKDD)<'2017-02-01')),rep(1,sum(as.Date(alp)>='2017-02-01')))
+step <- append(rep(0,sum(as.Date(alp)<'2017-02-01')),rep(1,sum(as.Date(alp)>='2017-02-01')))
                
 ```
 ```{r exercise2_1-hint-2}
@@ -640,7 +637,6 @@ after <- append(rep(0,sum(as.Date(alp)<'2017-02-01')),seq(1,sum(as.Date(alp)>='2
 #### Exercise 2.2 Creating seasonal dummy variables
 ```{r exercise2_2, exercise.cap = "Exercise 2.2", exercise=TRUE,  exercise.eval=FALSE, exercise.lines=9, fig.width=6, fig.height=8}
 # Plot the decomposed series
-plot(decompose(alp))
 
 # Create seasonal dummy variables
 month <-
@@ -650,6 +646,10 @@ month <-
 
 ```
 ```{r exercise2_2-hint-1}
+# To plot decomposed series use:
+plot(decompose(alp))
+```
+```{r exercise2_2-hint-2}
 # To create seasonal dummy variables, use:
 seasonaldummy(alp)
 ```
@@ -726,7 +726,7 @@ Box.test(UKDD, type='Ljung-Box', lag=12)
 * The plot of the decomposed series tells us that the trend in deaths is fairly constant until it drops in 1983 (our hypothesised change point);
 * The seasonal plot tells us that driver deaths are most common in December, and that 1983 and 1984 (after the intervention) appear to have the lowest number of deaths;
 * The ACF plot confirms that there is significant monthly seasonality, with a large spike at lag 12 (lag 1.0 on the plot) and thus we will need to include seasonal dummy variables in our model.
-* The p-value is very small, and thus we reject the null hypothesis of no autocorrelation. However, sometimes autocorrelation is simply the result of trend or seasonality, and once we adjust for these autocorrelation will no longer be a problem. Thus, once we fit our regression model we will retest our residuals for the presence of autocorrelation.
+* The Ljung-Box test p-value is very small, and thus we reject the null hypothesis of no autocorrelation. However, sometimes autocorrelation is simply the result of trend or seasonality, and once we adjust for these autocorrelation will no longer be a problem. Thus, once we fit our regression model we will retest our residuals for the presence of autocorrelation.
 
 Based on this information, we can hypothesise that the impact of this intervention was a *step change*. However, we will also test for a change in slope. 
 
@@ -801,7 +801,7 @@ AIC(UKDD.model2)
 text_tbl <- data.frame(
   Param = c("Intercept","Baseline trend","Level shift","Change in trend","AIC"),
   Model1 =c("2077 (1995, 2159)","-0.1 (-0.9, 0.7)","-363 (-469, -257)","5.8 (-1.3, 12.8)","1485.3"),
-  Model2 = c("2099 (2012, 2186)","-0.5 (-1.3, 0.3)","-327 (-444, -210)","6.2 (-2.4, 14.8)","1530.5"))
+  Model2 = c("2090 (2004, 2176)","-0.3 (-1.2, 0.5)","-338 (-458, -219)","5.2 (-2.7, 13.1)","1497.2"))
 
 kable(text_tbl, col.names=c("Parameter","Model 1, Estimate (95% CI)", "Model 2, Estimate (95% CI)"), align="c") %>%
   kable_styling(full_width = F, font_size=12,  position="left") %>%
@@ -843,6 +843,8 @@ legend ("topright", legend=c("Observed","Predicted"), col=c("blue","red"), lty=c
 
 ```
 
+The red line in this figure represents the number of deaths we would have expected to see if the seatbelt law had not been implemented.
+
 ***
 
 ### Autoregressive Integrated Moving Average models (ARIMA)
@@ -850,14 +852,14 @@ legend ("topright", legend=c("Observed","Predicted"), col=c("blue","red"), lty=c
 Sometimes, segmented regression is not sufficient or appropriate. For instance, your time series may have cyclic trends, or complex seasonality (e.g. daily or weekly) that are difficult to capture with dummy variables. 
 
 
-#### Autoregressive model
+#### Autoregressive models
 
 We will start with the simplest example, an autoregressive (AR) model. If your model has residual autocorrelation even after controlling for trend and seasonality, you may require an AR model.
 
-Let's use data on the percentage of deaths in London due to smallpox (`smallpox`). These are yearly data from 1750 to 1831 from OUr World in Data (https://ourworldindata.org/smallpox). The vaccine was invented in 1796. We are testing the hypothesis that the smallpox vaccine led to a reduction in smallpox deaths.
+Let's use data on the percentage of deaths in London due to smallpox (`smallpox`). These are yearly data from 1750 to 1831 from Our World in Data (https://ourworldindata.org/smallpox). The vaccine was invented in 1796. We are testing the hypothesis that the smallpox vaccine led to a reduction in smallpox deaths.
 
 First, visualise the data. Since these are yearly data, there is no seasonality. 
-```{r sp, eval=TRUE, fig.width=6, fig.height=5}
+```{r sp, eval=TRUE, fig.width=8, fig.height=5}
 # Transform to time series object
 sp <- ts(smallpox[,2], start=1750, frequency=1)
 
@@ -867,18 +869,20 @@ abline(v=1796, col="red", lwd=2, lty="dashed")
 ```
 
 Hmm, the variance seems greater at the beginning than later in the season. If we look at the histogram, we can also see that the distribution is skewed.
-```{r sp.hist, eval=TRUE, fig.width=6, fig.height=5}
-hist(sp)
+
+```{r sp.hist, eval=TRUE, fig.width=8, fig.height=5}
+hist(sp, main="Histogram of smallpox deaths (%)")
 ```
 
 Let's stabilise the variance by log tranforming our series.
-```{r sp2, eval=TRUE, exercise.eval=FALSE, fig.width=6, fig.height=5}
-# Plot histogram of log transformed time series
-hist(log(sp))
-
+```{r sp2, eval=TRUE, exercise.eval=FALSE, fig.width=8, fig.height=5}
 # Plot log transformed time series
 plot(log(sp), col='navy', ylim=c(0,4), ylab='Log of deaths (%) due to smallpox', xlab='Year', main='Percentage of all deaths in London due to smallpox (1750-1831)')
 abline(v=1796, col="red", lwd=2, lty="dashed")
+
+# Plot histogram of log transformed time series
+hist(log(sp), main="Histogram of smallpox deaths,\nlog transformed")
+
 ```
 
 That looks better. 
@@ -908,32 +912,33 @@ sp.model1 <- lm(log(sp) ~ sp.time + sp.vax + sp.after)
 
 # Check for residual autocorrelation, using either the Ljung-Box test or Durbin Watson test
 Box.test(sp.model1$residuals, type="Ljung-Box", lag=1)
-acf(sp.model1$residuals)
+acf2(sp.model1$residuals)
 ```
 
 Hmm, the p-value for the Ljung-Box test is very small, indicating significant residual first-order autocorrelation in the model. In the ACF and PACF plots, we see that there is significant negative autocorrelation at lag 1 (based on the PACF, the significant autocorrelation at lag 2 is entirely due to autocorrelation at lag 1). This suggest an AR(1) model. We should therefore try our linear regression adjusted for autocorrelation only. 
 
-To do so, we will specify out AR model using `sarima()` in the `astsa` package. We will start with specifying an AR(1) model, with p=1. Since this is an AR model, we also specify that d=0 and q=0. We also specify the regression variables using `xreg=`. 
+To do so, we will specify an AR model using `sarima()` in the `astsa` package. We will start with specifying an AR(1) model, with *p*=1. Since this is an AR model, we also specify that *d*=0 and *q*=0 (recall from last chapter that *p* is the AR order of the model, *d* is the order of differencing, and *q* is the MA order). We also include the regression variables using `xreg=`. 
 
 ```{r sp5, exercise=TRUE, exercise.eval=FALSE}
-# Apply Prais-Winsten estimator to original model 
+# Apply AR(1) model to data
 sp.model2 <- sarima(log(sp), p=1, d=0, q=0, xreg=cbind(sp.time, sp.vax, sp.after))
 ```
 
-`sarima()` automatically produces the residuals plots, with the Ljung-Box test at the bottom. As the dots are all above the blue line for the Ljung-Box statistic, this indicates no autocorrelation at any lag. Our final model is an AR(1) model - that is, an autoregressive model with 1 order of autocorrelation. Let's get our final estimates:
+`sarima()` automatically produces the residuals plots, with the Ljung-Box test at the bottom. As the dots are all above the blue line for the Ljung-Box statistic, this indicates no more autocorrelation. Our final model is an AR(1) model - that is, an autoregressive model with 1 order of autocorrelation. Let's get our final estimates:
 
-```{r sp5, exercise=TRUE, exercise.eval=FALSE}
+```{r sp6, exercise=TRUE, exercise.eval=FALSE}
 sp.model2$fit
 confint(sp.model2$fit)
 ```
 
-Given that our outcome was log transformed, we will need to back transform the estimates using the (exp(estimate)-1)*100, and the resulting estimates can be interpreted as a percentage change. Here are our estimates:
+Given that our outcome was log transformed, we will need to back transform the estimates using the
+$(e^{estimate}-1)*100$, and the resulting estimates can be interpreted as a percentage change. Here are our estimates:
 
-* Baseline slope: -0.1% (-0.7% to 0.3%)
-* Step change: 2.6% (-16.4% to 21.6%)
-* Change in slope: -3.4% (-4.2% to -2.5%)
+* Baseline slope: -0.1% (-0.6% to 0.3%)
+* Step change: 2.6% (-15.1% to 24.1%)
+* Change in slope: -3.3% (-4.1% to -2.5%)
 
-This means that prior to the vaccine, the proportion of deaths due to smallpox was stable. After the vaccine was invented, there was no evidence of a step change in the number of deaths; however, the percentage of deaths due to smallpox decreased by 3.4% per year (95% CI -4.2% to -2.5%).
+This means that prior to the vaccine, the proportion of deaths due to smallpox was stable (no change). After the vaccine was invented, there was no evidence of a step change in the number of deaths; however, the percentage of deaths due to smallpox decreased by 3.3% per year (95% CI -4.1% to -2.5%).
 
 Now while the vaccine was discovered in 1796, it may have taken some time to have widespread usage. Therefore, we would also test for a delayed impact (e.g. with the change starting in 1797 or 1798), which can be done following the approach described above.
 
@@ -941,13 +946,13 @@ Now while the vaccine was discovered in 1796, it may have taken some time to hav
 
 #### Full ARIMA model
 
-One option is the autoregressive model described above, which is a specific type of ARIMA model. Here we will discuss full ARIMA models, where the trend is eliminated via differencing, rather than including time as a covariate in the model, which is only appropriate with linear trends.
+The autoregressive model described above is a specific type of ARIMA model. Now we will discuss full ARIMA models, where the trend is eliminated via differencing, rather than including time as a covariate in the model, which is only appropriate with linear trends.
 
 Essentially what ARIMA does is forecasts $Y_t$ in the absence of the intervention, and determines how the observed diverges from that forecast. We will use what we learned in the previous chapter to fit an ARIMA model to an ITS analysis.
 
 Let's use the time series `quet`. It includes the monthly dispensings for the antipsychotic quetiapine in Australia from January 2011 to December 2014 (48 time points). Quetiapine is subsidised by the PBS for treatment of schizophrenia and bipolar I disorder. The lowest strength tablet is meant to be used for dose titration, but is commonly prescribed off-label for conditions such as insomnia. Note that "off-label" means prescribed for an indication other than the one for which it is registered or approved. 
 
-In January 2014, the PBS decided to eliminate repeat prescriptions for the lowest tablet strength (Brett et al. [The impact of permissive and restrictive pharmaceutical policies on quetiapine dispensing: Evaluating a policy pendulum using interrupted time series analysis.](https://onlinelibrary.wiley.com/doi/full/10.1002/pds.4408)). 
+In January 2014, the PBS decided to eliminate repeat prescriptions for the lowest tablet strength ([Brett et al.](https://onlinelibrary.wiley.com/doi/full/10.1002/pds.4408)). 
 
 The hypothesis we will test is that the change to subsidy of quetiapine was associated with a decline in its dispensing. 
 
@@ -955,7 +960,7 @@ Let's start by exploring the data.
 
 *** 
 
-#### Step 1. Stationarity and seasonality
+##### Step 1. Stationarity and seasonality
 
 Check for trends, non-constant variance, and seasonal effects, visually and/or using formal tests. Determine the necessary order of first differencing (*d*) and seasonal differencing (*D*).
 
@@ -986,7 +991,7 @@ acf(quet, lag=24)
 
 ***
 
-#### Step 2. Set up data
+##### Step 2. Set up data
 
 Setting up your data for an ARIMA model is very similar to a segmented regression. However, the "time since start of study" variable and seasonal dummy variables are not needed, as ARIMA deals with trends and seasonality by differencing. 
 
@@ -1019,7 +1024,7 @@ quiz(caption = "Quiz 3.1: ITS ARIMA models",
 
 ***
 
-#### Step 3. Identify AR and MA orders
+##### Step 3. Identify AR and MA orders
 
 Using the ACF and PACF plot, identify the potential AR (*p*) and MA (*q*) orders, and the seasonal AR (*P*) and MA (*Q*) orders. Make sure to do this on the differenced series.
 
@@ -1030,37 +1035,33 @@ acf2(diff(diff(quet), lag=12))
 
 Hmm, the ACF and PACF aren't particularly useful in this case. Let's check with `auto.arima()` - make sure to prespecify *d* and *D* based on what we found above. 
 
-Here we also specify our external variables to include in our ARIMA model (step, ramp), using the argument `xreg=`. Note that you do not have to include the "time since start of study" variable, or the seasonal dummies, in an ARIMA model, as the differencing eliminates the trend. We will also specify `stepwise=FALSE` so that `auto.arima` searches all possible models.
+Here we also specify our external variables to include in our ARIMA model (step, ramp), using the argument `xreg=`. Note that you do not have to include the "time since start of study" variable, or the seasonal dummies, in an ARIMA model, as the differencing eliminates the trend. We will also specify `stepwise=FALSE` so that `auto.arima` searches all possible models (note: it may take a minute or two to run!)
 
 ```{r 98098, exercise=TRUE, exercise.eval=FALSE}
 # Check for most appropriate AR/MA orders
-auto.arima(quet, d=1, D=1, xreg=cbind(quet.step, quet.ramp), ic="bic", stepwise=FALSE)
-auto.arima(quet, d=1, D=1, xreg=cbind(quet.step, quet.ramp), ic="aic", stepwise=FALSE)
+auto.arima(quet, d=1, D=1, xreg=cbind(quet.step, quet.ramp), stepwise=FALSE)
 ```
 
-Both AIC and BIC suggest that the model is $(2,1,0)\times(0,1,1)_{12}$.
+`auto.arima()` suggests the best model based on the lowest information criteria (AIC, BIC). It suggests that our model is $(2,1,0)\times(0,1,1)_{12}$.
 
 ***
 
-#### Step 4. Model Estimation 
+##### Step 4. Model Estimation 
 
-Next, fit the proposed model and check the model fit. Make sure to include the step and ramp functions when specifying the model - like before, you do this by including the argument `xreg=`.
+Next, fit the proposed model and check the model fit using `sarima()`. Make sure to include the step and ramp functions when specifying the model - like before, you do this by including the argument `xreg=`.
 
 ```{r sarima1, exercise=TRUE, exercise.eval=FALSE, fig.width=6, fig.height=7}
 # Model estimation
-sarima(quet, p=2, d=1, q=0, P=0, D=1, Q=1, S=12, xreg=cbind(quet.step, quet.ramp))
+quet.model1 <- sarima(quet, p=2, d=1, q=0, P=0, D=1, Q=1, S=12, xreg=cbind(quet.step, quet.ramp))
 ```
 
-The model fits looks good.
+The model fits looks good, and the Ljung-Box test is nonsignificant at all lags.
 
 ***
 
 Now, let's get our final estimates:
 
 ```{r sarima3, exercise=TRUE, exercise.eval=FALSE}
-# Model estimation 
-quet.model1 <- sarima(quet, p=2, d=1, q=0, P=0, D=1, Q=1, S=12, xreg=cbind(quet.step, quet.ramp))
-
 # Get estimates and confidence intervals
 quet.model1$fit
 confint(quet.model1$fit)
@@ -1068,7 +1069,7 @@ confint(quet.model1$fit)
 
 ***
 
-#### Final model
+##### Final model
 
 Our final model is $(2,1,0)\times(0,1,1)_{12}$.
 
