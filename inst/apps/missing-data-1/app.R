@@ -1,11 +1,10 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
+###################################################################
+# Program:  Master of Science in Health Data Science, UNSW Sydney
+# Course:   HDAT9700
+# Chapter:  Missing data and multiple imputation
+# Topic:    Missing data bias
+# Author:   Mark Hanly
+###################################################################
 
 library(shiny)
 library(shinydashboard)
@@ -106,7 +105,7 @@ server <- function(input, output) {
     output$plot1 <- renderPlot({
 
         ggplot(data=df(), aes(x=height, fill=Missing)) +
-            geom_histogram(alpha = 0.6, position = "identity") +
+            geom_histogram(alpha = 0.6, position = "identity", bins = 30) +
             scale_fill_manual(values=c("#fdae6b", "darkseagreen2")) +
             geom_vline(xintercept = mean(df()$height[df()$Missing]), color = "darkseagreen4", size = 1.5, linetype = "dashed") +
             geom_vline(xintercept = mean(df()$height[!df()$Missing]), color = "#e6550d", size = 1.5, linetype = "dashed") +

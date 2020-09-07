@@ -102,6 +102,23 @@
   margin-right: 0.5em;
 }
 
+.shiny {
+  display: block;
+  border: 1px solid black;
+  padding: 0 0.5em;
+  margin-bottom: 1em;
+}
+
+.shiny > h3::before {
+  content: " ";
+  background: url('../images/shiny-logo.png') no-repeat;
+  background-size: 100px auto;
+  width: 100px;
+  height: 100px;
+  float: left;
+  margin-right: 0.5em;
+}
+
 .copyright {
   color: lightgray;
   font-size: small;

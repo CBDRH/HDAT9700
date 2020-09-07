@@ -68,6 +68,23 @@
   margin-right: 0.5em;
 }
 
+.think {
+  display: block;
+  border: 1px solid black;
+  padding: 0 0.5em;
+  margin-bottom: 1em;
+}
+
+.think > h3::before {
+  content: " ";
+  background: url('../images/think.png') no-repeat;
+  background-size: 60px auto;
+  width: 60px;
+  height: 86px;
+  float: left;
+  margin-right: 0.5em;
+}
+
 .aside {
   display: block;
   border: 1px solid black;

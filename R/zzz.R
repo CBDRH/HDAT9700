@@ -3,7 +3,7 @@
   packageStartupMessage(sample(c("'Essentially, all models are wrong, but some are useful' - George E.P. Box, British statistician",
                                  "'You can’t use up creativity. The more you use, the more you have.' - Mary Angelou, American poet, singer, memoirist, and civil rights activist",
                                  "'I am the walrus' - Lennon-McCartney",
-                                 "'A trend is a trend is a trend, but the question is where will it end?' - unknown Jesuit eduacator",
+                                 "'A trend is a trend is a trend. But the question is, will it bend? Will it alter its course through some unforeseen force and come to a premature end?' - Alexander Cairncross, British Economist",
                                  "'The Analytical Engine has no pretensions whatever to originate anything. It can do whatever we know how to order it to perform.' - Ada Lovelace, English mathematician and writer",
                                  "'Draw your assumptions before your conclusions' - Miguel Hernan, Spanish-American physician and epidemiologist",
                                  "'Statistics is the grammer of Science' - Karl Pearson, English statistician",

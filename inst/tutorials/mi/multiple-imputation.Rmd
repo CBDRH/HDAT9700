@@ -452,7 +452,7 @@ You will learn the functions:
 
 #### Exercise 1.1 Load the `VIM` library and the sleep data
 ```{r exercise1_1, exercise.cap = "Exercise 1.1", exercise=TRUE, exercise.eval=FALSE}
-data(XXX , package = "VIM")
+# data(XXX , package = "VIM")
 ```
 
 ***
@@ -547,7 +547,7 @@ histMiss(sleep[, c("lnBodyWgt", "NonD")])
 The [`marginsplot`](https://www.rdocumentation.org/packages/VIM/versions/4.7.0/topics/marginplot) function from the `VIM` package plots a scatterplot with additional information in the margins.
 ```{r exercise1_6, exercise.cap = "Exercise 1.6",  exercise=TRUE, exercise.eval=FALSE, exercise.setup = "exercise1.1", exercise.lines=8, fig.width=7, fig.height=7}
 # Use the marginplot function to explore patterns of missing data in the dataset
-marginplot(sleep[, c("XXX", "XXX")])
+# marginplot(sleep[, c("XXX", "XXX")])
 
 ```
 
@@ -875,9 +875,9 @@ In this practical session you will compare some simple  approaches to handling m
 
 #### Exercise 2.1 Load the sleep data and examine the first five rows
 ```{r exercise2_1, exercise.cap = "Exercise 2.1", exercise=TRUE, exercise.eval=FALSE}
-data(XXX , package = "VIM")
+# data(XXX , package = "VIM")
 
-head(XXX , n= XXX)
+# head(XXX , n= XXX)
 
 ```
 
@@ -902,19 +902,19 @@ head(XXX , n= XXX)
 #### Exercise 2.3 Calculate the mean and standard error of the variable NonD using **mean imputation** to fill in missing values.
 ```{r exercise2_3, exercise.cap = "Exercise 2.3", exercise=TRUE, exercise.setup = "exercise2.1", exercise.eval=FALSE, exercise.lines=10}
 # Create a copy of the NonD variable
-sleep$NonD.mean <- XXX
+# sleep$NonD.mean <- XXX
 
 # Replace missing values with the mean of the observed values
-sleep$NonD.mean <- replace(sleep$NonD.mean, XXX, XXX)
+# sleep$NonD.mean <- replace(sleep$NonD.mean, XXX, XXX)
 
 ```
 
 ```{r exercise2_3-hint-1, exercise.eval=FALSE}
-sleep$NonD.mean <- replace(sleep$NonD.mean, is.na(sleep$NonD.mean), XXX)
+# sleep$NonD.mean <- replace(sleep$NonD, is.na(sleep$NonD), XXX)
 ```
 
 ```{r exercise2_3-hint-2, exercise.eval=FALSE}
-sleep$NonD.mean <- replace(sleep$NonD.mean, is.na(sleep$NonD.mean), mean(sleep$NonD,na.rm=TRUE))
+sleep$NonD.mean <- replace(sleep$NonD, is.na(sleep$NonD), mean(sleep$NonD,na.rm=TRUE))
 ```
 
 ***
@@ -924,13 +924,13 @@ sleep$NonD.mean <- replace(sleep$NonD.mean, is.na(sleep$NonD.mean), mean(sleep$N
 ```{r exercise2_4, exercise.cap = "Exercise 2.4", exercise=TRUE, exercise.setup = "exercise2.3", exercise.eval=FALSE, exercise.lines=10}
 
 # Fit a model for the complete values of NonD conditional on the fully observed variables
-imp.model <- lm(XXX <- XXX , data = XXX)
+# imp.model <- lm(XXX <- XXX , data = XXX)
 
 # Create a copy of the NonD variable
-sleep$NonD.reg <- XXX
+# sleep$NonD.reg <- XXX
 
 # Replace missing values with the predicted values from the fitted model
-sleep$NonD.reg <- replace(XXX, XXX, XXX)
+# sleep$NonD.reg <- replace(XXX, XXX, XXX)
 
 ```
 

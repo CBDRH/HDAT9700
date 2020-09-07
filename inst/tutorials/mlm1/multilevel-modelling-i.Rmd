@@ -728,7 +728,7 @@ mod.lm <- lm(birwt ~ mage, data=birwt.dat)
 mod.vc <- lmer(birwt ~ (1|momid), data=birwt.dat)
 
 # Random intercepts model
-mod.ri <- lmer( )
+#mod.ri <- lmer( )
 
 
 # Q1. What is the model estimate of the maternal age parameter (with 95% CIs) based on the simple linear regression
