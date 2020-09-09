@@ -8,6 +8,7 @@ output:
     allow_skip: true
     css: css/tutorials.css
 runtime: shiny_prerendered
+description: "Review five key questions you should be able to answer when starting any statistical analysis: What is your research question? What is your study design? What type of data do you have available? What is you analysis method? What is your purpose? "
 ---
 
 ![](images/UNSW_2017_Big_Data_landscape.jpg){width="75%"}

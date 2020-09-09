@@ -8,6 +8,7 @@ output:
     allow_skip: true
     css: css/tutorials.css
 runtime: shiny_prerendered
+description: "Extend your understanding of multilevel modelling, focusing on model comparison, model predictions and models for binary outcomes"
 ---
 
 ![](images/UNSW_2017_Big_Data_landscape.jpg){width="75%"}
@@ -44,9 +45,13 @@ Welcome to Chapter 7 of HDAT9700: Statistical Modelling II!
 
 In this Chapter we will continue to work on multilevel modelling, covering topics such as model comparison, model predictions and models for binary outcomes
 
+### Pre-reading
+
+The pre-reading for this chapter is [Hanly, Savva, Clifford & Whelan (2014). Variation in Incentive Effects across Neighbourhoods. Survey Research Methods, 8(1)](https://ojs.ub.uni-konstanz.de/srm/article/view/5485/5336). 
+
 ### Core reading:
 
-The reference text for this chapter is Andy Field, Jeremy Miles, Zoë Field (2012) Discovering statistics using R, Chapter 19 (Available in the UNSW library)
+The reference text for this chapter is Andy Field, Jeremy Miles, Zoë Field (2012) Discovering statistics using R, Chapter 19 (Available from the UNSW library, also accessible [here](https://nyu-cdsc.github.io/learningr/assets/discoveringstatistics.pdf))
 
 ### Additional reading: 
 

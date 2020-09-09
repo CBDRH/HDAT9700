@@ -5,6 +5,7 @@ tutorial:
 output: learnr::tutorial
 runtime: shiny_prerendered
 css: css/tutorials.css
+description: "Learn how to describe patterns of missing data, distinguish between different missing data mechanisms and implement multiple imputation of missing data in R"
 ---
 
 ```{r setup, include=FALSE}
@@ -34,6 +35,10 @@ At the end of this chapter you will be able to
 2. Distinguish between three main missing data mechanisms
 3. Implement multiple imputaton, a leading approach to rigourously address missing data 
 
+### Pre-reading
+The pre-reading for this chapter is [Multiple imputation for missing data in epidemiological and clinical research: potential and pitfalls, Jonathan AC Sterne, Ian R White, John B Carlin, Michael Spratt, Patrick Royston, Michael G Kenward, Angela M Wood, James R Carpenter BMJ 2009](https://media.openlearning.com/HauTHqAeFL6gQ2yxK53TQY8YnM7TcngEGnHoXa42JP9GXr8RoSjAeftMXCwWFwpv.1539904807/Sterne_2009_-_Multiple_imputation_for_missing_data_potentials_and_pitfalls.pdf) 
+
+### Core reading 
 The reference text for this chapter is "Flexible Imputation of Missing Data" by Stef Van Buuren, which is available online [here](https://stefvanbuuren.name/fimd/). This is an excellent reference book, but reading an entire book is clearly beyond the scope of a single chapter of this course. Key topics have been extracted and simplified in these notes but please refer to the textbook for a more rigorous treatment as required. 
 
 Let's get started!  

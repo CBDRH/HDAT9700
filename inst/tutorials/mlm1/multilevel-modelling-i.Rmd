@@ -8,6 +8,7 @@ output:
     allow_skip: true
     css: css/tutorials.css
 runtime: shiny_prerendered
+description: "Learn when to use multilevel models and how to fit and interpret basic multilevel models in R"
 ---
 
 ![](images/UNSW_2017_Big_Data_landscape.jpg){width="75%"}
@@ -48,6 +49,10 @@ This chapter introduces multilevel modelling---a statistical approach to analyse
 A case study focusing on birth weight is used throughout for illustration.
 
 ***
+
+### Pre-reading
+
+The pre-reading for this chapter is [Murder, muddled thinking and multilevel modelling by Martin Cartwright, Gemma Traviss and Andrew Blance, The Psychologist (2012) Vol 25 No 9](https://thepsychologist.s3.eu-west-2.amazonaws.com/articles/pdfs/0912cart.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA3JJOMCSRX35UA6UU%2F20200908%2Feu-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200908T031225Z&X-Amz-SignedHeaders=Host&X-Amz-Expires=10&X-Amz-Signature=137981da00a71118898f3b27b62d4bcdab85113de23be9861887ccc03847d9af) 
 
 ### Core reading:
 

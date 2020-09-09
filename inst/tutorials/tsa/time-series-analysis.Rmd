@@ -8,6 +8,7 @@ output:
     allow_skip: true
     css: css/tutorials.css
 runtime: shiny_prerendered
+description: "Discover the statistical properties of time series data and how to model and interpret these data in R."
 ---
 
 ![](images/UNSW_2017_Big_Data_landscape.jpg){width="75%"}

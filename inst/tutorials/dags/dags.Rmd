@@ -59,10 +59,7 @@ Causal Inference Right: A Classification of Data Science Tasks, _Chance_, 32(1),
 
 ### Additional resources: 
 
-* [Shmueli G (2010) To explain or to predict?, _Statistical Science_, 25(3), 289-310](https://projecteuclid.org/euclid.ss/1294167961).
-Also, if you haven't already, check out the related [video](https://www.youtube.com/watch?time_continue=1&v=vWH_HNfQVRI&vq=large), linked at the end of the last tutorial.
-
-* [dagitty.net](http://www.dagitty.net/learn/): A great website explaing DAGs and related topics, with built-in applets to test your knowledge
+* [dagitty.net](http://www.dagitty.net/learn/): A great website explaining DAGs and related topics, with built-in applets to test your knowledge
 
 * An excellent [YouTube video series on Causality and DAGs](https://www.youtube.com/playlist?list=PLcTBLulJV_AKmUTH-nUsxxFyRQoWnUzxU) presented by Assistant Professor Nick Huntington-Klein from Seattle University. This is a series of 14 videos that starts from the very basics of causal thinking with DAGs.
 

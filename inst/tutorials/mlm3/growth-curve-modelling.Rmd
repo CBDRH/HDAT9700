@@ -8,6 +8,7 @@ output:
     allow_skip: true
     css: css/tutorials.css
 runtime: shiny_prerendered
+description: "Learn about growth curve models: an application of multilevel modelling to longitudinal data"
 ---
 
 ![](images/UNSW_2017_Big_Data_landscape.jpg){width="75%"}
@@ -56,6 +57,9 @@ We will cover the following concepts:
 4. Understanding growth curve analysis as an extension of simple linear models and MLMs
 5. Performing growth curve analysis in R
 6. Assessing model fit
+
+The pre-reading for this chapter is [Curran, Obeidat, and Losardo (2010) Twelve Frequently Asked Questions About Growth Curve Modeling" J Cogn Dev 11(2)](https://media.openlearning.com/NEL6pFMdd45AmcgbiY9XJLskpgF5ZUGU4s2nTcvBFCaZaZ6LFjbeNGmZujMFNAif.1538706341/Curran_et_al_2010_-_12_FAQs_about_Growth_Curve_Modelling.pdf)
+
 
 Material for this chapter has been adapted from Field, A., Miles, J., Field, Z. (2012) Discovering Statistics Using R. SAGE Publishing.
 
@@ -699,7 +703,7 @@ Field, A., Miles, J., Field, Z. (2012) Discovering Statistics Using R. SAGE Publ
 
 Galecki, AT., Burzykowski, T. (2013) Linear Mixed-Effects Models Using R: A Step-By-Step Approach. Springer.
 
-Magnusson, K. Using R and lme/lmer to fit different two- and three-level longitudinal models. Available at: http://rpsychologist.com/r-guide-longitudinal-lme-lmer
+Magnusson, K. Using R and lme/lmer to fit different two- and three-level longitudinal models. Available at:    http://rpsychologist.com/r-guide-longitudinal-lme-lmer
 
 University of Twente. Growth Modeling. Slide presentation. Available at: https://slideplayer.com/slide/13828326/
 

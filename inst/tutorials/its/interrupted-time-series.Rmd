@@ -8,6 +8,7 @@ output:
     allow_skip: true
     css: css/tutorials.css
 runtime: shiny_prerendered
+description: "Learn how to implement Interupted Time Series analysis to study the impact of large scale interventions using time series data."
 ---
 
 ![](images/UNSW_2017_Big_Data_landscape.jpg){width="75%"}
