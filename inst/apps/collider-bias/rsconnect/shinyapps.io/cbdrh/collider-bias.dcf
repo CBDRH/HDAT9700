@@ -5,8 +5,8 @@ account: cbdrh
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2684365
-bundleId: 3533266
+bundleId: 3609654
 url: https://cbdrh.shinyapps.io/collider-bias/
-when: 1597829538.33039
+when: 1599636674.65345
 asMultiple: FALSE
 asStatic: FALSE

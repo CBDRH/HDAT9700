@@ -1,12 +1,12 @@
 name: backdoor-paths
-title: backdoor-paths
+title:
 username:
 account: cbdrh
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2699739
-bundleId: 3609741
+bundleId: 3609612
 url: https://cbdrh.shinyapps.io/backdoor-paths/
-when: 1599638681.67112
+when: 1599635567.18922
 asMultiple: FALSE
 asStatic: FALSE

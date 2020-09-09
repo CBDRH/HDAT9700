@@ -30,6 +30,8 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
 ## Overview  
 Welcome to HDAT9700 Statistical Modelling II - Directed Acyclic Graphs (DAGs)! 
 
+![](https://youtu.be/lhkmc-dXC7M)
+
 In this chapter you will learn how to represent assumptions about casual mechansims using a special type of graph: a Directed Acyclic Graph, or DAG. DAGs are useful because they allow us to formalise our assumptions and can help inform variable selection for causal models. 
 
 In this chapter you will learn how to:
@@ -346,6 +348,12 @@ quiz(caption = "Quiz: DAGS",
 Try testing yourself on DAG terminology using this applet on [dagitty.net](http://www.dagitty.net/learn/graphs/index.html).
 
 
+## Video: Common causal structures
+
+![](https://youtu.be/DhHBMvpYeec)
+
+Learn how to represent confounding variables, mediating variables and collider variables on a DAG.
+
 
 ## Confounding variables
 
@@ -464,7 +472,6 @@ You can explore this example and the concept of collider bias further using this
 
 </div>
 
-
 ## D-separation
 
 Now that you know how to represent and recognise different types of relationships in a DAG, how can a DAG help us to choose what variables to include in a causal model? The answer lies in the concept of **d-separation**. 
@@ -501,8 +508,13 @@ ggdag_mediation_triangle(x="Exercise", y="Mood", m="Sleep quality",
 ```
 
 Both paths are front door paths: 
+
 * $\text{Exercise} \rightarrow \text{Sleep quality} \rightarrow \text{Mood}$) 
+
 * ($\text{Exercise} \rightarrow \text{Mood}$)
+
+
+![](https://youtu.be/6X8yc9qY96M)
 
 
 #### 2. Open paths
@@ -515,9 +527,9 @@ Importantly, however, whether or not controlling for an intermediate variable Z 
 ```{r}
 tab <- data.frame(
   
-  A = c("![](/images/mediator-dag.png){width='80%'}",
-    "![](/images/confounder-dag.png){width='80%'}",
-    "![](/images/collider-dag.png){width='80%'}"
+  A = c("![](images/mediator-dag.png){width='80%'}",
+    "![](images/confounder-dag.png){width='80%'}",
+    "![](images/collider-dag.png){width='80%'}"
   ),
   
   B = c("Mediator",
@@ -557,10 +569,13 @@ To estimate the TOTAL effect of X on Y you need to control for a set of variable
 
 To estimate the DIRECT effect of X on Y you need to control for a set of variables that close any backdoor paths and close any frontdoor paths (except the path $\text{X} \rightarrow \text{Y}$). 
 
+### Recap
+
+![](https://youtu.be/gIeQymUfyBM)
 
 ## Worked example
 
-In this section we will use the principle of d-separation and backdoor paths to identify a minimal set of adjustment variables that will aloow us to estimate the effect of Exercise on Mood based on the following DAG. 
+In this section we will use the principle of d-separation and backdoor paths to identify a minimal set of adjustment variables that will allow us to estimate the effect of Exercise on Mood based on the following DAG. 
 
 ```{r}
 coords <- list(

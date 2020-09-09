@@ -52,7 +52,7 @@ ui <- fluidPage(
 
 
         mainPanel(
-
+            fluidRow(img(src='UNSW_2017_Big_Data_landscape.jpg', align = "right", height = '25%', width = '25%')),
             fluidRow(
                 column(width=6,
                        h4("ED admissions by RSV infection and asthma status"),

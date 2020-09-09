@@ -15,7 +15,8 @@ library(dplyr)
 ui <- fluidPage(
 
     # Application title
-    titlePanel("Test your understanding of the backdoor path criterion"),
+    titlePanel("Test your understanding of the backdoor path criterion",),
+
 
     # Sidebar with a slider input for number of bins
     sidebarLayout(
@@ -39,7 +40,8 @@ ui <- fluidPage(
 
         # Show a plot of the generated distribution
         mainPanel(
-            uiOutput("instructions"),
+           img(src='UNSW_2017_Big_Data_landscape.jpg', align = "right", height = '25%', width = '25%'),
+           uiOutput("instructions"),
            plotOutput("question"),
            uiOutput("solutionTitle"),
            textOutput("solutionText"),

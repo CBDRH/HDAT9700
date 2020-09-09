@@ -1,0 +1,12 @@
+name: dags
+title: dags
+username:
+account: cbdrh
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2774627
+bundleId: 3609642
+url: https://cbdrh.shinyapps.io/dags/
+when: 1599636311.8211
+asMultiple: FALSE
+asStatic: FALSE
