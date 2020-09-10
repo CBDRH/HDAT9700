@@ -41,7 +41,7 @@ Imports:
     lattice,
     learnr (>= 0.10.0),
     lme4,
-    lmtest,
+    lmtest (<=0.9-37),
     loldata,
     magrittr,
     MatchIt,
