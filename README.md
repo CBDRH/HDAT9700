@@ -16,7 +16,8 @@ The learnr tutorial files can be found in the subfolder `inst/tutorials`. Long f
 | Multilevel Modelling I                | mlm1    | Mark      |
 | Multilevel Modelling II               | mlm2    | Mark      |
 | Growth Curve Modelling                | mlm3    | Kylie-Ann |
-| Missing Data and Multiple Imputation  | mi      | Mark      |
+| Missing Data and Multiple Imputation  | mi      | Mark      | 
+| Presenting and summarising model results  |         | Shawon    |
 
 
 ## Notes on the tutorial folder structure

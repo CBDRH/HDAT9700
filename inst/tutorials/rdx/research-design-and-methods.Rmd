@@ -49,6 +49,8 @@ yrs2015_design <- svydesign(id =~ psu , strata = ~ stratum , data = yrs2015v2 , 
 ## Overview  
 Welcome to **HDAT9700** Statistical Modelling II: Review of research designs and statistical methods! 
 
+![](https://youtu.be/n5VpF3Hm2BI)
+
 In this course we will broaden our knowledge of the statistical approaches for the analysis of complex data sets.  We will be extending our knowledge of the statistical techniques introduced in HDAT9600 Statistical Modelling I, and explore more complex ones. 
 
 But before we delve into the details of some of the concepts, as data scientists we need to be mindful of a few things. They form the basis of this chapter. 
