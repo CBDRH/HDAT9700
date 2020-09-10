@@ -8,7 +8,7 @@ output:
     allow_skip: true
     css: css/tutorials.css
 runtime: shiny_prerendered
-description: "Learn how to use Directed Acyclic Graphs (DAGs) as a way to formalise domain knowledge, represent assumptions about causal relationships and inform model selection when building causal models." 
+description: "Learn how to use Directed Acyclic Graphs (DAGs) as a way to formalise expert knowledge, represent assumptions about causal relationships, and inform variable selection when addressing causal research questions." 
 ---
 
 ![](images/UNSW_2017_Big_Data_landscape.jpg){width="75%"}
@@ -117,7 +117,7 @@ For **causal** models, the goal is to estimate the effect of a given interventio
 
 Distinguishing between confounders, mediators, colliders and other types of variables relies on expert knowledge about the subject matter in question. There is no  algorithm or automated selection procedure that can replace this knowledge. Directed Acyclic Graphs, the main topic of this chapter, are an important tool that help us to formalise and graphically represent expert knowledge, and in doing so can help us to select the variables that should be included in a causal model.
 
-## DAGS 
+## DAGs 
 
 ### Directed Acyclic Graphs (DAGs) 
 
@@ -687,16 +687,27 @@ dag7 %>% adjust_for(c('c', 'e', 'f')) %>% ggdag_adjust(use_labels = "label", tex
 Now try the exercise to practice this yourself!
 
 
-## Exercise
+## Activities
 
 <div class="shiny">
 
-### Explore this further
+### Activity 1. Test your understanding of d-separation and closing backdoor paths
 Explore the concept of d-separation and backdoor paths adjustment further using this [interactive Shiny app](https://cbdrh.shinyapps.io/backdoor-paths/). The app can also be launched by entering `hdat9700tutorials::run('backdoor-paths')` at the console. 
 
-This app will generate a random DAG and you must identify which variables to control for in order to estimate causal effect of the exposure on the outcome. You can vary the DAG complexity, and choose to focus on the total effect or the direct effect (you should practice both modes. 
+This app will generate a random DAG and you must identify which variables to control for in order to estimate causal effect of the exposure on the outcome. You can vary the DAG complexity, and choose to focus on the total effect or the direct effect (you should have a go using both modes). 
 
 </div>
+
+
+<div class="shiny">
+
+### Activity 2. Explore how understanding causal structures is key to madel specification
+Explore how the assumptions about causal structures can guide our model specification using this [interactive Shiny app](https://cbdrh.shinyapps.io/dags-1/). The app can also be launched by entering `hdat9700tutorials::run('dags-1')` at the console. 
+
+This app generates data for three variables: aspirin use (the exposure), pulmonary embolism (the outcome) and high-blood pressure ( a covariate) under two data generation mechanisms. Scenario A emulates having collected these three variables from a randomised control trial; Scenario  emulates having collected these three variables from observational data. You will see that although the availbe vriables are the same in these two scenarios, the correct DAGs and model specifications are different.
+
+</div>
+
 
 ## Selection Biases 
 
