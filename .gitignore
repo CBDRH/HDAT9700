@@ -2,3 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
+# ignore file using flipbookr pacakge
+inst/tutorials/dags/images/fb-ggdag.Rmd

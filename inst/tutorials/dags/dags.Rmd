@@ -951,7 +951,7 @@ knitr::include_url("images/fb-ggdag.html")
 Note that:
 
 * By default, the position of nodes is random. You can specify fixed node positions using `coords = `. 
-* The funtion `dagify()` is used to define the relationships between nodes. E.g. `y ~ x` indicates that an arrow will point from **x** to **y**.  
+* The function `dagify()` is used to define the relationships between nodes. E.g. `y ~ x` indicates that an arrow will point from **x** to **y**.  
 * Passing the output of `dagify()` to `node_parents(x)` creates a dataframe distinguishing between child and parent nodes of **x**. 
 * `geom_dag_point()` and `geom_dag_edges()` plot the results. 
 * Applying `theme_dag()` provides a nice clean plot. 

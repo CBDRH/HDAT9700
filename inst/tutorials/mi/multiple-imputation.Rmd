@@ -1,5 +1,5 @@
 ---
-title: "Missing Data and Multiple Imputation"
+title: "HDAT9700: Missing Data and Multiple Imputation"
 tutorial: 
   id: "au.edu.unsw.cbdrh.hdat9700.tutorials.missing.data.and.multiple.imputation"
 output: learnr::tutorial
