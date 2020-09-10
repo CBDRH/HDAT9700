@@ -12,7 +12,7 @@ output:
       countIncrementalSlides: false
 ---
 
-
+<!-- This code creates the ggdag explainer flipbook  -->
 
 ```{r, include = F}
 # This is the recommended set up for flipbooks
