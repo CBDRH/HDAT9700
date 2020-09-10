@@ -28,7 +28,9 @@ library("ggdag")
 
 
 ## Overview  
-Welcome to HDAT9700 Statistical Modelling II Propensity Score Matching! 
+Welcome to HDAT9700 Statistical Modelling II Chapter 3! 
+
+![](https://youtu.be/cvb17LGNKQ4)
 
 This chapter focuses on the challenge of drawing **causal inferences from observational data**.  
 
@@ -483,8 +485,9 @@ str(lalonde)
 
 <div class="think">
 ### What can we say about the data?
-There are some striking differences between the demographic characteristics of the treated and untreated groups. **What are the implications when trying to evaluate the effectiveness of the program?** 
-(Bear in mind the cultural context---USA in the mid 1970s)
+There are some striking differences between the demographic characteristics of the treated and untreated groups. What are the implications when trying to evaluate the effectiveness of the program? **Could you draw a DAG to represent your assumptions about the underlying causal structure** relevant to the causal question of treatment participation on earnings?
+
+(Keep in mind the cultural context---USA in the mid 1970s)
  
 </div>
 
@@ -493,12 +496,12 @@ There are some striking differences between the demographic characteristics of t
 
 In order to make causal claims from observational data we must make some assumptions about the data, particularly with respect to the treatment or 'action' $A$, the outcome $Y$ and any relevant pretreatment variables $L$. 
 
-### Assumptions
-
 The three identifiability assumptions are:  
 1. Positivity  
 2. Exchangeability  
 3. Consistency
+
+![](https://youtu.be/rgXD4MnPDgc)
 
 ### Positivity  
 The assumption of positivity states that the conditional probability of receiving every possible treatment value must be positive, i.e. $\gt0$.
@@ -608,7 +611,7 @@ What are the potential **disadvantages** of, and **barriers** to, 1:1 exact matc
 
 </div>
 
-### Discussion points
+### Reflection points
 * Usually there are fewer treated than untreated units, so 1:1 matching may discard a lot of records;  
 * It may not be possible to get exact matches, especially if there are many covariates and/or limited potential controls  
 
@@ -629,6 +632,8 @@ A better approach is to model the outcome of interest using an appropriate param
 
 
 ## Matching methods {data-progressive=TRUE}
+
+![](https://youtu.be/bOA954e4HcU)
 
 ### Overview 
 In many practical situations, exact matching is not possible. For example:  
@@ -662,12 +667,16 @@ Distance-based matching relies on some quantitative measure of the similarity/di
 * The value $\delta$, which determines eligible matches, is chosen by the analyst. This parameter is often referred to as the _calipers_.  
 * Matches can be made at different ratios of treated to control, e.g. 1:1, 1:2 etc
 
+![](https://youtu.be/q2RE86gZ2Yg)
+
 Two distance metrics commonly used in practice are:
 
 1. The Mahalanobis distance  
 2. The propensity score  
 
 ### The Mahalanobis distance
+
+![](https://youtu.be/ABqX6h6I9d4)
 
 The Mahalanobis distance measures the average distance between two individuals $i$ and $j$ based on their multivariate vectors $X_{i}$ and $X_{j}$ as  
 
@@ -742,14 +751,7 @@ An intuitive way to understand how this works is to consider the variance-covari
 flippedPlot
 ```
 
-
-
-
 Another intuitive way to think about the Mahalanobis distance is to recognise the parallels between the formula above and the familiar standardised difference in means $d=\frac{\bar{x_{i}}-\bar{x_{j}}}{\sigma}$ (i.e. difference in means divided by the standard deviation). 
-
-
-
-
 
 
 <div class="calipers">
@@ -763,6 +765,9 @@ Maybe that's why the term _calipers_ is used?
 
 
 ### The propensity score
+
+![](https://youtu.be/8dRpXafdcF4)
+
 The propensity score refers to the probability of receiving the treatment $A$. In some settings, such as RCTs, the propensity score might be known and chosen in advance (e.g. people in group A receive the treatment with probability $p=0.5$). With observational data, the true propensity score is unknown and must be estimated from the available data. In practice, this is typically done using a logistic regression of the dichotomous treatment indicator $A$ on the observed confounders $L$. This gives a model of the form
 
 $$
@@ -1143,9 +1148,29 @@ Which estimates are more precise and why?
     * \$415 based on coarsened exact matching   
 
 
+## Activities
+
+<div class="shiny">
+
+### Activity 1. Model dependency
+Play with the toy example illustrating how matching removes model dependency using this [interactive Shiny app](https://cbdrh.shinyapps.io/matching-model-dependency/). The app can also be launched by entering `hdat9700tutorials::run('matching-1')` at the console. 
+
+This app emulates the example discussed by Professor Gary King in this weeks pre-reading, check it out below:
+
+[![](images/prof-king-vid.png){width='25%'}](https://youtu.be/rBv39pK1iEs?t=199)
+
+
+*** 
+
+### Activity 2. The MatchIt Package
+Explore some of the functionality of the MatchIt package using this [interactive Shiny app](https://cbdrh.shinyapps.io/matching-2). The app can also be launched by entering `hdat9700tutorials::run('matching-2')` at the console. 
+
+</div>
+
+
 ## Summary
 
-The key message from this chapter is that it is possible to identify estimates of causal effects from observational data, provided the trhee identifiability assumptions are met. Re call these three assumptions are 
+The key message from this chapter is that it is possible to identify estimates of causal effects from observational data, provided the three identifiability assumptions are met. Re call these three assumptions are 
 
 1. Positvity _it has to have been possible for every type of person to get the treatment_
 2. Exchangeability _the treated and untreated groups need to have the same background characteristics_

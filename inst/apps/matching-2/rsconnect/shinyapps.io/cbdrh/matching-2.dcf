@@ -1,0 +1,12 @@
+name: matching-2
+title: matching-2
+username:
+account: cbdrh
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2781948
+bundleId: 3614035
+url: https://cbdrh.shinyapps.io/matching-2/
+when: 1599721638.1715
+asMultiple: FALSE
+asStatic: FALSE

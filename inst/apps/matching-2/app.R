@@ -51,7 +51,8 @@ ui <- dashboardPage(
     ),
 
 
-    dashboardBody(
+    dashboardBody(fluidRow(img(src='UNSW_2017_Big_Data_landscape.jpg', align = "right", height = '25%', width = '25%')),
+                  br(),
         tabItems(
 
         tabItem(tabName = "dashboard",
@@ -148,8 +149,8 @@ ui <- dashboardPage(
                     helpText(
                         HTML(
                             paste(
-                                "The", tags$code('MatchIt::matchit()'), "function implements numerous matching methods, with a variety of options and arguments
-                             available for each method.", 'This applet allows you to explore a small subset of those methods and options.',
+                                "The", tags$code('matchit()'), "function from the", tags$code('MatchIt'), "package implements numerous matching methods, with a variety of options and arguments
+                             available for each method. This applet allows you to explore a", tags$em('small'), "subset of those methods and options.",
                                 br(), br(), "Enter", tags$code('?matchit'), "at the console, or check out the documentation paper below to find out more about
                                 the methods and options available."
                             )
@@ -310,11 +311,13 @@ matchPlot <- reactive({
     p1 <- ggplot(data = d, aes_string(x = input$balancePlotVar, fill = 'high_ge')) +
             geom_density(alpha = 0.60) +
             scale_fill_manual(name = NULL, values=c('dodgerblue','tomato2'), label = c('Control', "Treated")) +
-            labs(title = "Unmatched data")
+            labs(title = "Unmatched data") +
+        theme(legend.position = "none", axis.text=element_text(size=14), axis.title=element_text(size=14), plot.title=element_text(size=16))
     p2 <- ggplot(data = d, aes_string(x = input$balancePlotVar, fill = 'high_ge', weight = 'wt')) +
         geom_density(alpha = 0.60) +
         scale_fill_manual(name = NULL, values=c('dodgerblue','tomato2'), label = c('Control', "Treated")) +
-        labs(title = "Unmatched data")
+        labs(title = "Matched data") +
+        theme(legend.position = "none", axis.text=element_text(size=14), axis.title=element_text(size=14), plot.title=element_text(size=16))
     p3 <- ggpubr::ggarrange(p1, p2, common.legend = TRUE, legend = 'top')
 
     return(p3)
