@@ -20,7 +20,6 @@ library(ggplot2)
 library(dagitty)
 library(ggdag)
 library(ggpubr)
-library(flipbookr)
 library(kableExtra)
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
 

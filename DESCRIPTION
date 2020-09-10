@@ -14,7 +14,7 @@ Description: This package contains interactive learnr tutorials for the course
     Science by the Centre for Big Data Research in Health, UNSW Sydney.
 License: file LICENSE
 Copyright: UNSW Sydney
-Imports: 
+Imports:
 astsa,
 base,
 blockrand,
@@ -73,7 +73,7 @@ utils,
 VIM,
 xaringan,
 xtable,
-zoo,
+zoo
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
