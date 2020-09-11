@@ -64,7 +64,6 @@ Imports:
     tibble,
     tidyr,
     tidyverse,
-    TSA,
     tseries,
     tsoutliers,
     TTR,
