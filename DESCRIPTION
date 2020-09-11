@@ -42,7 +42,6 @@ Imports:
     learnr (>= 0.10.0),
     lme4,
     lmtest (<= 0.9-37),
-    loldata,
     magrittr,
     MatchIt,
     meta,

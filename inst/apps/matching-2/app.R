@@ -12,7 +12,6 @@ library(ggplot2)
 library(MatchIt)
 library(dplyr)
 library(tidyr)
-library(loldata)
 library(tibble)
 library(knitr)
 library(kableExtra)
@@ -21,13 +20,19 @@ library(DT)
 library(sjPlot)
 
 # Country-level data from loldata package
-df <- loldata::worldrankings %>%
-    select(-c("income", "literacy", "smartphone_adoption", "internet_speed", "gun_deaths", "happiness", "web_index", "discrimination_index")) %>%
-    mutate(gini = as.numeric(gini),
-           high_ge = gender_equality > 0.75) %>%
-    filter(gini>=0) %>%
-    filter(mice::cci(.)) %>%
-    tibble::rownames_to_column() %>% as.data.frame()
+# library(loldata)
+# df <- loldata::worldrankings %>%
+#     select(-c("income", "literacy", "smartphone_adoption", "internet_speed", "gun_deaths", "happiness", "web_index", "discrimination_index")) %>%
+#     mutate(gini = as.numeric(gini),
+#            high_ge = gender_equality > 0.75) %>%
+#     filter(gini>=0) %>%
+#     filter(mice::cci(.)) %>%
+#     tibble::rownames_to_column() %>% as.data.frame()
+#
+# save(df, file = paste0(getwd(), '/www/df.rda'))
+
+
+load(paste0(getwd(), '/www/df.rda'))
 
 # subset of data excluding outcome and country name
 dfMatch <- df %>% select(-c('country', 'gender_equality', 'high_ge', 'satisfaction', 'rowname'))
@@ -53,6 +58,7 @@ ui <- dashboardPage(
 
     dashboardBody(fluidRow(img(src='UNSW_2017_Big_Data_landscape.jpg', align = "right", height = '25%', width = '25%')),
                   br(),
+                  textOutput("test"),
         tabItems(
 
         tabItem(tabName = "dashboard",
@@ -260,7 +266,7 @@ ui <- dashboardPage(
 #############################################################
 
 server <- function(input, output, session) {
-
+    output$test <- renderText(paste(getwd()))
 # Data based on selected variables
 data <- reactive({
     req(input$matchVars)
