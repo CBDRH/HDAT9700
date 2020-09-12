@@ -44,6 +44,14 @@ set.seed(1)
 p <- arima.sim(model=list(order=c(1,1,0), seasonal=list(order=c(1,1,0)), ar=c(.75)), n=100)
 p <- ts(p, start=c(2000,1), frequency=12)
 
+set.seed(123)
+vector1 <- sample(40:80, 48, replace=TRUE)
+
+# Now transform it into a time series (ts) object
+# Let's assume the vector is monthly data from July 2005 to June 2009
+x1 <- ts(vector1, start=c(2005,7), end=c(2009,6), frequency=12)
+
+
 ```
 
 
@@ -99,8 +107,11 @@ There are many potential uses for time series analysis in health. These include:
 * **Surveillance** of infectious diseases;
 * **Forecasting** to predict future trends; 
 * **Explanatory analysis** to identify predictors of variation in outcomes; and
-* **Intervention analysis** to determine the impact of an intervention (to be covered in Chapter 4). 
+* **Intervention analysis** to determine the impact of an intervention (to be covered in the next Chapter). 
 
+***
+
+Here are a couple of examples of time series:
 
 ![**Figure.** An example of a time series: all cause mortality during the 1918 influenza pandemic (Source: Public domain)](images/Influenza_Pandemic.png)
 
@@ -108,6 +119,12 @@ There are many potential uses for time series analysis in health. These include:
 
 
 ***
+
+Check out the short video about the definition and uses for time series data:
+![](https://youtu.be/eMp3s_X2uOc)
+
+***
+
 
 ```{r quiz1_1, echo=FALSE}
 quiz(caption = "Quiz 1.1: Definition of time series data", 
@@ -275,6 +292,9 @@ legend("topright", legend=c("Respiratory","Cardiovascular"), col=c("blue","red")
 
 Think about when you would prefer each of these types of plots - what are the strengths and weaknesses of each?
 
+Watch this video about what makes a good plot:
+![](https://youtu.be/YZ9LrP5O9wc)
+
 ****
 
 ### Components of a time series
@@ -287,9 +307,14 @@ A time series is made up of three principal components, which are:
 
 3. **Error:** The error is the remaining random variation unexplained by the trend or seasonality.
 
-Let's look at a few examples of time series with different properties.
+***
+
+This videos provides a brief overview of these components:
+![](https://youtu.be/UEWbiPB81Fk)
 
 ***
+
+Let's look at a few examples of time series with different properties.
 
 Load the `flu` dataset which is part of the `astsa` package. It contains data on pneumonia and influenza deaths per 10,000 population the United States. It is already a ts object and does not have to be converted.
 
@@ -525,6 +550,8 @@ You will learn the following functions:
 * decompose()
 * seasonplot()/ggseasonplot()
 
+***
+
 #### Exercise 1.1 Creating a ts object 
 ```{r exercise1_1, exercise.cap="Exercise 1.1", exercise=TRUE, tidy=TRUE, exercise.eval=FALSE, exercise.lines=9}
 # Check if the data "resp" is in the format of a ts object
@@ -537,6 +564,8 @@ class( )
 
 
 ```
+
+***
 
 #### Exercise 1.2 Checking structure of time series
 ```{r exercise1_2, exercise.cap = "Exercise 1.2", exercise=TRUE, tidy=TRUE, exercise.eval=FALSE, exercise.lines=14}
@@ -560,6 +589,7 @@ end(resp_ts)
 head(resp_ts)
 ```
 
+***
 
 #### Exercise 1.3 Data exploration
 ```{r exercise1_3, exercise.cap="Exercise 1.3", exercise=TRUE, tidy=TRUE, exercise.lines=7, exercise.eval=FALSE, exercise.lines=6}
@@ -575,12 +605,14 @@ head(resp_ts)
 summary(resp_ts)
 ```
 
+***
+
 #### Exercise 1.4 Data visualisation
 ```{r exercise1_4, exercise=TRUE, exercise.cap="Exercise 1.4", tidy=TRUE, exercise.eval=FALSE, fig.height=4, fig.width=5, exercise.lines=10}
 # Plot the male and female time series in different facets
 plot( )
 
-# Plot the data again, this time with males and females on the same graph with different colours and/or line types
+# Plot the data again, this time with males and females on the same graph with different colours and/or line types.
 # Remember to use appropriate x- and y-axis labels, a title, and y-axis limits
 
 
@@ -593,6 +625,8 @@ plot( )
 ```{r exercise1_4-hint-2}
 # To change the plot colours or linetype, use the arguments "col=" or "lty="
 ```
+
+***
 
 #### Exercise 1.5 Data decomposition
 ```{r exercise1_5, exercise=TRUE, exercise.cap="Exercise 1.5", tidy=TRUE, exercise.eval=FALSE, fig.height=4.5, fig.width=5, exercise.lines=12}
@@ -611,6 +645,8 @@ males <- decompose(resp_ts[,1])
 # To combine the raw data with the trend data, use "ts.union(resp[,1], males$trend)"
 ```
 
+***
+
 #### Exercise 1.6 Data manipulation 
 ```{r exercise1_6, exercise.cap="Exercise 1.6", exercise.lines=6, tidy=TRUE, exercise=TRUE, exercise.eval=FALSE}
 # Create a ts object with the male:female respiratory death ratio
@@ -622,7 +658,8 @@ males <- decompose(resp_ts[,1])
 
 ```
 ```{r exercise1_6-hint-1}
-# To calculate the ratio, use "ratio <- resp[,1]/resp[,2]"
+# To calculate the ratio, use 
+ratio <- resp_ts[,1]/resp_ts[,2]
 ```
 ***
 
@@ -822,7 +859,7 @@ Here there is no significant partial autocorrelation. Therefore, the higher orde
 
 #### How to deal with autocorrelation
 
-Data that are autocorrelated are often not stationary. Therefore, sometimes differencing the data will be enough to remove the autocorrelation, so always perform any necessary transformations before checking for autocorrelation. Otherwise, it may be necessary to include one or more lag terms as predictors in your regression analysis. We will cover other approaches for dealing with autocorrelation in more detail later.
+Data that are autocorrelated are often not stationary. Therefore, sometimes differencing the data (or otherwise controlling for trend) will be enough to remove the autocorrelation, so always perform any necessary transformations before checking for autocorrelation. Otherwise, it may be necessary to include one or more lag terms as predictors in your regression analysis. We will cover other approaches for dealing with autocorrelation in more detail later.
 
 ```{r acfdiff, exercise.eval=FALSE, exercise=TRUE, fig.width=5, fig.height=4, tidy=TRUE}
 # Plot the lag-1 correlation and ACF for the differenced austa data
@@ -945,6 +982,8 @@ You will learn the functions:
 * aggregate()
 * acf(), pacf(), acf2()
 
+***
+
 #### Exercise 2.1 Stationarity
 ```{r exercise2_1, exercise.cap = "Exercise 2.1", tidy=TRUE, exercise=TRUE, exercise.eval=FALSE, exercise.lines=18}
 # "Air" is the ts object containing the airline passengers time series
@@ -972,6 +1011,15 @@ head(air)
 # If there is a trend transform the data using diff()
 
 ```
+```{r exercise2_1-hint-2}
+# To plot the log-transformed and differenced series, use:
+plot(diff(log(air)))
+
+# If you plot "plot(log(diff(air)))" this will give an error as you cannot take the log of a negative number
+
+```
+
+***
 
 #### Exercise 2.2 Autocorrelation
 ```{r exercise2_2, exercise.cap = "Exercise 2.2", exercise=TRUE, tidy=TRUE, exercise.eval=FALSE, exercise.lines=6}
@@ -985,12 +1033,12 @@ head(air)
 
 ```
 
+***
 
 #### Exercise 2.3 Seasonality
 ```{r exercise2_3, exercise.cap = "Exercise 2.3", exercise=TRUE, tidy=TRUE, exercise.eval=FALSE, exercise.lines=7}
-# Aggregate the data to yearly
+# Aggregate the data to yearly and call the new series air_yr
 
-# Start with: air_yr <- 
   
   
 # Plot the yearly data
@@ -998,8 +1046,8 @@ head(air)
 
 ```
 ```{r exercise2_3-hint-1}
-# Use aggregate( , nfrequency=1) to aggregate the data
-
+# To aggregate, use:
+air_yr <- aggregate(diff(log(air)), nfrequency=1)
 ```
 
 ***
@@ -1014,9 +1062,7 @@ This type of modelling is appropriate if your time series has a linear or easily
 
 Including a time variable and dummy variables representing seasonal units (e.g. month or quarter) as predictors in your model can control for linear trends and seasonality, and allow you to estimate the trend and the seasonal variation if desired. 
 
-After creating your model, it is important to check for autocorrelation of residuals - if present, it may be necessary to include one or more lags of $Y_t$ in the model. 
-
-However, in real-life research and practice the patterns of the data are sometimes unclear, with considerable error, and it can be difficult to determine the patterns in the data. Thus, linear regression is often not appropriate.
+However, in real-life research and practice the patterns of the data are sometimes unclear, with considerable error, and it can be difficult to determine the patterns in the data. After creating your model, it is also important to check for autocorrelation of residuals - if present, even after controlling for trend and seasonality, an ordinary regression model may not be appropriate.
 
 The second type is **ARIMA models**, which are more complex models that relate the present value of a series to past values and past errors. ARIMA models can deal with changing trends, and significant autocorrelation and seasonality. 
 
@@ -1178,9 +1224,9 @@ If there is seasonality, the ARIMA model is expressed as: $(p,d,q)\times (P,D,Q)
 
 #### Step 1: Determine if your time series is non-stationary
 
-The first step in fitting your ARIMA model is to plot your time series to check for non-stationarity, i.e. changing variance or trends. 
+The first step in fitting your ARIMA model is to plot your time series to check for non-stationarity, i.e. changing variance or trends, as well as seasonality. 
 
-To deal with non-constant variance, apply a log transformation. Take note if a first difference or seasonal difference may be required - you do not have the apply the differencing yourself as this will be taken care of within the ARIMA model. Generally, if a first difference is required and the data are seasonal, a seasonal difference will also be required. It is unusual to require more than one first/seasonal difference.
+To deal with non-constant variance, apply a log transformation. Take note if a first difference or seasonal difference may be required - you do not have the apply the differencing yourself as this will be taken care of within the ARIMA model. Generally, if a first difference (*d*=1) is required and the data are seasonal, a seasonal difference (*D*=1) will also be required. It is unusual to require more than one first/seasonal difference.
 
 The ACF plot can also be used to check for seasonality.
 
@@ -1190,9 +1236,9 @@ The ACF plot can also be used to check for seasonality.
 
 After the time series has been made stationary by transformation, the next step is to determine which AR (*p*, *P*) or MA (*q*, *Q*) orders are needed to correct for any remaining autocorrelation. Sometimes, taking the difference will be enough to eliminate autocorrelation.
 
-Determining the values for *p* and *q* can be done by looking at the ACF and PACF plots. However, it is not always straightfoward, especially if your series requires both AR and MA terms.
+Determining the values for *p* and *q* can be done by looking at the ACF and PACF plots. However, it is not always straightfoward, especially if your series requires both AR and MA terms. 
 
-The table below includes guidance on selecting the most appropriate AR and MA terms. In practice, there are automated algorithms in R that will select the most appropriate orders for you based on statistial criteria, which we will see later.
+The table below includes guidance on selecting the most appropriate AR and MA terms. In practice, there are automated algorithms in R that will select the most appropriate orders for you based on statistical criteria, and are easier to work with - we will see these later.
 
 **Table.** Guidance for determining AR and MA orders
 
@@ -1212,7 +1258,7 @@ kable(text_tbl) %>%
 
 #### Step 3: Estimate the model and check model fit
 
-Next estimate your model, and check the model fit using residuals. If your model has a poor fit, then you will have to choose a different AR or MA order. In general, determining the AR and MA terms is an iterative process, involving a lot of trial and error. 
+Next estimate your model, and check the model fit using residuals. If your model has a poor fit, then you will have to choose a different AR or MA order. Sometimes, determining the AR and MA terms is an iterative process, involving a lot of trial and error. 
 
 Aim for the simplest model (i.e. lowest AR and MA orders), that has a good fit (no remaining autocorrelation, normally distributed residuals). Information criteria (AIC and BIC) can be useful in determining the best fitting model.
 
@@ -1252,7 +1298,7 @@ acf2(z)
 
 We can see that the PACF plot cuts off sharply at lag 2, while the ACF plot tails off. This indicates that this is an AR model, and that *p* = 2.
 
-An alternative and simpler approach is to use `auto.arima()` from the `forecast` package, which will determine the *p*, *q*, *P*, *Q* values for you, based on the best AIC or BIC. You can specify several constraints, including the maximum and starting values for *p*, *q*, *d*, and the seasonal equivalents. If your time series has a trend and/or seasonality,  specify a value for *d* and *D* to start.
+An alternative and simpler approach is to use `auto.arima()` from the `forecast` package, which will determine the *p*, *q*, *P*, *Q* values for you, based on the best AIC or BIC. You can specify several constraints, including the maximum and starting values for *p*, *q*, *d*, and the seasonal equivalents. If your time series has a trend and/or seasonality,  specify *d*=1 and/or *D*=1 to start.
 
 Let's try it with the time series *z* above. As there is no trend or seasonality, no differencing is required and we will specify *d*=0 and *seasonal*=FALSE.
 ```{r arima, exercise=TRUE, exercise.eval=FALSE}
@@ -1352,7 +1398,7 @@ In this case, it's not entirely clear! It looks like the PACF plot might be tail
 
 Let's check using `auto.arima()` - remember to use the logged series, but not the differenced series. We've already determined that both a first and seasonal difference will be required, so we'll specify *d*=1 and *D*=1 and let `auto.arima()` do the rest. 
 
-Given that different information criterion can give different results, we'll check all of them separately and choose the simplest of the three models.
+Given that different information criterion can give different results, we'll check all of them separately and choose the simplest of the models.
 ```{r arima1d, exercise=TRUE, exercise.eval=FALSE}
 # Automated AR and MA selection
 auto.arima(log(AirPassengers), d=1, D=1, ic="bic")
@@ -1395,6 +1441,8 @@ You will learn the functions:
 * adf.test()
 * kpss.test()
 
+***
+
 #### Exercise 3.1 Step 1 - Stationarity
 ```{r exercise3_1, exercise.cap="Exercise 3.1", tidy=TRUE, exercise=TRUE, exercise.eval=FALSE,  exercise.lines=6}
 # Check the data "p" for stationarity - what transformations will be needed?
@@ -1408,6 +1456,7 @@ You will learn the functions:
 # Check for stationarity by plotting the data, and using adf.test() and/or kpss.test()
 ```
 
+***
 
 #### Exercise 3.2 Step 2 - AR and MA orders
 ```{r exercise3_2, exercise.cap="Exercise 3.2", tidy=TRUE, exercise=TRUE, exercise.lines=7, exercise.eval=FALSE }
@@ -1416,17 +1465,24 @@ You will learn the functions:
 
 # Check auto.arima - what does it suggest?
 # Consider which parameters to pre-specify
-auto.arima(p,    )
+auto.arima()
 
 ```
 ```{r exercise3_2-hint-1}
-# Prespecify "d" and "D" based on what you observed in your stationarity test, and in the ACF/PACF plots
+# Make sure to plot the ACF/PACF plots of the differenced series:
+acf2(diff(p))
 ```
+```{r exercise3_2-hint-2}
+# Prespecify "d" and "D" based on what you observed in your stationarity test, and in the ACF/PACF plots
+auto.arima(p, d=1)
+```
+
+***
 
 #### Exercise 3.3 Step 3 - Estimating model and checking fit
 ```{r exercise3_3, exercise.cap="Exercise 3.3", tidy=TRUE, exercise=TRUE, exercise.eval=FALSE , fig.height=7, fig.width=5, exercise.lines=9}
 # Run the ARIMA model using sarima()
-sarima(p, )
+sarima()
 
 # Check the model fit - how does it look?
 # If it doesn't fit try different AR/MA orders

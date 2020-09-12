@@ -41,7 +41,7 @@ belt.after.lag <- append(rep(0,sum(as.Date(UKDD)<'1983-03-01')),seq(1,sum(as.Dat
 UKDD.mon <- seasonaldummy(UKDD)
 
 alprazolam <- read.csv(file="data/alprazolam.csv", header=TRUE)
-alp <- ts(alprazolam, start=c(2014,7), end=c(2018,6), frequency=12 )
+alp <- window(ts(alprazolam, start=c(2014,7), end=c(2018,6), frequency=12 ), end=c(2018,1))
 step <- append(rep(0,sum(as.Date(alp)<'2017-02-01')),rep(1,sum(as.Date(alp)>='2017-02-01')))
 time <- seq(from=1, to=length(alp))
 after <- append(rep(0,sum(as.Date(alp)<'2017-02-01')), seq(1,sum(as.Date(alp)>='2017-02-01')))
@@ -96,7 +96,7 @@ Each lecture will be followed by a practical session where you will write your o
 
 The prereading for this chapter is Bernal JL, Cummins S, Gasparrini A. Interrupted time series regression for the evaluation of public health interventions: a tutorial. *Int J Epidemiol* 2016;46:348-355. [DOI: 10.1093/ije/dyw098](https://academic.oup.com/ije/article/46/1/348/2622842)
 
-The reference text is Shadish WR, Cook TD, Campbell DT. Experimental and quasi-experimental designs for generalized causal inference. 2002. Boston: Houghton Mifflin. ISBN: 0395615569. [Chapter 6](https://www.dropbox.com/s/uk97aukqw8n3mm3/Shadish_Cook_Campbell_Chap6.pdf?dl=0)
+The reference text is Shadish WR, Cook TD, Campbell DT. Experimental and quasi-experimental designs for generalized causal inference. 2002. Boston: Houghton Mifflin. ISBN: 0395615569. [Chapter 6](https://github.com/CBDRH/HDAT9700/blob/master/inst/tutorials/its/Shadish_Chapter6.pdf)
 
 Some other useful references include:
 
@@ -590,7 +590,7 @@ In this practical session you will practice setting up your data for an interrup
 
 For these exercises you will use data on monthly dispensings of alprazolam in Australia. As mentioned in Practical 1, on 1 February 2017 the high strength tablet strength (2 mg) was delisted from the PBS and there was a limit on pack size and repeats. The data were extracted from here: https://www.pbs.gov.au/info/statistics/dos-and-dop/dos-and-dop. 
 
-The dataset *alprazolam* is already loaded as a vector. The series is monthly and starts in July 2014 and ends in June 2018.
+The dataset *alprazolam* is already loaded as a vector. The series is monthly and starts in July 2014 and ends in January 2018.
 
 You will learn the following functions:  
 
@@ -604,7 +604,7 @@ You will learn the following functions:
 #### Exercise 2.1 Creating interrupted time series variables
 ```{r exercise2_1, exercise.cap="Exercise 2.1", exercise=TRUE, exercise.eval=FALSE, exercise.lines=19}
 # First convert the vector "alprazolam" to a time series object called alp
-alp <- ts(alprazolam, start=c(2014,7), end=c(2018,6), frequency=12)
+alp <- ts(alprazolam, start=c(2014,7), end=c(2018,1), frequency=12)
 
 # Create a vector representing a step change (before/after the intervention)
 step <-
@@ -634,6 +634,7 @@ time <- seq(1, length(alp))
 after <- append(rep(0,sum(as.Date(alp)<'2017-02-01')),seq(1,sum(as.Date(alp)>='2017-02-01'),1))
 ```
 
+***
 
 #### Exercise 2.2 Creating seasonal dummy variables
 ```{r exercise2_2, exercise.cap = "Exercise 2.2", exercise=TRUE,  exercise.eval=FALSE, exercise.lines=9, fig.width=6, fig.height=8}
@@ -655,6 +656,7 @@ plot(decompose(alp))
 seasonaldummy(alp)
 ```
 
+***
 
 #### Exercise 2.3 Delayed effects and lagged variables
 ```{r exercise2_3, exercise.cap="Exercise 2.3", exercise=TRUE, exercise.eval=FALSE, fig.height=4, fig.width=5}
@@ -670,6 +672,7 @@ after.lag1 <-
 # To create the new intervention variable, use the same code as for the original but change "Feb 2017" to "Mar 2017"
 ```
 
+***
 
 #### Exercise 2.4 Visualising interrupted time series data
 ```{r exercise2_4, exercise.cap="Exercise 2.4", exercise=TRUE, exercise.eval=FALSE, exercise.lines=5}
@@ -790,7 +793,8 @@ Of course, with any regression we cannot extrapolate our findings beyond the ran
 Now let's say we suspected that the impact of the intervention was delayed - perhaps it took some time for people to get in the habit of wearing seatbelts. We'll rerun our model using the variables we created earlier, with the impact of the intervention starting in March 1983.
 
 ```{r lagseatbelt, exercise=TRUE, exercise.eval=FALSE}
-UKDD.model2 <- glm(UKDD ~ UKDD.time + belt.lag + belt.after.lag + UKDD.mon)
+# Estimate model with impact lagged by 1 month
+UKDD.model2 <- lm(UKDD ~ UKDD.time + belt.lag + belt.after.lag + UKDD.mon)
 summary(UKDD.model2)
 confint(UKDD.model2)
 AIC(UKDD.model2)
@@ -802,7 +806,7 @@ AIC(UKDD.model2)
 text_tbl <- data.frame(
   Param = c("Intercept","Baseline trend","Level shift","Change in trend","AIC"),
   Model1 =c("2077 (1995, 2159)","-0.1 (-0.9, 0.7)","-363 (-469, -257)","5.8 (-1.3, 12.8)","1485.3"),
-  Model2 = c("2090 (2004, 2176)","-0.3 (-1.2, 0.5)","-338 (-458, -219)","5.2 (-2.7, 13.1)","1497.2"))
+  Model2 = c("2089 (2004, 2175)","-0.3 (-1.2, 0.5)","-338 (-451, -224)","5.6 (-2.3, 13.5)","1496.9"))
 
 kable(text_tbl, col.names=c("Parameter","Model 1, Estimate (95% CI)", "Model 2, Estimate (95% CI)"), align="c") %>%
   kable_styling(full_width = F, font_size=12,  position="left") %>%
@@ -913,14 +917,23 @@ sp.model1 <- lm(log(sp) ~ sp.time + sp.vax + sp.after)
 
 # Check for residual autocorrelation, using either the Ljung-Box test or Durbin Watson test
 Box.test(sp.model1$residuals, type="Ljung-Box", lag=1)
-acf2(sp.model1$residuals)
+
 ```
 
-Hmm, the p-value for the Ljung-Box test is very small, indicating significant residual first-order autocorrelation in the model. In the ACF and PACF plots, we see that there is significant negative autocorrelation at lag 1 (based on the PACF, the significant autocorrelation at lag 2 is entirely due to autocorrelation at lag 1). This suggest an AR(1) model. We should therefore try our linear regression adjusted for autocorrelation only. 
+Hmm, the p-value for the Ljung-Box test is very small, indicating significant residual first-order autocorrelation in the model. Given that there is no trend prior to the intervention, and that there is no seasonality, we'll try an AR() model (instead of a full ARIMA model).
 
-To do so, we will specify an AR model using `sarima()` in the `astsa` package. We will start with specifying an AR(1) model, with *p*=1. Since this is an AR model, we also specify that *d*=0 and *q*=0 (recall from last chapter that *p* is the AR order of the model, *d* is the order of differencing, and *q* is the MA order). We also include the regression variables using `xreg=`. 
+To do so, we will use `auto.arima()`, but specify the order of differencing (*d*) and the MA order (*q*) to both be zero since we want an AR model. (Recall from last chapter that *p* is the AR order of the model, *d* is the order of differencing, and *q* is the MA order).
 
-```{r sp5, exercise=TRUE, exercise.eval=FALSE}
+We also include the regression variables using `xreg=`. 
+
+```{r sp5a, exercise=TRUE, exercise.eval=FALSE}
+# Apply AR(1) model to data
+auto.arima(log(sp), d=0, max.q=0, xreg=cbind(sp.time, sp.vax, sp.after))
+```
+
+THis suggest an AR(1) model. Let's estimate the model using `sarima()` in the `astsa` package.
+
+```{r sp5b, exercise=TRUE, exercise.eval=FALSE}
 # Apply AR(1) model to data
 sp.model2 <- sarima(log(sp), p=1, d=0, q=0, xreg=cbind(sp.time, sp.vax, sp.after))
 ```
@@ -961,7 +974,7 @@ Let's start by exploring the data.
 
 *** 
 
-##### Step 1. Stationarity and seasonality
+#### Step 1. Stationarity and seasonality
 
 Check for trends, non-constant variance, and seasonal effects, visually and/or using formal tests. Determine the necessary order of first differencing (*d*) and seasonal differencing (*D*).
 
@@ -992,7 +1005,7 @@ acf(quet, lag=24)
 
 ***
 
-##### Step 2. Set up data
+#### Step 2. Set up data
 
 Setting up your data for an ARIMA model is very similar to a segmented regression. However, the "time since start of study" variable and seasonal dummy variables are not needed, as ARIMA deals with trends and seasonality by differencing. 
 
@@ -1025,7 +1038,7 @@ quiz(caption = "Quiz 3.1: ITS ARIMA models",
 
 ***
 
-##### Step 3. Identify AR and MA orders
+#### Step 3. Identify AR and MA orders
 
 Using the ACF and PACF plot, identify the potential AR (*p*) and MA (*q*) orders, and the seasonal AR (*P*) and MA (*Q*) orders. Make sure to do this on the differenced series.
 
@@ -1047,7 +1060,7 @@ auto.arima(quet, d=1, D=1, xreg=cbind(quet.step, quet.ramp), stepwise=FALSE)
 
 ***
 
-##### Step 4. Model Estimation 
+#### Step 4. Model Estimation 
 
 Next, fit the proposed model and check the model fit using `sarima()`. Make sure to include the step and ramp functions when specifying the model - like before, you do this by including the argument `xreg=`.
 
@@ -1095,6 +1108,7 @@ You will learn the following functions:
 
 The previously created vectors are:
 
+* Time series object - *alp*
 * Baseline trend/slope - *time*
 * Step change - *step*
 * Step change (lagged 1 month) - *step.lag1*
@@ -1104,34 +1118,48 @@ The previously created vectors are:
 
 #### Exercise 3.1 Regression modelling and model checking
 ```{r exercise3_1, exercise.cap = "Exercise 3.1", exercise=TRUE, tidy=TRUE, exercise.eval=FALSE, exercise.lines=11, fig.width=5, fig.height=4}
-# Model your time series using a combination of a step change and slope change
+# Model your time series "alp" using a combination of a step change and slope change
 # Include month as a dummy variable 
 model1 <- lm( )
+
 
 # Model summary - are both the step change and slope change significant?
 summary( )
 
+
 # Check your model fit by plotting the residuals
 plot( )
 
+
 ```
 ```{r exercise3_1-hint-1}
+# To model your time series:
+model1 <- lm(alp ~ time + step + after + month)
+```
+```{r exercise3_1-hint-2}
 # To output the model summary use:
 summary(model1)
 ```
-```{r exercise3_1-hint-2}
+```{r exercise3_1-hint-3}
 # To plot the residual, use:
 plot(model1)
 ```
 
+***
+
 #### Exercise 3.2 Testing for residual autocorrelation
 ```{r exercise3_2, exercise.cap = "Exercise 3.2", exercise=TRUE, tidy=TRUE, exercise.eval=FALSE, exercise.lines=6}
-# Conduct a Ljung-Box test for autocorrelation
+# Conduct a Ljung-Box test of residuals for autocorrelation
 # Recall that the null hypothesis is that the data are NOT autocorrelated
 Box.test( )
 
 ```
+```{r exercise3_2-hint-1}
+# To test for autocorrelation:
+Box.test(model1$residuals, type="Ljung-Box", lag=12)
+```
 
+***
 
 
 #### Exercise 3.3 Delayed intervention
@@ -1145,12 +1173,15 @@ model2 <-
 ```
 ```{r exercise3_3-hint-1}
 # To compare models, extract the AIC  
-model1$aic
-model2$aic
+AIC(model1)
+AIC(model2)
 ```
 
+*** 
 
 #### Exercise 3.4 Plotting the counterfactual
+
+Make sure to use the "best" model (model1 or model2) based on the AIC above. 
 ```{r exercise3_4, exercise.cap="Exercise 3.4", exercise=TRUE, exercise.eval=FALSE, fig.height=4, fig.width=5, exercise.lines=15 }
 # Create variables representing the intervention had it not occurred 
 # Note that it must be a data frame, and have the same name as the vector used in the modelling
@@ -1168,11 +1199,53 @@ plot( )
 abline( )
 legend( )
 ```
+```{r exercise3_4-hint-1}
+# Variables if intervention had not occurred:
+noint <- data.frame(step=rep(0,length(alp)), after=rep(0,length(alp)))
 
-#### Exercise 3.5 Final model 
-```{r exercise3_5, exercise=TRUE, exercise.cap="Exercise 3.5", exercise.eval=FALSE, exercise.lines=4}
-# Produce the estimates of your final model
-# How do you interpret these results? What can you conclude about the intervention?
-summary( )
+```
+```{r exercise3_4-hint-2}
+# Predict the series had the intervention not occurred
+cf <- predict(model1, newdata=noint)
+```
+```{r exercise3_4-hint-3}
+# Merge with original data
+alp.cf <- cbind(alp, cf)
 ```
 
+***
+
+#### Exercise 3.5 Final model 
+```{r exercise3_5, exercise=TRUE, exercise.cap="Exercise 3.5", exercise.eval=FALSE, exercise.lines=8}
+# Produce the estimates of your final model, including confidence intervals
+# How do you interpret these results? What can you conclude about the intervention?
+
+```
+```{r exercise3_5-hint-1}
+# To get estimates, use:
+summary(model1)
+
+```
+```{r exercise3_5-hint-2}
+# To get confidence intervals, use:
+confint(model1)
+```
+
+***
+
+#### Exercise 3.6 ARIMA
+```{r exercise3_6, exercise=TRUE, exercise.cap="Exercise 3.6", exercise.eval=FALSE, exercise.lines=8}
+# Run the same model using ARIMA - remember you don't need the variable representing time or seasonality - and prespecify "d" and "D"
+auto.arima( )
+
+
+
+# How does this compare to the linear regression above?
+
+
+```
+```{r exercise3_6-hint-1}
+# Use:
+auto.arima(alp, d=1, D=1, xreg=cbind(step,after))
+
+```
