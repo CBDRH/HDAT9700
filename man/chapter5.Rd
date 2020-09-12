@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{chapter5}
 \alias{chapter5}
-\title{Chapter 5. Multilevel Modelling (Part II)}
+\title{Chapter 5. Interrupted Time Series Analysis}
 \usage{
 chapter5()
 }

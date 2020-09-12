@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{chapter2}
 \alias{chapter2}
-\title{Chapter 2. Draw your assumptions before your conclusions}
+\title{Chapter 2. Directed Acyclic Graphs (DAGs)}
 \usage{
 chapter2()
 }

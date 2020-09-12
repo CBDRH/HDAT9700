@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{chapter6}
 \alias{chapter6}
-\title{Chapter 6. Growth Curve Modelling}
+\title{Chapter 6. Multilevel Modelling (Part I)}
 \usage{
 chapter6()
 }

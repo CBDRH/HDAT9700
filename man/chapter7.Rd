@@ -2,7 +2,7 @@
 % Please edit documentation in R/functions.R
 \name{chapter7}
 \alias{chapter7}
-\title{Chapter 7. Time Series Analysis}
+\title{Chapter 7. Multilevel Modelling (Part II)}
 \usage{
 chapter7()
 }
