@@ -82,7 +82,8 @@ quet.model1 <- sarima(quet, p=2, d=1, q=0, P=0, D=1, Q=1, S=12, xreg=cbind(quet.
 
 ## Overview
 
-Welcome to HDAT9700 Time Series Analysis!
+Welcome to HDAT9700 Interrupted Time Series Analysis!
+![](https://youtu.be/hEKYDvGzOFw)
 
 In this chapter we will focus on interrupted time series analysis, and will involve the application of some of the concepts that we covered in the chapter on Time Series Analysis.
 
@@ -122,7 +123,7 @@ Health policies and regulations are often implemented by governments with the go
 
 However, these types of interventions are commonly introduced with a limited evidence base to support their rationale and despite the good intentions, many interventions can have unintended consequences. For instance, in 2003 the US Food and Drug Administration (FDA) put out warnings about an increased risk of suicidality in young people using antidepressants. Using interrupted time series analysis, Lu *et al* found that this led to a reduction in antidepressant use in young people, but also appeared to have led to an increase in suicide attempts ([Lu et al](https://www.bmj.com/content/348/bmj.g3596.full.pdf+html)).
 
-![**Figure 1.1.** Rates of antidepressant use, psychotropic drug poisonings, and completed suicides per quarter before and after the warnings among adolescents (Source: Lu et al. 2014 *BMJ*)](images/Lu_BMJ_2014.jpg)
+![**Figure.** Rates of antidepressant use, psychotropic drug poisonings, and completed suicides per quarter before and after the warnings among adolescents (Source: Lu et al. 2014 *BMJ*)](images/Lu_BMJ_2014.jpg)
 
 This is in part because these types of interventions are blunt tools, targeting entire populations rather than those at risk. Thus, it is important to evaluate these interventions to make sure they are targeting the right individuals, resulting in the intended outcomes, and not resulting in unintended, negative outcomes. 
 
@@ -136,6 +137,11 @@ The causal hypothesis is that the time series after the intervention will behave
 
 ***
 
+In this video, I introduce interrupted time series analysis and talk about why we need it, and its strengths and weaknesses.
+![](https://youtu.be/4o_DDdhPz7Y)
+
+***
+
 #### Strengths of ITS analysis
 
 Policies, regulations, and other large scale interventions that target whole populations, such as media events, cannot easily be evaluated with randomised controlled trials (RCTs), the gold standard for assessing causality. However, observational studies are prone to bias, especially if not properly designed. 
@@ -144,7 +150,7 @@ Some studies that evaluate large scale health interventions rely on a before-and
 
 Take a look at the figure below - in which of these scenarios would a before-and-after design with the outcome measured only at the red time points before and after lead to an accurate conclusion about the intervention (indicated by the grey bar)?
 
-![**Figure 1.2.** Examples of potential before and after scenarios. (Modified from Soumerai et al. 2015. *Prev Chronic Dis*)](images/before_after.png)
+![**Figure.** Examples of potential before and after scenarios. (Modified from Soumerai et al. 2015. *Prev Chronic Dis*)](images/before_after.png)
 
 
 ***
@@ -162,7 +168,7 @@ In fact, the ITS design is considered the best study design for determining caus
 
 ***
 
-**Table 1.1.** Hierarchy of study designs. (Adapted from Soumerai et al. 2015. *Prev Chronic Dis*)
+**Table.** Hierarchy of study designs. (Adapted from Soumerai et al. 2015. *Prev Chronic Dis*)
 
 ```{r 1_1, echo=FALSE, eval=TRUE}
 text_tbl <- data.frame(
@@ -230,7 +236,7 @@ Ideally, the intervention to be assessed should occur at a well defined point in
 
 In some cases, there may also be an "anticipatory" period. For example, when alprazolam (a benzodiazepine used to treat panic disorder) was rescheduled from a "Prescription-Only" medicine to a "Controlled Drug" on 1 February 2014, the decision was actually announced on 28 June 2013. Therefore, prescribing started to decline prior to the actual intervention date. In this scenario, it may be appropriate to model this "anticipatory" period so that it can be estimated along with the impact of the actual implementation of the intervention. 
 
-![**Figure 1.3.** Alprazolam prescribing in Australia (Schaffer et al. 2016. *JAMA Intern Med*)](images/schaffer_alprazolam.png)
+![**Figure.** Alprazolam prescribing in Australia (Schaffer et al. 2016. *JAMA Intern Med*)](images/schaffer_alprazolam.png)
 
 ***
 
@@ -252,13 +258,13 @@ One way of strengthening causal inference from ITS analysis is to add a **negati
 
 A good example is illustrated below. This shows the impact of introducing surveillance of benzodiazepine prescribing in New York, compared with a neighbouring state, New Jersey, with no such policy. In this case we see a large decline in benzodiazepine use in New York, but not New Jersey, despite similar rates before the intervention. 
 
-![**Figure 1.4.** Example of negative control series. (Soumerai et al. 2015. *Prev Chronic Dis*)](images/soumerai_ctrl.png)
+![**Figure.** Example of negative control series. (Soumerai et al. 2015. *Prev Chronic Dis*)](images/soumerai_ctrl.png)
 
 ***
 
 The table below describes the types of potential control groups in ITS analysis. In some cases, no appropriate controls exists, while other times it may be appropriate to include multiple control series.
 
-**Table 1.2.** Types of control series
+**Table.** Types of control series
 
 ```{r, eval=TRUE, echo=FALSE}
 text_tbl <- data.frame(
@@ -332,7 +338,7 @@ Let's start by introducing some terminology.
 
 There are many other ways that a change may manifest. There may be both a step change and a slope change, or a step change and a pulse. The effect may be temporary, or waning over time. 
 
-![**Figure 1.5.** Examples of intervention impacts](images/types of impacts.png)
+![**Figure.** Examples of intervention impacts](images/types of impacts.png)
 
 ***
 
@@ -361,10 +367,10 @@ Due to concerns about this misuse, on 1 February 2017 several changes were made 
 a) Think about the intervention. Do you think this is an appropriate intervention to evaluate using an ITS design? Why or why not?
 
 
-b) What outcome measure would you suggest using? Think about what data are available in Australia.
+b) What outcome measures would you suggest using? Think about what data are available in Australia and try to come up with multiple potential outcomes.
 
 
-c) Would you expect the impact to be abrupt or gradual? Permanent or temporary?
+c) For each of these outcomes would you expect the impact to be abrupt or gradual? Permanent or temporary?
 
 
 d) Is there an appropriate negative control series that you can think of? Think of the pros and cons of different options.
@@ -382,17 +388,17 @@ Let's start with the basic regression equation. First, some notation:
 
 * $Y_t$ = the outcome variable;
 * $T_I$ = the time of the intervention.
-* $i$ = the length of the series.
+* $n$ = the length of the series.
 
-The time variable ($T_t$) is a sequence from 1 to $i$.
-$$T_t=  1,2,3,...i $$
+The time variable ($T_t$) is a sequence from 1 to $n$.
+$$T_t=  1,2,3,...n $$
 
 The intervention variable ($X_t$) is defined as 0 before the intervention and 1 after:
 
 $$ X_t= \begin{cases} 0, & \text{if} \;t<T_I \\1, & \text{if}\;t \geq T_I \end{cases} $$
 The time since the intervention ($R_t$) is defined as 0 before the intervention and increases by 1 after:
 
-$$ R_t =  \begin{cases} 0, & \text{if} \;t<T_I \\1,2,3,...i, & \text{if}\;t \geq T_I \end{cases} $$
+$$ R_t =  \begin{cases} 0, & \text{if} \;t<T_I \\1,2,3,...n, & \text{if}\;t \geq T_I \end{cases} $$
 A pulse is defined as 1 at the time of the intervention, and 0 otherwise:
 
 $$ P_t = \begin{cases} 0, & \text{if} \;t \neq T_I \\1, & \text{if}\;t = T_I \end{cases} $$
@@ -693,14 +699,6 @@ abline(v=2017.083, col= , lty= )
 
 ### Segmented regression modelling
 
-First, let's check the distribution of our outcome variable using a histogram.
-
-```{r hist, exercise=TRUE, exercise.eval=FALSE, fig.width=5, fig.height=4}
-# Check distribution
-hist(UKDD)
-```
-
-Even though the number of deaths is a count, large counts (i.e. that are not bounded by zero) can be treated as continuous. Thus, we will use a Gaussian (Normal) distribution (rather than Poisson).
 
 ***
 
@@ -709,6 +707,17 @@ Let's continue with the example of the impact of the seatbelt legislation on dri
 ```{r plot, echo=FALSE, eval=TRUE}
 plot(UKDD, ylim=c(500,3000), ylab="Driver deaths", xlab="Month",main="Driver deaths in the UK (1975 to 1984)")
 ```
+
+***
+
+First, let's check the distribution of our outcome variable using a histogram.
+
+```{r hist, exercise=TRUE, exercise.eval=FALSE, fig.width=5, fig.height=4}
+# Check distribution
+hist(UKDD)
+```
+
+Even though the number of deaths is a count, large counts (i.e. that are not bounded by zero) can be treated as continuous. Thus, we will use a Gaussian (Normal) distribution (rather than Poisson).
 
 ***
 
@@ -852,6 +861,11 @@ The red line in this figure represents the number of deaths we would have expect
 
 ***
 
+In this video, I provide an overview of segmented regression, including how to interpret residual plots and determine if your model has a good fit.
+![](https://youtu.be/vbZU8tq-IUw)
+
+***
+
 ### Autoregressive Integrated Moving Average models (ARIMA)
 
 Sometimes, segmented regression is not sufficient or appropriate. For instance, your time series may have cyclic trends, or complex seasonality (e.g. daily or weekly) that are difficult to capture with dummy variables. 
@@ -931,7 +945,7 @@ We also include the regression variables using `xreg=`.
 auto.arima(log(sp), d=0, max.q=0, xreg=cbind(sp.time, sp.vax, sp.after))
 ```
 
-THis suggest an AR(1) model. Let's estimate the model using `sarima()` in the `astsa` package.
+This suggest an AR(1) model. Let's estimate the model using `sarima()` in the `astsa` package.
 
 ```{r sp5b, exercise=TRUE, exercise.eval=FALSE}
 # Apply AR(1) model to data
@@ -1049,7 +1063,7 @@ acf2(diff(diff(quet), lag=12))
 
 Hmm, the ACF and PACF aren't particularly useful in this case. Let's check with `auto.arima()` - make sure to prespecify *d* and *D* based on what we found above. 
 
-Here we also specify our external variables to include in our ARIMA model (step, ramp), using the argument `xreg=`. Note that you do not have to include the "time since start of study" variable, or the seasonal dummies, in an ARIMA model, as the differencing eliminates the trend. We will also specify `stepwise=FALSE` so that `auto.arima` searches all possible models (note: it may take a minute or two to run!)
+Here we also specify our external variables to include in our ARIMA model (step, ramp), using the argument `xreg=`. Note that you do not have to include the "time since start of study" variable, or the seasonal dummies, in an ARIMA model, as the differencing eliminates the trend. We will also specify `stepwise=FALSE` so that `auto.arima` searches all possible models (note: it may take a minute or two to run!).
 
 ```{r 98098, exercise=TRUE, exercise.eval=FALSE}
 # Check for most appropriate AR/MA orders
@@ -1069,7 +1083,7 @@ Next, fit the proposed model and check the model fit using `sarima()`. Make sure
 quet.model1 <- sarima(quet, p=2, d=1, q=0, P=0, D=1, Q=1, S=12, xreg=cbind(quet.step, quet.ramp))
 ```
 
-The model fits looks good, and the Ljung-Box test is nonsignificant at all lags.
+The model fits looks okay, and the Ljung-Box test is nonsignificant at all lags. The QQ-plot is borderline, but the deviation is mostly at the extremes which is to be expected.
 
 ***
 
@@ -1083,16 +1097,21 @@ confint(quet.model1$fit)
 
 ***
 
-##### Final model
+#### Final model
 
 Our final model is $(2,1,0)\times(0,1,1)_{12}$.
 
 The estimates of effect are:
 
-* The step change variable represents an immediate reduction in dispensings (-3285, 95% CI -4465 to -2104) that was sustained for the duration of the study period;
+* The step change variable represents an immediate reduction (step change) in dispensings (-3285, 95% CI -4465 to -2104) that was sustained for the duration of the study period;
 * The ramp or slope change variable means that the number of dispensings decreased by 1397 dispensings (95% CI -1606 to -1188) in each month *on top of* the step change;
 * Therefore, in January 2014 there were 4682 fewer dispensing (3285 + 1397) than would have been expected in the absence of the subsidy change. The number of dispensings post-intervention was trending downward by 1397 dispensings per month. 
 * Note that with an ARIMA model, we cannot estimate the trend or slope pre-intervention.
+
+***
+
+In this video, I talk about how to choose between segmented regression and ARIMA models.
+![](https://youtu.be/soL_RXNAIqE)
 
 *** 
 

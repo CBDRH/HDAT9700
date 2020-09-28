@@ -1,7 +1,7 @@
 Package: hdat9700tutorials
 Type: Package
 Title: Health Data Analytics: Statistical Modelling II (HDAT9700)
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: as.person(c(
     "Mark Hanly <m.hanly@unsw.edu.au> [aut, cre]", 
     "Andrea Schaffer <andrea.schaffer@unsw.edu.au> [aut]",

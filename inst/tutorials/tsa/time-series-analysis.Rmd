@@ -57,6 +57,7 @@ x1 <- ts(vector1, start=c(2005,7), end=c(2009,6), frequency=12)
 
 ## Overview
 Welcome to HDAT9700 Time Series Analysis!
+![](https://youtu.be/W6Vfa3wEfjU)
 
 In this chapter we will focus on time series data. 
 
@@ -292,7 +293,7 @@ legend("topright", legend=c("Respiratory","Cardiovascular"), col=c("blue","red")
 
 Think about when you would prefer each of these types of plots - what are the strengths and weaknesses of each?
 
-Watch this video about what makes a good plot:
+In this video I describe what makes a good plot:
 ![](https://youtu.be/YZ9LrP5O9wc)
 
 ****
@@ -345,7 +346,7 @@ Now we know that the series starts in January 1968 and ends in December 1978, an
 Now visualise the flu time series by plotting it. Think about the kind of pattern that you expect to see. Always remember when creating graphs to choose clear axis labels, and to set the y-axis limits to something reasonable, as axes that are too narrow or too wide can be misleading.
 ```{r plotflu, exercise=TRUE, exercise.eval=FALSE, fig.height=4, fig.width=5, tidy=TRUE}
 # Plot flu data
-plot(flu, ylab="Deaths per 10,000 people", xlab="Month", main="Pneumonia and influenza deaths in the US (1968-1978)", ylim=c(0,1))
+plot(flu, ylab="Deaths per 10,000 people", xlab="Month", main="Pneumonia and influenza deaths\nin the US (1968-1978)", ylim=c(0,1))
 ```
 
 What are the key features of this time series?
@@ -632,7 +633,7 @@ plot( )
 ```{r exercise1_5, exercise=TRUE, exercise.cap="Exercise 1.5", tidy=TRUE, exercise.eval=FALSE, fig.height=4.5, fig.width=5, exercise.lines=12}
 # When you plotted your series, did you observe any trend? any seasonality? any outliers?
 # Create a plot of the decomposed time series for males, and see if it confirms what you observed above
-males <- decompose(resp_ts[,1])
+males <- decompose()
 
 
 
@@ -642,7 +643,12 @@ males <- decompose(resp_ts[,1])
 
 ```
 ```{r exercise1_5-hint-1}
-# To combine the raw data with the trend data, use "ts.union(resp[,1], males$trend)"
+# To decompose the males time series:
+males <- decompose(resp_ts[,1])
+```
+```{r exercise1_5-hint-2}
+# To combine the raw data with the trend data, use 
+ts.union(resp_ts[,1], males$trend)
 ```
 
 ***
@@ -902,7 +908,7 @@ plot(h02,ylab='Corticosteroid Rx (millions)')
 
 ACF plots can also help identify seasonality. If you have monthly seasonality, then you would expect to see significant autocorrelation at lag 12. If you don't, then the seasonality may not be strong enough to need adjustment.
 
-You can plot both the ACF and the PACF simultaneously using the function `acf2()` in the `astsa` package. Let's try it with the corticosteroid data. Since we know our data are seasonal, we'll specify `max.lag=24` to make sure to observe the seasonal effects. Confusingly, note that for seasonal data, the x-axis ("Lag") is labelled as fractions of the unit of time (year). Thus, in the following plot "Lag 1" is actually "Lag 12" (one year). 
+You can plot both the ACF and the PACF simultaneously using the function `acf2()` in the `astsa` package. Let's try it with the corticosteroid data. Since we know our data are seasonal, we'll specify `max.lag=24` to make sure to observe the seasonal effects. Confusingly, note that for seasonal data, the x-axis ("Lag") is labelled as fractions of the unit of time (year). Thus, in the following plot "Lag 1" is actually "Lag 12" (one year). Also, `acf2()` *doesn't* plot the autocorrelation at lag 0 (like `acf()`) so don't ignore the first bar!
 
 ```{r acf2, exercise.eval=FALSE, exercise=TRUE,fig.width=4, fig.height=4, tidy=TRUE}
 # Plot the PACF for corticosteroid prescriptions in Australia
@@ -949,10 +955,10 @@ Recall that we made our time series of corticosteroid prescriptions stationary b
 
 ```{r sdiff, exercise=TRUE, exercise.eval=FALSE, tidy=TRUE}
 # As a reminder, plot the stationary data without seasonal differencing
-plot(diff(log(h02)), ylab="Corticosteroid Rx (millions)", xlab="Month", ylim=c(-1,1))
+plot(diff(log(h02)), ylab="Corticosteroid Rx (millions)", xlab="Month", ylim=c(-1,1), xlim=c(1991.5,2008.5))
 
 # Plot the new data
-plot(diff(diff(log(h02)), lag=12), ylab="Corticosteroid Rx (millions)", xlab="Month", ylim=c(-1,1)) 
+plot(diff(diff(log(h02)), lag=12), ylab="Corticosteroid Rx (millions)", xlab="Month", ylim=c(-1,1), xlim=c(1991.5,2008.5)) 
 ```
 
 That looks much better and easier to work with. Note that when taking the seasonal difference for monthly data, you lose the first 12 observations, since you can't calculate the seasonal difference for those observations. That is important to keep in mind - if you have seasonal data, in general you will need more time points. If you need both a first difference and a seasonal difference, it doesn't matter which you do first. 
@@ -969,6 +975,12 @@ quiz(caption = "Quiz 2_3: Seasonality",
     random_answer_order = FALSE, allow_retry = TRUE)
  )
 ```
+
+***
+
+
+In this video, I review the statistical properties of time series (stationarity, autocorrelation, and seasonality).
+![](https://youtu.be/9wQJTOOS6lQ)
 
 ***
 
@@ -992,17 +1004,14 @@ head(air)
 # Plot the data - check for non-stationarity
 
 
-# Is there non-constant variance? If so, apply an appropriate transformation
+# Is there non-constant variance? If so, apply an appropriate transformation and plot the data again
 
 
-# Plot the data again
+# Is there a trend? If so, apply an appropriate transformation and plot the data again
 
 
-# Is there a trend? If so, apply an appropriate transformation
 
-
-# Plot the data again
-
+# Does your time series now appear stationary?
 
 ```
 ```{r exercise2_1-hint-1}
@@ -1018,6 +1027,7 @@ plot(diff(log(air)))
 # If you plot "plot(log(diff(air)))" this will give an error as you cannot take the log of a negative number
 
 ```
+
 
 ***
 
@@ -1047,7 +1057,7 @@ plot(diff(log(air)))
 ```
 ```{r exercise2_3-hint-1}
 # To aggregate, use:
-air_yr <- aggregate(diff(log(air)), nfrequency=1)
+air_yr <- aggregate(air, nfrequency=1)
 ```
 
 ***
@@ -1279,6 +1289,12 @@ quiz(caption = "Quiz 3.1: Basic models",
 
 ***
 
+In this video, I talk about ARIMA models, including how to interpret the residual plots produced by `sarima()` and determine whether your model has a good fit.
+![](https://youtu.be/DlHmaTqvCxQ)
+
+
+***
+
 #### Worked example 1
 
 Let's work through an example.
@@ -1296,7 +1312,9 @@ plot(z)
 acf2(z)
 ```
 
-We can see that the PACF plot cuts off sharply at lag 2, while the ACF plot tails off. This indicates that this is an AR model, and that *p* = 2.
+The data have constant variance, and no trend. Therefore, there is no need for a transformation, or differencing. 
+
+In the ACF/PACF plots we can see that the PACF plot cuts off sharply at lag 2, while the ACF plot tails off. This indicates that this is an AR model, and that *p* = 2.
 
 An alternative and simpler approach is to use `auto.arima()` from the `forecast` package, which will determine the *p*, *q*, *P*, *Q* values for you, based on the best AIC or BIC. You can specify several constraints, including the maximum and starting values for *p*, *q*, *d*, and the seasonal equivalents. If your time series has a trend and/or seasonality,  specify *d*=1 and/or *D*=1 to start.
 
