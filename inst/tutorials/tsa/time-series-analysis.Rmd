@@ -609,7 +609,7 @@ summary(resp_ts)
 #### Exercise 1.4 Data visualisation
 ```{r exercise1_4, exercise=TRUE, exercise.cap="Exercise 1.4", tidy=TRUE, exercise.eval=FALSE, fig.height=4, fig.width=5, exercise.lines=10}
 # Plot the male and female time series in different facets
-plot( )
+
 
 # Plot the data again, this time with males and females on the same graph with different colours and/or line types.
 # Remember to use appropriate x- and y-axis labels, a title, and y-axis limits
@@ -630,8 +630,8 @@ plot( )
 #### Exercise 1.5 Data decomposition
 ```{r exercise1_5, exercise=TRUE, exercise.cap="Exercise 1.5", tidy=TRUE, exercise.eval=FALSE, fig.height=4.5, fig.width=5, exercise.lines=12}
 # When you plotted your series, did you observe any trend? any seasonality? any outliers?
-# Create a plot of the decomposed time series for males, and see if it confirms what you observed above
-males <- decompose()
+# Create a plot of the decomposed time series for males (call it "males"), and see if it confirms what you observed above
+
 
 
 
@@ -1481,7 +1481,8 @@ You will learn the functions:
 
 # Check auto.arima - what does it suggest?
 # Consider which parameters to pre-specify
-auto.arima()
+
+
 
 ```
 ```{r exercise3_2-hint-1}
@@ -1498,7 +1499,7 @@ auto.arima(p, d=1)
 #### Exercise 3.3 Step 3 - Estimating model and checking fit
 ```{r exercise3_3, exercise.cap="Exercise 3.3", tidy=TRUE, exercise=TRUE, exercise.eval=FALSE , fig.height=7, fig.width=5, exercise.lines=9}
 # Run the ARIMA model using sarima()
-sarima()
+
 
 # Check the model fit - how does it look?
 # If it doesn't fit try different AR/MA orders

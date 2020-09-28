@@ -615,14 +615,17 @@ You will learn the following functions:
 # First convert the vector "alprazolam" to a time series object called alp
 alp <- ts(alprazolam, start=c(2014,7), end=c(2018,1), frequency=12)
 
-# Create a vector representing a step change (before/after the intervention)
-step <-
+# Create a vector representing a step change (before/after the intervention) called "step"
 
-# Create a sequence vector representing time since start of study
-time <-
+
+
+# Create a sequence vector representing time since start of study called "time"
+
+
   
-# Create a sequence vector representing time since intervention 
-after <-
+# Create a sequence vector representing time since intervention called "after"
+
+
   
 # Print your new vectors to check
 # Note it is easier to check if they are correct by converting them to ts objects
@@ -649,8 +652,10 @@ after <- append(rep(0,sum(as.yearmon(time(alp))<'Feb 2017')),seq(1,sum(as.yearmo
 ```{r exercise2_2, exercise.cap = "Exercise 2.2", exercise=TRUE,  exercise.eval=FALSE, exercise.lines=9, fig.width=6, fig.height=8}
 # Plot the decomposed series
 
-# Create seasonal dummy variables
-month <-
+
+# Create a matrix of seasonal dummy variables called "month"
+
+
 
 # Print to check that they were created correctly
 
@@ -669,9 +674,9 @@ seasonaldummy(alp)
 
 #### Exercise 2.3 Delayed effects and lagged variables
 ```{r exercise2_3, exercise.cap="Exercise 2.3", exercise=TRUE, exercise.eval=FALSE, fig.height=4, fig.width=5}
-# Create vectors representing the impact (e.g. step change, change in slope) if the effect were delayed by 1 month
-step.lag1 <-
-after.lag1 <-
+# Create vectors representing the impact if the effect were delayed by 1 month for the step change (called "step.lag1") and time since intervention (called "after.lag1")
+
+
 
 # Print to make sure they were created correctly
   
@@ -686,8 +691,9 @@ after.lag1 <-
 #### Exercise 2.4 Visualising interrupted time series data
 ```{r exercise2_4, exercise.cap="Exercise 2.4", exercise=TRUE, exercise.eval=FALSE, exercise.lines=5}
 # Plot the time series including a vertical line representing the intervention
-plot( )
-abline( )
+
+
+
 
 ```
 ```{r exercise2_4-hint-1, exercise.eval=FALSE}
@@ -1140,17 +1146,16 @@ The previously created vectors are:
 
 #### Exercise 3.1 Regression modelling and model checking
 ```{r exercise3_1, exercise.cap = "Exercise 3.1", exercise=TRUE, tidy=TRUE, exercise.eval=FALSE, exercise.lines=11, fig.width=5, fig.height=4}
-# Model your time series "alp" using a combination of a step change and slope change
-# Include month as a dummy variable 
-model1 <- lm( )
+# Model your time series "alp" using a combination of a step change and slope change (call it "model1") - include month as a dummy variable 
 
 
-# Model summary - are both the step change and slope change significant?
-summary( )
 
+# Model summary (using "summary()") - are both the step change and slope change significant?
+
+  
 
 # Check your model fit by plotting the residuals
-plot( )
+
 
 
 ```
@@ -1173,7 +1178,8 @@ plot(model1)
 ```{r exercise3_2, exercise.cap = "Exercise 3.2", exercise=TRUE, tidy=TRUE, exercise.eval=FALSE, exercise.lines=6}
 # Conduct a Ljung-Box test of residuals for autocorrelation
 # Recall that the null hypothesis is that the data are NOT autocorrelated
-Box.test( )
+
+
 
 ```
 ```{r exercise3_2-hint-1}
@@ -1186,8 +1192,8 @@ Box.test(model1$residuals, type="Ljung-Box", lag=12)
 
 #### Exercise 3.3 Delayed intervention
 ```{r exercise3_3, exercise.cap="Exercise 3.3", exercise=TRUE, exercise.eval=FALSE, exercise.lines=7}
-# Rerun the model with this intervention variables delayed by 1 month
-model2 <-
+# Rerun the model with this intervention variables delayed by 1 month (call it "model2")
+
 
 # Compare it to the first model using AIC - is it any better?
   
@@ -1204,22 +1210,26 @@ AIC(model2)
 #### Exercise 3.4 Plotting the counterfactual
 
 Make sure to use the "best" model (model1 or model2) based on the AIC above. 
-```{r exercise3_4, exercise.cap="Exercise 3.4", exercise=TRUE, exercise.eval=FALSE, fig.height=4, fig.width=5, exercise.lines=15 }
-# Create variables representing the intervention had it not occurred 
+```{r exercise3_4, exercise.cap="Exercise 3.4", exercise=TRUE, exercise.eval=FALSE, fig.height=4, fig.width=5, exercise.lines=25 }
+# Create a data frame representing the intervention had it not occurred (call it "noint")
 # Note that it must be a data frame, and have the same name as the vector used in the modelling
-noint <- data.frame(step=rep(), after=rep())
-print(noint)
 
-# Predict the series had the intervention NOT occurred
-cf <- predict( , newdata= )
+
+
+# Predict the series had the intervention NOT occurred using "predict()"
+
+
+
 
 # Merge with the original data
-alp.cf <-
+
+
+
 
 # Plot both on the same plot - don't forget the legend and vertical line representing the intervention
-plot( )
-abline( )
-legend( )
+
+
+
 ```
 ```{r exercise3_4-hint-1}
 # Variables if intervention had not occurred:
@@ -1238,9 +1248,10 @@ alp.cf <- cbind(alp, cf)
 ***
 
 #### Exercise 3.5 Final model 
-```{r exercise3_5, exercise=TRUE, exercise.cap="Exercise 3.5", exercise.eval=FALSE, exercise.lines=8}
+```{r exercise3_5, exercise=TRUE, exercise.cap="Exercise 3.5", exercise.eval=FALSE, exercise.lines=10}
 # Produce the estimates of your final model, including confidence intervals
 # How do you interpret these results? What can you conclude about the intervention?
+
 
 ```
 ```{r exercise3_5-hint-1}
@@ -1257,8 +1268,8 @@ confint(model1)
 
 #### Exercise 3.6 ARIMA
 ```{r exercise3_6, exercise=TRUE, exercise.cap="Exercise 3.6", exercise.eval=FALSE, exercise.lines=8}
-# Run the same model using ARIMA - remember you don't need the variable representing time or seasonality - and prespecify "d" and "D"
-auto.arima( )
+# Run the same model using "auto.arima()" - remember you don't need the variable representing time or seasonality - and prespecify "d" and "D"
+
 
 
 
