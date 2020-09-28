@@ -5,8 +5,8 @@ account: cbdrh
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1654624
-bundleId: 3620973
+bundleId: 3677715
 url: https://cbdrh.shinyapps.io/interrupted-time-series/
-when: 1599881038.30708
+when: 1601273776.31696
 asMultiple: FALSE
 asStatic: FALSE

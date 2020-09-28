@@ -26,6 +26,7 @@ library("fpp2")
 library("kableExtra")
 library("magrittr")
 library("formatR")
+library("zoo")
 
 resp <- read.csv(file="data/uk-deaths-by-sex.csv", header=TRUE)
 resp_ts <- ts(resp, start=c(1974,1), frequency=12)
