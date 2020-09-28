@@ -34,7 +34,6 @@ resp_ts <- ts(resp, start=c(1974,1), frequency=12)
 air <- read.csv(file="data/international-airline-passengers.csv", header=TRUE)
 air <- ts(air[,2], start=c(1948,1), end=c(1959,12), frequency = 12)
 
-
 set.seed(1)
 z <- arima.sim(model=list(order=c(2,0,0), ar=c(1.5, -0.75)), n=200)
 
@@ -207,8 +206,6 @@ As you can see, the ts object index stores time as a fraction, not a date. To co
 
 ```{r time2, exercise=TRUE, exercise.eval=FALSE}
 # Extract time information
-as.Date(time(x1))
-
 as.yearmon(time(x1))
 ```
 
