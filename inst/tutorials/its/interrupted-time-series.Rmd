@@ -176,7 +176,7 @@ In fact, the ITS design is considered the best study design for determining caus
 
 **Table.** Hierarchy of study designs. (Adapted from Soumerai et al. 2015. *Prev Chronic Dis*)
 
-```{r 1_1, echo=FALSE, eval=TRUE}
+```{r 1_1, echo=FALSE}
 text_tbl <- data.frame(
   Hierarchy = c("Strong designs: often trustworthy effects",
                 " "," ","Intermediate designs: sometimes trustworthy effects",
@@ -272,7 +272,7 @@ The table below describes the types of potential control groups in ITS analysis.
 
 **Table.** Types of control series
 
-```{r, eval=TRUE, echo=FALSE}
+```{r echo=FALSE}
 text_tbl <- data.frame(
   Type = c("Location-based control","Characteristic- or behaviour-based control","Historical cohort control","Control outcome","Control time period"),
   Desc = c("Same outcome in similar location that did not receive the intervention","Same outcome in group that was not targeted by the intervention","Same outcome in similar cohort from previous time period","Related outcome not targeted by the intervention in the same population","Same outcome during different time period not targeted by intervention"))
@@ -437,7 +437,7 @@ On January 31, 1983 the UK introduced compulsory wearing of seatbelts for front 
 
 Now load the ts object `UKDriverDeaths`. It is the number of drivers killed or seriously injured in the UK per month from Jan 1969 to Dec 1984. As with any data, the first step is to explore your time series. 
 
-```{r UKdeaths, exercise=TRUE, exercise.eval=FALSE, fig.width=5, fig.height=4}
+```{r UKdeaths, fig.height=4, fig.width=5, exercise=TRUE, exercise.eval=FALSE, include=TRUE, echo=TRUE}
 # Load the driver deaths data
 data(UKDriverDeaths)
 
@@ -454,7 +454,7 @@ One thing to note is that there appears to have been a shift around 1974 or so. 
 
 To restrict our data, let's use the `window()` function. With the `window()` function you need to specify either the start date, end date, or both. 
 
-```{r UKDD, exercise=TRUE, exercise.eval=FALSE, tidy=TRUE, fig.width=5, fig.height=4}
+```{r UKDD, eval=FALSE, fig.height=4, fig.width=5, exercise=TRUE, exercise.eval=FALSE, tidy=TRUE}
 # Restrict to January 1975 onward and check that it has worked
 UKDD <- window(UKDriverDeaths, start=c(1975,1))
 head(UKDD)
