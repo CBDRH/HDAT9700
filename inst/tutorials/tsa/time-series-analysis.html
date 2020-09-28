@@ -622,7 +622,7 @@ summary(resp_ts)</code></pre>
 <h4>Exercise 1.4 Data visualisation</h4>
 <div class="tutorial-exercise" data-label="exercise1_4" data-caption="Exercise 1.4" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="10">
 <pre class="text"><code># Plot the male and female time series in different facets
-plot()
+
 
 # Plot the data again, this time with males and females on the same graph with
 # different colours and/or line types.  Remember to use appropriate x- and y-axis
@@ -644,9 +644,9 @@ plot()
 <h4>Exercise 1.5 Data decomposition</h4>
 <div class="tutorial-exercise" data-label="exercise1_5" data-caption="Exercise 1.5" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="12">
 <pre class="text"><code># When you plotted your series, did you observe any trend? any seasonality? any
-# outliers?  Create a plot of the decomposed time series for males, and see if it
-# confirms what you observed above
-males &lt;- decompose()
+# outliers?  Create a plot of the decomposed time series for males (call it
+# &#39;males&#39;), and see if it confirms what you observed above
+
 
 
 
@@ -1288,8 +1288,7 @@ sarima(log(AirPassengers), p=0, d=1, q=1, P=0, D=1, Q=1, S=12)</code></pre>
 
 
 # Check auto.arima - what does it suggest?  Consider which parameters to
-# pre-specify
-auto.arima()</code></pre>
+# pre-specify</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="exercise3_2-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
@@ -1306,7 +1305,7 @@ auto.arima(p, d=1)</code></pre>
 <h4>Exercise 3.3 Step 3 - Estimating model and checking fit</h4>
 <div class="tutorial-exercise" data-label="exercise3_3" data-caption="Exercise 3.3" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="9">
 <pre class="text"><code># Run the ARIMA model using sarima()
-sarima()
+
 
 # Check the model fit - how does it look?  If it doesn&#39;t fit try different AR/MA
 # orders
