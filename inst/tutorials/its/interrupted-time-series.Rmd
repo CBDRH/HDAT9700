@@ -39,8 +39,11 @@ belt <- append(rep(0,sum(as.yearmon(time(UKDD))<'Feb 1983')),rep(1,sum(as.yearmo
 UKDD.time <- seq(1, length(UKDD)) %>% ts(start=c(1975,1), frequency=12)
 
 belt.after <- append(rep(0,sum(as.yearmon(time(UKDD))<'Feb 1983')), seq(1,sum(as.yearmon(time(UKDD))>='Feb 1983')))%>% ts(start=c(1975,01), frequency=12)
+
 belt.lag <- append(rep(0,sum(as.yearmon(time(UKDD))<'Mar 1983')),rep(1,sum(as.yearmon(time(UKDD))>='Mar 1983'))) %>% ts(start=c(1975,1), frequency=12)
+
 belt.after.lag <- append(rep(0,sum(as.yearmon(time(UKDD))<'Mar 1983')),seq(1,sum(as.yearmon(time(UKDD))>='Mar 1983'))) %>% ts(start=c(1975,01), frequency=12)
+
 UKDD.mon <- seasonaldummy(UKDD)
 
 alprazolam <- read.csv(file="data/alprazolam.csv", header=TRUE)
@@ -507,7 +510,7 @@ belt.lag <- append(rep(0,sum(as.yearmon(time(UKDD))<='Feb 1983')), rep(1,sum(as.
 print(belt.lag)
 
 # Create vector for time since intervention
-belt.after.lag <- append(rep(0,sum(as.yearmon(time(UKDD))<='Feb 1983')), seq(1,sum(as.yearmon(time(UKDD))>'Mar 1983'))) %>% ts(start=c(1975,01), frequency=12)
+belt.after.lag <- append(rep(0,sum(as.yearmon(time(UKDD))<='Mar 1983')), seq(1,sum(as.yearmon(time(UKDD))>'Mar 1983'))) %>% ts(start=c(1975,01), frequency=12)
 print(belt.after.lag)
 ```
 
