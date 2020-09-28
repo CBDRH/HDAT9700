@@ -697,8 +697,7 @@ seasonaldummy(alp)
 
 ```
 ```{r exercise2_4-hint-1, exercise.eval=FALSE}
-# To plot a vertical line use:
-abline(v=2017.083, col= , lty= )
+# To plot a vertical line use "abline(v=2017.083, col= , lty= )"
 ```
 
 
