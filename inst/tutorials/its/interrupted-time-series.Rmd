@@ -33,20 +33,23 @@ library("prais")
 
 data(UKDriverDeaths)
 UKDD <- window(UKDriverDeaths, start=c(1975,1)) %>% ts(start=c(1975,1), frequency=12)
-belt <- append(rep(0,sum(as.Date(UKDD)<'1983-02-01')),rep(1,sum(as.Date(UKDD)>='1983-02-01'))) %>% ts(start=c(1975,1), frequency=12)
-UKDD.time <- seq(1, length(UKDD)) %>% ts(start=c(1975,01), frequency=12)
-belt.after <- append(rep(0,sum(as.Date(UKDD)<'1983-02-01')),seq(1,sum(as.Date(UKDD)>='1983-02-01')))%>% ts(start=c(1975,01), frequency=12)
-belt.lag <- append(rep(0,sum(as.Date(UKDD)<'1983-03-01')),rep(1,sum(as.Date(UKDD)>='1983-03-01'))) %>% ts(start=c(1975,1), frequency=12)
-belt.after.lag <- append(rep(0,sum(as.Date(UKDD)<'1983-03-01')),seq(1,sum(as.Date(UKDD)>='1983-03-01')))%>% ts(start=c(1975,01), frequency=12)
+
+belt <- append(rep(0,sum(as.yearmon(time(UKDD))<'Feb 1983')),rep(1,sum(as.yearmon(time(UKDD))>='Feb 1983'))) %>% ts(start=c(1975,1), frequency=12)
+               
+UKDD.time <- seq(1, length(UKDD)) %>% ts(start=c(1975,1), frequency=12)
+
+belt.after <- append(rep(0,sum(as.yearmon(time(UKDD))<'Feb 1983')), seq(1,sum(as.yearmon(time(UKDD))>='Feb 1983')))%>% ts(start=c(1975,01), frequency=12)
+belt.lag <- append(rep(0,sum(as.yearmon(time(UKDD))<'Mar 1983')),rep(1,sum(as.yearmon(time(UKDD))>='Mar 1983'))) %>% ts(start=c(1975,1), frequency=12)
+belt.after.lag <- append(rep(0,sum(as.yearmon(time(UKDD))<'Mar 1983')),seq(1,sum(as.yearmon(time(UKDD))>='Mar 1983'))) %>% ts(start=c(1975,01), frequency=12)
 UKDD.mon <- seasonaldummy(UKDD)
 
 alprazolam <- read.csv(file="data/alprazolam.csv", header=TRUE)
 alp <- window(ts(alprazolam, start=c(2014,7), end=c(2018,6), frequency=12 ), end=c(2018,1))
-step <- append(rep(0,sum(as.Date(alp)<'2017-02-01')),rep(1,sum(as.Date(alp)>='2017-02-01')))
+step <- append(rep(0,sum(as.yearmon(time(alp))<'Feb 2017')),rep(1,sum(as.yearmon(time(alp))>='Feb 2017')))
 time <- seq(from=1, to=length(alp))
-after <- append(rep(0,sum(as.Date(alp)<'2017-02-01')), seq(1,sum(as.Date(alp)>='2017-02-01')))
-step.lag1 <- append(rep(0,sum(as.Date(alp)<'2017-03-01')),rep(1,sum(as.Date(alp)>='2017-03-01')))
-after.lag1 <- append(rep(0,sum(as.Date(alp)<'2017-03-01')), seq(1,sum(as.Date(alp)>='2017-03-01')))
+after <- append(rep(0,sum(as.yearmon(time(alp))<'Feb 2017')), seq(1,sum(as.yearmon(time(alp))>='Feb 2017')))
+step.lag1 <- append(rep(0,sum(as.yearmon(time(alp))<'Mar 2017')),rep(1,sum(as.yearmon(time(alp))>='Mar 2017')))
+after.lag1 <- append(rep(0,sum(as.yearmon(time(alp))<'Mar 2017')), seq(1,sum(as.yearmon(time(alp))>='Mar 2017')))
 
 month <- seasonaldummy(alp)
 model1 <- lm(alp ~ time + month + step + after)
@@ -70,8 +73,8 @@ sp.model2 <- sarima(log(sp), p=1, d=0, q=0, xreg=cbind(sp.time, sp.vax, sp.after
 
 quetiapine <- read.csv(file="data/quetiapine.csv", header=TRUE)
 quet <- as.data.frame(quetiapine[,2]) %>% ts(start=c(2011,1), end=c(2014,12), frequency=12)
-quet.step <- ts(append(rep(0,sum(as.Date(quet)<'2014-01-01')),rep(1,sum(as.Date(quet)>='2014-01-01'))), start=c(2011,1), frequency=12)
-quet.ramp <- ts(append(rep(0,sum(as.Date(quet)<'2014-01-01')),seq(1,sum(as.Date(quet)>='2014-01-01'))), start=c(2011,1), frequency=12)
+quet.step <- ts(append(rep(0,sum(as.yearmon(time(quet))<'Jan 2014')),rep(1,sum(as.yearmon(time(quet))>='Jan 2014'))), start=c(2011,1), frequency=12)
+quet.ramp <- ts(append(rep(0,sum(as.yearmon(time(quet))<'Jan 2014')),seq(1,sum(as.yearmon(time(quet))>='Jan 2014'))), start=c(2011,1), frequency=12)
 
 quet.model1 <- sarima(quet, p=2, d=1, q=0, P=0, D=1, Q=1, S=12, xreg=cbind(quet.step, quet.ramp), details=FALSE)
 
@@ -472,7 +475,7 @@ Run the code below to create three variables: the intervention indicator that re
 
 ```{r vector, exercise=TRUE, exercise.eval=FALSE}
 # Create vector for introduction of seatbelt law
-belt <- append(rep(0,sum(as.Date(UKDD)<='1983-01-01')), rep(1,sum(as.Date(UKDD)>'1983-01-01')))
+belt <- append(rep(0,sum(as.yearmon(time(UKDD))<='Jan 1983')), rep(1,sum(as.yearmon(time(UKDD))>'Jan 1983')))
 
 # Convert to ts object and view
 # This isn't essential but does help to check that you created the variable correctly
@@ -486,7 +489,7 @@ print(UKDD.time)
 # Create vector for time since intervention
 # Zero if before the intervention
 # Otherwise equal to time since start of study - date before intervention
-belt.after <- append(rep(0,sum(as.Date(UKDD)<'1983-02-01')), seq(1,sum(as.Date(UKDD)>='1983-02-01'))) %>% ts(start=c(1975,1), frequency=12)
+belt.after <- append(rep(0,sum(as.yearmon(time(UKDD))<'Feb 1983')), seq(1,sum(as.yearmon(time(UKDD))>='Feb 1983'))) %>% ts(start=c(1975,1), frequency=12)
 print(belt.after)
 ```
 
@@ -500,11 +503,11 @@ It is important to only consider lagged or delayed effects when it makes sense f
 
 ```{r shift, exercise=TRUE, exercise.eval=FALSE}
 # Create vector for introduction of seatbelt law, lagged by one month
-belt.lag <- append(rep(0,sum(as.Date(UKDD)<='1983-02-01')), rep(1,sum(as.Date(UKDD)>'1983-02-01'))) %>% ts(start=c(1975,01), frequency=12)
+belt.lag <- append(rep(0,sum(as.yearmon(time(UKDD))<='Feb 1983')), rep(1,sum(as.yearmon(time(UKDD))>'Feb 1983'))) %>% ts(start=c(1975,01), frequency=12)
 print(belt.lag)
 
 # Create vector for time since intervention
-belt.after.lag <- append(rep(0,sum(as.Date(UKDD)<='1983-02-01')), seq(1,sum(as.Date(UKDD)>'1983-03-01'))) %>% ts(start=c(1975,01), frequency=12)
+belt.after.lag <- append(rep(0,sum(as.yearmon(time(UKDD))<='Feb 1983')), seq(1,sum(as.yearmon(time(UKDD))>'Mar 1983'))) %>% ts(start=c(1975,01), frequency=12)
 print(belt.after.lag)
 ```
 
@@ -554,7 +557,7 @@ quiz(caption = "Quiz 2.2: Dummy variables and lag variables ",
 
 When performing an ITS analysis, when you plot the raw data you should indicate the date of the intervention. We'll do it below using `abline()`. 
 
-Note that `as.Date()` doesn't work with `abline()` - so instead we'll use the numeric version of the date. If you aren't sure what that is, you can check using `time()`.
+Note that `as.yearmon()` doesn't work with `abline()` - so instead we'll use the numeric version of the date. If you aren't sure what that is, you can check using `time()`.
 
 ```{r time2, exercise.eval=FALSE, exercise=TRUE}
 # Check how ts objects store information about time
@@ -602,7 +605,7 @@ You will learn the following functions:
 
 * seq()
 * abline()
-* as.Date()/time()
+* as.yearmon()/time()
 * length()
 * rep()
 
@@ -628,7 +631,7 @@ after <-
 ```
 ```{r exercise2_1-hint-1}
 # To create intervention variable use:
-step <- append(rep(0,sum(as.Date(alp)<'2017-02-01')),rep(1,sum(as.Date(alp)>='2017-02-01')))
+step <- append(rep(0,sum(as.yearmon(time(alp))<'Feb 2017')),rep(1,sum(as.yearmon(time(alp))>='Feb 2017')))
                
 ```
 ```{r exercise2_1-hint-2}
@@ -637,7 +640,7 @@ time <- seq(1, length(alp))
 ```
 ```{r exercise2_1-hint-3}
 # To create sequence variable for time since intervention use:
-after <- append(rep(0,sum(as.Date(alp)<'2017-02-01')),seq(1,sum(as.Date(alp)>='2017-02-01'),1))
+after <- append(rep(0,sum(as.yearmon(time(alp))<'Feb 2017')),seq(1,sum(as.yearmon(time(alp))>='Feb 2017'),1))
 ```
 
 ***
@@ -912,7 +915,7 @@ Now, let's create a vector representing the time since the start of the study to
 sp.time <- seq(1, length(sp))
 sp.time
 
-# Step change - note, with "as.Date" you need to specify the entire 
+# Step change  
 sp.vax <- append(rep(0,sum(time(sp)<'1796')), rep(1,sum(time(sp)>='1796')))
 sp.vax
 
