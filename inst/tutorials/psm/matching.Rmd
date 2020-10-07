@@ -525,7 +525,7 @@ In simple terms, positivity means that it has to have been possible for every ty
 ### Points to consider
 1. To see why this is the case it is easiest to think in terms of a dichotomous treatment (0 or 1). If $Pr(A=1|l)=1$ then $Pr(A=0|l)=0$, and positivity does not hold.   
 
-2. If children of young mothers were always entered into the Helping Hands program then $Pr(A=1|age\le19)=1$ and $Pr(A=0|age\le19)=1$. Positivity does not hold. In simple terms, this is a problem because we can't estimate the effect of the program in the whole population because there is no comparison for children of young mothers. 
+2. If children of young mothers were always entered into the Helping Hands program then $Pr(A=1|age\le19)=1$ and $Pr(A=0|age\le19)=0$. Positivity does not hold. In simple terms, this is a problem because we can't estimate the effect of the program in the whole population because there is no comparison for children of young mothers. 
 
 ***
 
