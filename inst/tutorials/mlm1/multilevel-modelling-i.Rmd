@@ -68,7 +68,7 @@ The text is available online [here](https://link.springer.com/chapter/10.1007/97
 
 Health systems often have a complex structure, with factors at different levels influencing health outcomes. For example, the success of a surgery may depend on the patients' own health status but may also be influenced by characteristics of their surgeon, the hospital they are attending or the environment or country that they are living in. 
 
-Many real-world datasets will exhibit this complex structure. This can because the natural complexity of the system has been successfully captured in the data, for example, population-level administrative datasets which record information on patients who attend many different hospitals, as well as information on the hospitals. Complexity can also be the captured by the methodology used to collect the data, such as sample surveys with two or more sample stages at different levels. Rather than sample 1,000 patients at random from the population, one could sample 20 GPs from a GP registry, and then sample 50 patients for each GP. The resulting dataset comprises patients who are nested or clustered within GPs. (This methodological approach has a practical advantage: if recruiting patients through GPs, it is administratively simpler to handle a smaller number of GP clinics than a different GP clinic for each individual in the study. This approach also has an analytical advantage. Recording data for multiple lower level units within each higher level unit makes it possible to study the different levels of a complex system, for such as how characteristics at the level of the GP may affect outcomes at the level of the patient.)         
+Many real-world datasets will exhibit this complex structure. This can be because the natural complexity of the system has been successfully captured in the data, for example when an administrative dataset records information on patients who attend many different hospitals, as well as information on the hospitals. Complexity can also be the captured by the methodology used to collect the data, such as sample surveys with two or more sample stages at different levels. Rather than sample 1,000 patients at random from the population, one could sample 20 GPs from a GP registry, and then sample 50 patients for each GP. The resulting dataset comprises patients who are nested or clustered within GPs. (This methodological approach has a practical advantage: if recruiting patients through GPs it is administratively simpler to handle a smaller number of GP clinics than a different GP clinic for each individual in the study. This approach also has an analytical advantage. Recording data for multiple lower level units within each higher level unit makes it possible to study the different levels of a complex system, for such as how characteristics at the level of the GP clinic may affect outcomes at the level of the patient.)         
 
 
 Data exhibiting complex structure with factors operating at different levels are referred to as **multilevel** data. In general we consider three broad multilevel structures:  
@@ -413,7 +413,7 @@ Treating the $u_{0j}$ as _fixed parameters_ means that there is a seperate model
 
 For our toy example with four hospitals, we would have (with some reordering) the model 
 $$
-y_{ij} = \beta_{0} + \beta_{1}u_{01} + \beta_{2}u_{02} + \beta_{3}u_{03} + \beta_{1}x_{i} + e_{ij}
+y_{ij} = \beta_{0} + \beta_{1}u_{01} + \beta_{2}u_{02} + \beta_{3}u_{03} + \beta_{4}x_{i} + e_{ij}
 $$
 
 Note that there is a parameter for each of the first three hospitals. One parameter is left out as the baseline. Recall the pros and cons of the fixed effects model:  
@@ -621,8 +621,8 @@ VarCorr(mod.vc)
 
 #### Examining the output above, can you answer:
 * What is the average birth weight $\beta_{0}$  
-* What is the estimated level 1 (child) variance $e_{ij}$?  
-* What is the estimated level 2 (mother) variance $u_{0j}$?  
+* What is the estimated level 1 (child) variance $\sigma^2_{e}}$?  
+* What is the estimated level 2 (mother) variance $\sigma^2_{u_0}$?  
 * Based on the above, what proportion of the observed variation in birthweight is attributable to mother-level factors?  
 
 
