@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+<meta name="progressive" content="false" />
+<meta name="allow-skip" content="true" />
+
+<title>HDAT9700: Presenting and summarising model results</title>
+
+
+<!-- highlightjs -->
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+<!-- taken from https://github.com/rstudio/rmarkdown/blob/67b7f5fc779e4cfdfd0f021d3d7745b6b6e17149/inst/rmd/h/default.html#L296-L362 -->
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("section-TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+<!-- end tabsets -->
+
+
+<link rel="stylesheet" href="css/tutorials.css" type="text/css" />
+
+</head>
+
+<body>
+
+
+
+<div class="pageContent band">
+<div class="bandContent page">
+
+<div class="topics">
+
+<p><img src="images/UNSW_2017_Big_Data_landscape.jpg" style="width:75.0%" /></p>
+<div id="section-overview" class="section level2">
+<h2>Overview</h2>
+<p>Welcome to HDAT9700 Statistical Modelling II Chapter 10!</p>
+<p>As data scientists, you will always explore your research questions of interest by using various analytical strategies and statistical models you have already learned so far. Once your statistical analyses are complete, you will need to summarize and present the results for the readers. This chapter will help you understand how to present and interpret model results appropriately and effectively.</p>
+<p>Learning outcomes At the end of this chapter, you will be able to: 1. Evaluate characteristics of good plots and tables 2. Understand how to report statistical significance by interpreting P-values and confidence intervals<br />
+3. Communicate the estimates for measures of association 4. Identify key guidelines and checklists for reporting of statistics</p>
+<p>Pre-reading Most of the content in this chapter is provided as written course notes. Although we referenced external papers and reports, we do not expect you to read every one. Our suggested list of prereadings for this chapter include:</p>
+<ol style="list-style-type: decimal">
+<li><p>Kenneth Rothman <strong>Six Persistent Research Misconceptions</strong> <em>J Gen Intern Med.</em> 2014 Jul; 29(7): 1060–1064. Available online <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4061362/">here</a></p></li>
+<li><p>Gary King <strong>Presenting and Interpreting Statistical Results</strong> Available on <a href="https://www.youtube.com/watch?v=gbokhfMdfE8&amp;list=PLmpS1iNDaUFtat0QiqXZhlsAgseWtJ1Kk&amp;index=11&amp;t=0s">YouTube</a> (For the key comments relating to the topic of this chapter <strong><em>watch until 11m30s</em></strong>)</p></li>
+</ol>
+</div>
+<div id="section-presentation-of-results" class="section level2">
+<h2>Presentation of results</h2>
+<p>Tables and figures are an integral part of presenting model results in a well-written scientific document - be it a journal paper, a thesis, or a technical report. Readers (editors, reviewers, and others) typically look at tables and figures before they read the text. Therefore, each table and figure should stand alone, and tell a complete story as much as possible. The readers should not need to refer back and forth to the text to make sense of them. Tables and Figures that are poorly rendered or that merely repeat information given in the text, however, can confuse the reader or clutter the paper. Therefore, each Table and Figure should serve its purpose well or be omitted. A high level of detail for tables and figures is a must.</p>
+<div id="section-tables-vs.-figures-which-one-to-choose" class="section level3">
+<h3>Tables vs. Figures: which one to choose?</h3>
+<p>One of the decisions we must make is, which data belong in a table and which data belong in a figure. To decide that, we first need to understand the differences between them.</p>
+<p>Figures are helpful because * Figures have strong visual impact * Figures are used to show trends and patterns in data * Figures can be used to highlight the most important results</p>
+<p>Tables can be helpful because * Tables can give precise values * We can display a lot of information (many variables with many values) in a table</p>
+</div>
+</div>
+<div id="section-making-better-tables" class="section level2">
+<h2>Making better tables</h2>
+<blockquote>
+<p>Tables are for communication, not data storage</p>
+</blockquote>
+<p><em>Howard Wainer, American statistician</em></p>
+<p>Tables must have informative titles, a clear structure, and reliable data to allow readers to easily recognize and interpret important information or patterns in the data. Here, we will discuss how to design a good table, and several common mistakes we need to avoid when designing a table.</p>
+<div id="section-the-anatomy-of-a-table" class="section level3">
+<h3>The anatomy of a Table</h3>
+<p>A table has a table number, a title, row and column headings, a field of data (numbers or symbols or text), units, perhaps some expanded abbreviations, and footnotes (Figure 1). In addition to numbers, tables can use symbols and text to communicate information.</p>
+<div class="figure">
+<img src="images/table-anatomy.png" alt="" />
+<p class="caption">Figure 1: The components of a table. (Taken from Liu et al. 2018 doi: 10.21037/jphe.2018.01.01)</p>
+</div>
+<div id="section-table-title" class="section level4">
+<h4>Table title</h4>
+<ul>
+<li>To make the table understandable independent of the text, the table title should provide enough information and also be specific. For example, a title like “Cancer incidence in Australia” is too broad and does not have specific information, whereas “Cancer incidence in Australia in 2010-2018, by age group and sex” provides specific information about the data in the table.</li>
+<li>Use the same key terms in the table title, the column headings, and the text of the paper.</li>
+</ul>
+</div>
+<div id="section-body-of-the-table" class="section level4">
+<h4>Body of the table</h4>
+<ul>
+<li>The body of a table is composed of column heads, row heads, and the data field.</li>
+<li>Column heads and row heads should identify the variables being presented.</li>
+<li>A Spanner heading, which apply to two or more columns, allow data to be presented for subgroups.</li>
+<li>When several row subheads are needed, they can be indented under a stub heading or introduced with a “cut-in” heading that crosses the entire data field.</li>
+<li>The units of measurements should be included in either row or column headings as appropriate and need not follow individual values in the table. Using a % symbol in a row or column heading avoids the unnecessary repetition of the symbol for each cell in the row/column. Units in the column or row headings must apply to every cell in the column or row. When the units of only one or two variables differ from those of the other variables in a table, they must be clearly mentioned in a footnote.</li>
+<li>The precision of data (the number of decimal points given) should be consistent and not overemphasised. There is no point of giving mean age or an odds ratio or relative risk to five decimal points. It is also important to remember that decimal points may vary according to the measures presented, for example, % don’t necessarily have the same number of decimal points as means.</li>
+<li>Data also need to be aligned consistently by the decimal point in cells, while text, particularly row headings, is usually left-aligned.</li>
+<li>The data field should not contain empty cells unless no value could logically be expected. When some data are missing, the missing status should be clearly indicated with an ellipsis (…) in the cell and accompanied by a footnote to indicate that the data were “not available”, “not detectable”, “not applicable”, as appropriate, which can sometimes be abbreviated in the table.</li>
+</ul>
+</div>
+<div id="section-footnotes" class="section level4">
+<h4>Footnotes</h4>
+<ul>
+<li>Footnotes are placed below the body of a table, after any expanded abbreviations, and provide further information about some entries in the table.</li>
+<li>In public health and medical journals, footnotes are generally indicated with two sets of marks: superscript, lower-case letters used in alphabetical order (a, b, c, d, e) and symbols (*, †, ‡, §, ||, ¶, **, ††, ‡‡, etc.).</li>
+<li>We can use footnotes to explain statistical details (e.g. test used and reference group) involved with any particular result.</li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="section-example" class="section level3">
+<h3>Example</h3>
+<p>Let us look an example of a well-designed table from a recently published paper in the New England Journal of Medicine:</p>
+<div class="figure">
+<img src="images/nejm-example.png" alt="" />
+<p class="caption">Taken from: P Kirchhof et al. N Engl J Med 2020. DOI: 10.1056/NEJMoa2019422</p>
+</div>
+<p>Points to note:</p>
+<ul>
+<li>Labels for all values are clearly explained.</li>
+<li>Definitions for relevant variables (for example, body mass index) are given in the footnotes.</li>
+<li>All units are given, as appropriate.</li>
+<li>There are no empty cells.</li>
+<li>Use of appropriate number of decimal points.</li>
+<li>In the footnote, it is clearly mentioned what the ± values indicate. Abbreviations are also explained.</li>
+<li>Stud-headings are used when several row subheads are needed (e.g. type of atrial fibrillation).</li>
+<li>Cells are consistently aligned.</li>
+<li>Information about missing data is given in the footnotes.</li>
+</ul>
+</div>
+<div id="section-some-tips-for-making-tables-for-journals" class="section level3">
+<h3>Some tips for making tables for journals</h3>
+<ol style="list-style-type: decimal">
+<li><p>While preparing tables for a journal manuscript, model the format of the tables from already published tables in that journal (Do not reinvent the wheel!).</p></li>
+<li><p>Most journals use three horizontal lines: one above the column headings, one below the column headings, and one below the data. Vertical lines are usually unnecessary.</p></li>
+<li><p>Read the journal’s Author Guidelines to find out information on the number, content, structure, and any other aspects of tables. Remember, some journals count tables in the word count of a manuscript.</p></li>
+<li><p>Finally, all tables/figures should be referred to in the text somewhere too.</p></li>
+</ol>
+</div>
+</div>
+<div id="section-creating-tables-in-r" class="section level2">
+<h2>Creating tables in R</h2>
+<p>There are many R packages available to help you create attractive tables. We recommend:</p>
+<ul>
+<li><p><code>compareGroups::compareGroups</code> and <code>compareGroups::createTable</code> to build compact and publication quality tables of summary statistics by group</p></li>
+<li><p><code>sjplot::tab_model()</code> to create HTML tables from regression models</p></li>
+<li><p><code>janitor::tabyl()</code> and the associated <code>adorn_*</code> functions as a flexible set of tools to get tabular data in the format you need (the results can also be passed to kable).</p></li>
+<li><p><code>knitr::kable()</code> and <code>kableExtra()</code> for incorporating tables in R Markdown outputs&gt; See <a href="https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html" class="uri">https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html</a></p></li>
+<li><p>This blogpost reviews several other options: <a href="https://rfortherestofus.com/2019/11/how-to-make-beautiful-tables-in-r/" class="uri">https://rfortherestofus.com/2019/11/how-to-make-beautiful-tables-in-r/</a></p></li>
+</ul>
+<div id="section-exercises" class="section level3">
+<h3>Exercises</h3>
+<div id="section-example-1.-summary-statistics-by-group" class="section level4">
+<h4>Example 1. Summary statistics by group</h4>
+<p>The <code>compareGroups</code> package contains several functions to help build attractive and publication quality. Use the code chunk below to explore this function.</p>
+<div class="tutorial-exercise" data-label="tab-ex1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="10">
+<pre class="text"><code>tab &lt;- compareGroups(treat ~ age + educ + black, 
+                     data = lalonde,
+                     method = c(2,2,3)
+                     )
+
+createTable(tab) 
+
+## Try changing the summary method for age to 1 (e.g. normally distributed). What changes?</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<p><strong>Notes</strong></p>
+<ul>
+<li>The <code>compareGroups()</code> function uses the usual formula syntax, with the grouping variable on the right hand side of ~ and the variables to be summarised on the left hand side of ~.</li>
+<li>The <code>method()</code> option in the <code>compareGroups()</code> function determines how a variable is summarised. The main method options are: 1: Treats the variable as continuous and normally distributed (returns means and standard deviations) 2: Treats the variable as continuous (returns medians and quartiles) 3: Treats the variable as categorical (returns proportions)</li>
+<li>Passing the output of <code>compareGroups()</code> to <code>createTable()</code> creates the summary table.</li>
+<li>Enter <code>vignette("compareGroups_vignette")</code> at the console to find out more about the features of <code>compareGroups</code>.</li>
+</ul>
+<div class="tutorial-exercise-support" data-label="tab-ex1-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>## Try changing the summary method for age to 1 (e.g. normally distributed). What changes?
+tab &lt;- compareGroups(treat ~ age + educ + black, 
+                     data = lalonde,
+                     method = c(1,2,3)
+                     )
+
+createTable(tab) 
+# Note that the summary of age changes from medians and quartiles to means and standard deviations. 
+# The test of equality across groups is now statistically significant</code></pre>
+</div>
+<hr />
+</div>
+<div id="section-example-2.-present-model-results-in-table" class="section level4">
+<h4>Example 2. Present model results in table</h4>
+<p>The function <code>tab_model()</code> from the <code>sjPlot</code> package is one convenient way to plot model outputs. Use the code chunk below to explore this function.</p>
+<div class="tutorial-exercise" data-label="tab-ex2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="10">
+<pre class="text"><code>library(sjPlot)
+
+mod1 &lt;- lm(re78 ~ treat + age + educ, data = lalonde)
+
+tab_model(mod1)
+
+## Add a second model that extends mod1 above to include the variables `black` and `married` as model covariates. Present the two models side by side</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="tab-ex2-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>## Add a second model that extends mod1 above to include the variables `black` and `married` as model covariates. Present the two models side by side
+mod1 &lt;- lm(re78 ~ treat + age + educ, data = lalonde)
+mod2 &lt;- lm(re78 ~ treat + age + educ + black + married, data = lalonde)
+tab_model(mod1, mod2)</code></pre>
+</div>
+<p><strong>Notes</strong></p>
+<ul>
+<li>`tab_model() accepts model objects as inputs.</li>
+<li>Enter <code>vignette("tab_model_estimates")</code> at the console to find out more about the features of <code>sjPlot::tab_model()</code>.</li>
+</ul>
+<hr />
+</div>
+<div id="section-example-3-creating-summary-tables-with-janitortabyl" class="section level4">
+<h4>Example 3 Creating summary tables with <code>janitor::tabyl()</code></h4>
+<p>The <code>tabyl()</code> function from the <code>janitor</code> package is a tidyverse-orientated tool that makes it easy to work with tables as data.frames, incorporate into your <code>%&gt;%</code> pipe workflows and get tables looking the way you want.</p>
+<div class="tutorial-exercise" data-label="tab-ex3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="20">
+<pre class="text"><code>library(dplyr)
+library(janitor)
+
+df1 &lt;- lalonde %&gt;% 
+  filter(treat==0) %&gt;% 
+  tabyl(age) 
+  
+is.data.frame(df1)
+
+df1
+
+# Use dplyr::arrange() to sort df1 by the most common year of age 
+
+
+# Use the pipe operator to also add percent formatting (adorn_pct_formatting())</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="tab-ex3-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># Use dplyr::arrange() to sort df1 by the most common year of age 
+df1 %&gt;% arrange(-n)</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="tab-ex3-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># Use the pipe operator to also add percent formatting (adorn_pct_formatting())
+df1 %&gt;% arrange(-n) %&gt;% adorn_pct_formatting()</code></pre>
+</div>
+<p><strong>Notes</strong></p>
+<ul>
+<li><code>tabyl()</code> takes data.frames as inputs and returns data.frames as outputs</li>
+<li>tabyls work well in dataflows that use the <code>%&gt;%</code> pipe operator</li>
+<li>The <code>adorn_*</code> functions can be used to further customise tabyls</li>
+<li>Enter <code>vignette("tabyls")</code> at the console to find out more about the features of <code>janitor::tabyl()</code>.</li>
+</ul>
+<hr />
+</div>
+<div id="section-example-4-creating-tables-for-html-or-latex-using-knitrkable-and-kableextra" class="section level4">
+<h4>Example 4 Creating tables for HTML or LaTeX using <code>knitr::kable()</code> and <code>kableExtra()</code></h4>
+<p>The <code>kable()</code> function from the <code>knitr</code> package is a simple function to create simple tables. <code>kableExtra</code> is a second package that adds visual features to <code>kable</code> output.</p>
+<div class="tutorial-exercise" data-label="tab-ex4a" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="25">
+<pre class="text"><code>library(knitr)
+library(kableExtra)
+
+# Prep some tabular data
+dt &lt;- lalonde %&gt;% 
+  group_by(treat) %&gt;% 
+  summarise(educYrs = mean(educ)) 
+
+# kbl() produces a very simple table
+kbl(dt)
+
+# Add some basic styling with a kableExtra theme
+kbl(dt) %&gt;% kable_styling() 
+
+## Try exploring other available styles: 
+# kable_paper
+# kable_classic
+# kable_classic_2
+# kable_minimal 
+# kable_material
+# kable_material_dark</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<p>There are many ways to improve on this basic table, as you can see below.</p>
+<div class="tutorial-exercise" data-label="tab-ex4b" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="20">
+<pre class="text"><code># Prep some tabular data
+dt &lt;- lalonde %&gt;% 
+  group_by(treat) %&gt;% 
+  summarise(educYrs = mean(educ)) 
+
+# With some extra options...
+kbl(dt, 
+col.names = c(&quot;Treatment&quot;, &quot;Years of education&quot;), 
+digits = c(0,1),
+caption = &quot;Table 1. Fancy table&quot;) %&gt;% 
+kable_styling(bootstrap_options = c(&quot;hover&quot;, &quot;striped&quot;),
+full_width = F, 
+position = &quot;left&quot;) %&gt;%
+column_spec(1, bold = T, border_right = T, width = &quot;2&quot;) %&gt;%
+column_spec(2, width = &quot;4&quot;)</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<p><strong>Notes</strong></p>
+<ul>
+<li><code>kbl()</code> generates a very simple table.</li>
+<li><code>kableExtra</code> features can turn a plain <code>kable</code> table into an elegant HTML table.</li>
+<li>Enter <code>vignette("awesome_table_in_html")</code> at the console to find out more about the features of <code>kableExtra</code>.</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="section-making-better-figures" class="section level2">
+<h2>Making better figures</h2>
+<blockquote>
+<p>“Figure quality is a paper’s suit and tie.”</p>
+</blockquote>
+<p><em>American Journal Experts (AJE) Report</em></p>
+<p>Figures are becoming more and more important for scientific communication. One indication of how Figures are drawing the attention is that in the last several years, PubMed and journal websites have begun to display thumbnails of figures alongside abstracts for all their indexed publications. This means that from the initial search for your papers, your figures are already making an impression.</p>
+<p>Broadly, we can distinguish between two types of figure:</p>
+<ol style="list-style-type: decimal">
+<li><p><strong>Graphs</strong> line graphs, bar graphs, scatter plots, histograms, boxplots, forest plots etc.</p></li>
+<li><p><strong>Drawings and diagrams</strong> Directed acyclic graphs (DAGs), participants’ flow-chart etc.</p></li>
+</ol>
+<div id="section-what-kind-of-graph-to-choose" class="section level3">
+<h3>What kind of graph to choose?</h3>
+<p>You might wonder what kind of figure you should choose for presenting your results. This totally depends on two things: i) what kind of data do you have; and ii) what you want to highlight (e.g. trends vs associations). For example, the graphic possibilities for presenting two numeric variables are very different from those for presenting two categorical variables.</p>
+<p>A useful website to help you figuring out the appropriate graphs for your data is: <a href="https://www.data-to-viz.com/">From Data to Viz</a>. This website has classification of chart types based on input data format. It comes in the form of a decision tree leading to a set of potentially appropriate visualizations to represent the dataset. It also provides a reproducible code snippet in <code>R</code>.</p>
+</div>
+<div id="section-the-anatomy-of-a-figure" class="section level3">
+<h3>The anatomy of a Figure</h3>
+<p>A Figure has a Figure legend, axes information, data points, perhaps some expanded information, and footnotes (Figure 2).</p>
+<div class="figure">
+<img src="images/figure-anatomy.png" alt="" />
+<p class="caption">Figure 2. The anatomy of a Figure</p>
+</div>
+<div id="section-figure-legend" class="section level4">
+<h4>Figure Legend</h4>
+<p>Like a Table, A Figure should also be able to stand alone. Readers want to understand it without going back and forth between the figure and the text sections. A good legend will make or break a figure.</p>
+<p>A figure legend may contain: * A brief title * Variable definitions * Definitions of symbols or lines * Explanation of panels (A, B, C, D) * Statistical information (statistical model specification, tests used, p-values) * Brief description of the key findings that are seen in the figure</p>
+<p>If we look at the legend of the supplied figure, we can see that it contains most of these details.</p>
+</div>
+</div>
+<div id="section-avoid-chartjunk" class="section level3">
+<h3>Avoid ‘Chartjunk’:</h3>
+<p><em>Chartjunk</em> refers to all the unnecessary or confusing visual elements found in a figure that do not improve the message (in the best case) or add confusion (in the worst case). For example, chartjunk may include the use of too many colours, too many labels, gratuitously coloured backgrounds, useless grid lines, etc. The term was first coined by Edward Tutfe, in which he argues that any decorations that do not tell the viewer something new must be banned: ‘Regardless of the cause, it is all non-data-ink or redundant data-ink, and it is often chartjunk.’</p>
+</div>
+<div id="section-choosing-appropriate-y-axis" class="section level3">
+<h3>Choosing appropriate y-axis</h3>
+<p>The choice of y-axis in a graph can have a substantial influence on the story that it tells. Choosing an inappropriate y-axis can conceal or mislead the readers. As a rule of thumb, y-axis in a bar chart should include zero, whereas y-axis in a line graph does not necessarily have to include zero. This is because a bar chart emphasizes the absolute magnitude of values associated with each category, whereas a line graph emphasizes the change in the dependent variable (usually the y value) as the independent variable (usually the x value) changes.</p>
+<p>If you are interested to know more about how the choice of axes on graphs can be misleading (with relevant examples), you can read this blogpost here: <a href="https://www.callingbullshit.org/tools/tools_misleading_axes.html" class="uri">https://www.callingbullshit.org/tools/tools_misleading_axes.html</a></p>
+</div>
+<div id="section-some-tips-for-making-figures-for-journals" class="section level3">
+<h3>Some tips for making figures for journals</h3>
+<ul>
+<li><p>Title or no title? Usually a title for Figures included in a document is not needed because the legend conveys all the necessary information and the title just takes up extra space. However, for posters or projected images, where people may have a harder time reading the small print of a legend, a larger font title is very helpful.</p></li>
+<li><p>Style considerations: When you have multiple figures, make sure to standardize font, font sizes, etc. such that all figures look stylistically similar.</p></li>
+<li><p>Things to look for in journal guidelines:</p>
+<ul>
+<li>Figure width</li>
+<li>File type (tiff or EPS) and resolution (600 dpi)</li>
+<li>Does the journal allow or encourage you to use colour? Does it cost more for coloured figures? Also, even if the journal accepts colour, lots of people will print it out in black and white. So, we suggest including colours in different shades or different linetypes (where relevant and possible) to distinguish between groups.</li>
+<li>If the use of colour is encouraged, is the colour space RGB?</li>
+<li>Font size and type</li>
+<li>Line weight</li>
+</ul></li>
+</ul>
+</div>
+<div id="section-multi-panel-plots" class="section level3">
+<h3>Multi-panel plots</h3>
+<p>The number of display items in a scientific paper should be commensurate with the word length. Depending on this word count, manuscripts may have a limited number of display items (figures and/or tables). Thus, when preparing a figure for publication, you will often need to combine multiple plots or add objects (e.g., image or text) to an existing plot. In addition, multi-panel plots are a convenient way to make graphic comparisons between different shapes or trends (with axes in each plot having the same scale). The legend of a multi-panel figure must also identify each graph and the data it presents by letter.</p>
+<p>Of note, unlike figures, tables cannot have multiple panels or parts. Below is an example of multi-panel plot.</p>
+<div class="figure">
+<img src="images/multipanel.png" alt="" />
+<p class="caption">Figure 3. Mean Percent Change in Weight from Baseline. Shown is the percent change in weight according to race (Panel A), sex (Panel B), and age group (Panel C). Patients in the intensive-lifestyle group participated in a high-intensity lifestyle program for obesity treatment that focused on reduced caloric intake and increased physical activity. Patients in the usual-care group received standard care from their primary care team. Taken from: PT Katzmarzyk et al. N Engl J Med 2020;383:909-918</p>
+</div>
+</div>
+</div>
+<div id="section-creating-figures-in-r" class="section level2">
+<h2>Creating figures in R</h2>
+<p>As you will know, <code>ggplot2</code> is the go-to package for creating beautiful figures in <code>R</code>, and is a key package to master if you are working in this environment. There are numerous introductions and tutorials available for <code>ggplot2</code> online, for example the tutorial on <a href="http://r-statistics.co/Complete-Ggplot2-Tutorial-Part1-With-R-Code.html">r-statistics.co</a>.</p>
+<p>For the uninitiated, a good place to start is the Data Visualisation with <code>ggplot2</code> <a href="https://github.com/rstudio/cheatsheets/blob/master/data-visualization-2.1.pdf">cheat sheet</a></p>
+<p>Useful additions to ggplot2 include<br />
+* The <code>ggiraph</code> package for adding interactive elements to your ggplot2 output. See <a href="https://davidgohel.github.io/ggiraph/" class="uri">https://davidgohel.github.io/ggiraph/</a></p>
+<ul>
+<li><p>The <code>daggity</code> and <code>ggdag</code> package for drawing DAGs. See <a href="https://cran.r-project.org/web/packages/ggdag/vignettes/intro-to-ggdag.html" class="uri">https://cran.r-project.org/web/packages/ggdag/vignettes/intro-to-ggdag.html</a></p></li>
+<li><p>The ggmap package for plotting spatial data</p></li>
+</ul>
+<div id="section-exercise" class="section level3">
+<h3>Exercise</h3>
+<p>The plot below shows cumulative confirmed cases of COVID19 per 100,000 population for Australia, Ireland and Singapore. The data are accessed through the <code>COVID19</code> R package which uses data from John Hopkins University. The plot is ok but it could be a lot better! Can you extend this code to:</p>
+<ol style="list-style-type: decimal">
+<li>Include an appropriate title, x- and y-axis titles and a caption to indicate the data source</li>
+<li>Update the legend to replace “id” with a proper title, use complete country names rahter than three-letter acronyms and use lines coloured Gold for Australia, Green for Ireland and Red for Singapore.</li>
+</ol>
+<div class="tutorial-exercise" data-label="figs-ex" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="20">
+<pre class="text"><code>covidData &lt;- COVID19::covid19(country = c(&quot;Australia&quot;, &quot;Ireland&quot;, &quot;Singapore&quot;), verbose = FALSE)
+
+ggplot(covidData, aes(x=date, y=100000*confirmed/population, color=id)) + 
+  geom_point()</code></pre>
+<script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
+</div>
+<div class="tutorial-exercise-support" data-label="figs-ex-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># To label the plot add + labs(x = , y =, title = , caption =)</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="figs-ex-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>ggplot(covidData, aes(x=date, y=100000*confirmed/population, color=id)) + 
+  geom_point() +
+  labs(y=&quot;Cases per 100,000 population&quot;, 
+     x = &#39;Date&#39;, 
+     title = &quot;Cumulative COVID19 cases, Jan-Oct 2020&quot;,
+     caption = &quot;Data source: John Hopkins University&quot;) </code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="figs-ex-hint-3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># To personaised the legend add + scale_color_manual(name = , values = , labels =)</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="figs-ex-hint-4" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code>ggplot(covidData, aes(x=date, y=100000*confirmed/population, color=id)) + 
+  geom_point() +
+  labs(y=&quot;Cases per 100,000 population&quot;, 
+     x = &#39;Date&#39;, 
+     title = &quot;Cumulative COVID19 cases, Jan-Oct 2020&quot;, 
+     caption = &quot;Data source: John Hopkins University&quot;) + 
+  scale_color_manual(name=&quot;Country&quot;, 
+                   values = c(&quot;Gold&quot;, &quot;Green&quot;, &quot;Red&quot;), 
+                   labels = c(&quot;Australia&quot;, &quot;Ireland&quot;, &quot;Singapore&quot;))</code></pre>
+</div>
+</div>
+</div>
+<div id="section-reporting-statistical-inference-p-values-and-confidence-intervals" class="section level2">
+<h2>Reporting statistical inference: P-values and confidence intervals</h2>
+<div id="section-the-pervasive-problem-of-statistical-significance" class="section level3">
+<h3>The pervasive problem of statistical significance</h3>
+<p>Misinterpretation and abuse of statistical tests, p-values, and confidence intervals have been rampant in health research for many decades. Much statistical teaching and practice has developed a strong (and unhealthy) focus on the idea that we should conclude there is ‘no difference’ or ‘no association’ just because a P value is larger than a threshold such as 0.05 or, equivalently, because a confidence interval includes zero (or one in case of exponentiated estimates). Similarly, we should not conclude that two studies conflict because one had a statistically significant result and the other did not. Bucketing results into ‘statistically significant’ and ‘statistically non-significant’ is unnecessary and often damaging to valid interpretation of data. The trouble is human and cognitive more than it is statistical. The correct use and interpretation of these statistics requires an attention to detail and acceptance of uncertainty which seems to tax the patience of many researchers.</p>
+<p>Good news is there have been uprisings against such misinterpretations from many veteran statisticians in recent times. Here are some recent examples:</p>
+<p><img src="images/stat-sig.png" /></p>
+</div>
+<div id="section-fundamental-problems-of-statistical-significance-testing" class="section level3">
+<h3>Fundamental Problems of Statistical Significance Testing</h3>
+<p>Among the many reasons are that statistical significance testing is based on the P-value, which mixes effect size with precision. It is problematic to measure two things with one such number. Therefore, measuring effect size and its precision as separate tasks is a more direct and clearer approach to data interpretation. Confidence interval gives effect size by the location of the interval on the parameter scale, and the distance between the lower and upper limit indicates the precision.</p>
+<p>Another problem with statistical testing is that it reduces the quantitative P-value to a qualitative measure - “significant” or “non-significant”. It is unfortunate that a confidence interval is also typically used merely to judge whether it contains the null value or not, thus converting it to a significance test.</p>
+<p>To know more about P-values, you can look at the six principles provided by the American Statistical Association (ASA).</p>
+<div class="aside">
+<h3 id="section-american-statistical-association-asa-statement-on-statistical-significance-and-p-values-six-principles">American Statistical Association (ASA) Statement on Statistical Significance and P-Values: Six principles</h3>
+<ol style="list-style-type: decimal">
+<li>P-values can indicate how incompatible the data are with a specified statistical model.</li>
+<li>P-values do not measure the probability that the studied hypothesis is true, or the probability that the data were produced by random chance alone. 3. Scientific conclusions and business or policy decisions should not be based only on whether a p-value passes a specific threshold.</li>
+<li>Proper inference requires full reporting and transparency.</li>
+<li>A p-value, or statistical significance, does not measure the size of an effect or the importance of a result.</li>
+<li>By itself, a p-value does not provide a good measure of evidence regarding a model or hypothesis.</li>
+</ol>
+</div>
+</div>
+<div id="section-the-way-forward-a-shift-from-significance-testing-to-estimation" class="section level3">
+<h3>The way forward: a shift from significance testing to estimation</h3>
+<p>It is important to remember that estimation of the effect size and the uncertainty surrounding the estimates are far more important for scientific inference and sound judgment than any arbitrary classification of results into ‘‘significant’’ and ‘‘non-significant’’.</p>
+<p>Here are seven points (five <strong>Don’t</strong>s and two <strong>Do</strong>s) you should remember while interpreting the results from your statistical models:</p>
+<p><strong>Don’t</strong></p>
+<ul>
+<li>Don’t base your conclusions solely on whether an association or effect was found to be “statistically significant” (i.e., the P-value passed some arbitrary threshold such as p &lt; 0.05).</li>
+<li>Don’t believe that an association or effect exists just because it was statistically significant.</li>
+<li>Don’t believe that an association or effect is absent just because it was not statistically significant.</li>
+<li>Don’t believe that your p-value gives the probability that chance alone produced the observed association or effect or the probability that your test hypothesis is true.</li>
+<li>Don’t conclude anything about scientific or practical importance based on statistical significance (or lack thereof).</li>
+</ul>
+<p><strong>DO</strong></p>
+<ul>
+<li><p>Do use confidence intervals as quantitative measures indicating magnitude of effect size and degree of precision, with little attention paid to the precise location of the boundaries of the confidence interval.</p></li>
+<li><p>Do accept uncertainty: P-values, confidence intervals, and other statistical measures are all uncertain.</p></li>
+</ul>
+</div>
+<div id="section-statistical-significance-vs.-clinical-significance" class="section level3">
+<h3>Statistical significance vs. clinical significance</h3>
+<p>Statistical significance implies that the difference seen in the sample also exists in the population. Clinical significance implies that the difference between treatments in effectiveness is clinically important, and it is possible that clinical practice will change if such a difference is seen. Statistical significance is used to inform clinical significance. However, clinical significance and statistical significance are often confused. The terms are often used interchangeably, although one does not necessarily imply the other. Researchers sometimes infer that the effectiveness of a treatment is clinically significant because the difference between treatments is statistically significant. However, clinical significance cannot necessarily be inferred from statistical significance, and statistical significance cannot be inferred from clinical significance. This is particularly relevant in this era of “big data” because with a large enough sample size any result can be significant. So obviously relying just on statistical significance is not useful.</p>
+<p>For example, a recent study published in the Journal of Clinical Oncology compared overall survival in 569 patients with advanced pancreatic cancer who were randomised to receive erlotinib plus gemcitabine versus gemcitabine alone. Median survival was found to be “significantly” prolonged in the erlotinib/gemcitabine arm (6.24 months vs. 5.91 months, P = 0.038). In this example, the clinical relevance of this study is the “treatment effect” or difference in median survival between 6.24 and 5.91 months – a mere 10 days, which most oncologists would agree is a clinically irrelevant “improvement” in outcomes, especially when considering the added toxicity and costs involved with the combination.</p>
+</div>
+</div>
+<div id="section-communicating-the-estimates-for-measures-of-association" class="section level2">
+<h2>Communicating the estimates for measures of association</h2>
+<blockquote>
+<p>Odds ratio - a stranger to both physicians and gamblers, but a friend of many biostatisticians and epidemiologists. <em>Sinclair JC, J Clin Epidemiol. 1994</em></p>
+</blockquote>
+<p>While communicating the results from our statistical models, another important issue we need to consider is how to communicate the estimates for measures of association. Often, we use relative risks and odds ratios as measures of effect size for dichotomous outcomes (an outcome that is either present or absent, such as mortality).</p>
+<p>In this section, we will cover how to communicate these estimates in plain English language for scientific communications, and in particular, what are the caveats we should consider while communicating odds ratios.</p>
+<p>For illustrative purpose, let us consider a hypothetical randomised controlled trial (RCT). In this RCT, 76 depressed patients were randomly assigned to receive either venlafaxine (n = 40), an antidepressant, or placebo (n = 36) for 8 weeks. During the trial, new-onset sexual dysfunction was identified in 8 patients treated with venlafaxine and in 3 patients treated with placebo. These results are presented in the following Table. Table 1: Hypothetical results of an 8-week randomised controlled trial of venlafaxine (n = 40) vs placebo (n = 36)</p>
+<table class="table table-striped" style="width: auto !important; ">
+<caption>
+Table 1: Hypothetical results of an 8-week randomised controlled trial of venlafaxine (n = 40) vs placebo (n = 36)
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Developed sexual dysfunction
+</th>
+<th style="text-align:right;">
+Did not develop sexual dysfunction
+</th>
+<th style="text-align:right;">
+Total
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;width: 25%; ">
+Received venlafaxine
+</td>
+<td style="text-align:right;width: 25%; ">
+8
+</td>
+<td style="text-align:right;width: 25%; ">
+32
+</td>
+<td style="text-align:right;width: 25%; ">
+40
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 25%; ">
+Received placebo
+</td>
+<td style="text-align:right;width: 25%; ">
+3
+</td>
+<td style="text-align:right;width: 25%; ">
+33
+</td>
+<td style="text-align:right;width: 25%; ">
+36
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 25%; ">
+Total
+</td>
+<td style="text-align:right;width: 25%; ">
+11
+</td>
+<td style="text-align:right;width: 25%; ">
+65
+</td>
+<td style="text-align:right;width: 25%; ">
+76
+</td>
+</tr>
+</tbody>
+</table>
+<div id="section-communicating-relative-risks" class="section level3">
+<h3>Communicating relative risks</h3>
+<p>As you can remember from your previous readings, a relative risk is the ratio of two probabilities. The relative risk of an event is the likelihood of its occurrence after exposure to a risk variable as compared with the likelihood of its occurrence in a control or reference group.</p>
+<p>With reference to the data in Table 1, the absolute risks of sexual dysfunction with venlafaxine and place are 8/40 = 20.00% and 3/36 = 8.33%, respectively. Therefore, the relative risk of sexual dysfunction with venlafaxine vs. placebo is 20.00/8.33 = 2.40.</p>
+<p>We can communicate the result in plain English in several ways: * Venlafaxine, relative to placebo, is associated with a 2.4-fold risk of sexual dysfunction. * Venlafaxine is associated with a more than doubled risk of sexual dysfunction. * The risk of sexual dysfunction with venlafaxine is 2.4 times that with placebo. * The risk of sexual dysfunction with venlafaxine is 240% that with placebo. * Compared with placebo, venlafaxine is associated with a 1.4-fold increased risk of sexual dysfunction. * Compared with placebo, venlafaxine is associated with a 140% increased risk of sexual dysfunction.</p>
+<p>As you have realised that some of these ways of expressing the findings sound more alarming than others, and we (the researchers) may manipulate the readers by using more or less alarming terminology to increase or decrease the emotional impact of our findings.</p>
+<div class="aside">
+<h3 id="section-an-explanatory-note">An explanatory note</h3>
+<p>Why 1.4 and 140%? Because a relative risk of 2.4 means “2.4/1”, or 2.4 cases with venlafaxine for every case with placebo. In other words, there are 1.4 extra case with venlafaxine for every case with placebo; 1.4 and 140% are synonymous. You should consider the subtle differences in wording between “2.4-fold risk” vs. “1.4-fold increased risk” and “240% the risk” vs. “140% increased risk” since it can be confusing.</p>
+</div>
+</div>
+<div id="section-relative-vs-absolute-risk" class="section level3">
+<h3>Relative vs absolute risk</h3>
+<p>Another important thing to consider is that relative risk might give us a very misleading estimate of the actual risk, especially when the risks are quite small. Therefore, reporting absolute risk estimates in each group (or their difference) helps the readers to understand risk in a more comprehensive manner. While relative risk is the ratio between one risk and another, absolute risk difference is the absolute difference between the two risks.</p>
+<p><img src="images/relatively-risky.png" /></p>
+<p>Let’s look at this example. A study on more than 131,000 people found that losing consciousness from alcohol may double your risk of developing dementia later in life. As you can see, the relative risk increase was 119%, whereas the absolute risk increase was 0.18%. Using absolute as well as relative risk differences can make a huge difference in how we all understand risk.</p>
+<p>If you are interested to see many of such examples, you can explore this Twitter account: <a href="https://twitter.com/justsaysrisks" class="uri">https://twitter.com/justsaysrisks</a></p>
+</div>
+<div id="section-communicating-odds-ratios" class="section level3">
+<h3>Communicating odds ratios</h3>
+<p>Unlike relative risks, which are the ratio of two probabilities, the odds are the probability of an event occurring, divided by the probability of that event not occurring. Therefore, an odds ratio is the ratio of two odds.</p>
+<p>With reference to the data in Table 1, the odds of developing sexual dysfunction with venlafaxine are 8/32 = 0.25, and the odds of developing sexual dysfunction with placebo are 3/33 = 0.091. The odds ratio, therefore, is 0.25/0.091 = 2.75.</p>
+<p>We can interpret the result in plain English: * The odds of developing sexual dysfunction with venlafaxine (relative to placebo) are 2.75 to 1. * The odds of developing sexual dysfunction with venlafaxine are 2.75 as large compared with placebo. * There is a 175% increase in odds of developing sexual dysfunction with venlafaxine when compared with odds of developing sexual dysfunction with placebo. As you can see here, the communications for odds ratios are not as intuitive as relative risks, particularly because odds are not an easy-to-understand concept like probabilities.</p>
+</div>
+<div id="section-when-can-odds-ratios-mislead" class="section level3">
+<h3>When can odds ratios mislead?</h3>
+<p>Despite the fact that the communications of odds ratios are unintuitive, they are commonly used in public health and medical research because of their statistical properties. Odds ratios are useful in case-control studies, where the absolute risks and hence the relative risks cannot be estimated. They also greatly facilitate statistical analyses (logistic regression), particularly when researchers are interested in adjusting for multiple variables in multivariable analyses.</p>
+<p>Nevertheless, odds ratios are often inappropriately communicated. Odds ratios are often communicated as though they were relative risks. Translation of an odds ratio of X to an “X-fold risk,” is seen commonly in published papers. This is wrong because odds ratios are based on a different underlying concept than relative risks, as the worked examples here show. Then, “why has this practice has been so rampant for so long?” – you might ask.</p>
+<p>Under certain circumstances, odds ratios and relative risks are essentially equivalent. Such a situation occurs when the probability of an event occurring is low. This has been called the “rare disease assumption” with a probability of less than 10% being a commonly used benchmark. However, when an event occurs more commonly, the odds ratios always overstate any effect size whereas relative risks remain constant. The odds ratio is smaller than the relative risk for odds ratios of less than one, and bigger than the relative risk for odds ratios of greater than one. Thus, interpreting an odds ratio as though it were a relative risk could mislead us into believing that an effect size is bigger than is actually the case. Let us see the following figure to understand how much overestimation happens when odds ratios of &gt;1 are interpreted as relative risks.</p>
+<div class="figure">
+<img src="images/odds-risk.png" alt="" />
+<p class="caption">Figure: Amount by which odds ratios of &gt;1 overestimate relative risk, for different odds ratios and different levels of initial risk. (Taken from: Davies BMJ 1998; 316)</p>
+</div>
+<p>It is also important to remember that because of the mathematical behaviour of the odds ratio, estimates of the odds ratio may vary among studies of differing designs, even if the actual risk ratio is constant.</p>
+<p>Of course, although qualitative judgments about effect size may be unaltered by the odds ratio deviating from the relative risk, quantitatively we can still be led astray. A helpful rule of thumb is the “rule of five”. If the odds ratio is greater than one but no greater than five and the occurrence of the outcome in the unexposed group is no greater than 5%, then the odds ratio exceeds the relative risks by less than 20%.</p>
+</div>
+</div>
+<div id="section-association-versus-causation" class="section level2">
+<h2>Association versus causation</h2>
+<p>You have already come to know that statistical models fall into three categories: i) descriptive, ii) predictive, and iii) explanatory or causal. As data scientists, what we really want to communicate from our explanatory or causal statistical models is that variable X “causes” / “impacts” / “benefits” the outcome Y. However, such interpretations are usually categorised as “causal” and therefore, they are routinely avoided in scientific communications, particularly in those involving observational data. Instead, we often limit our interpretations to language that indicate association rather than causation. Now the question is “Why do we do it, especially when a core task of science is to understand causal relationship?” When we observed a statistical association between two variables, it can merely suggest a hypothesis, such as a common cause, but cannot offer proof of causation. This is mainly because confounding is always a possibility.</p>
+<p>Suppose we want to know whether daily drinking of 4 cups of coffee affects the risk of developing skin cancer. Since randomly assigning people to drink certain amount of coffee is unethical (hence forbidden), we analyse observational data and say that our analysis yields a relative risk of 0.8 for daily drinking 4 cups of coffee when compared no coffee drinking. We can communicate the results in two ways:</p>
+<ol style="list-style-type: decimal">
+<li>In associational language: “those who drink 4 cups of coffee daily have, on average, a 20% lower risk of skin caner than those who do not drink coffee”; and</li>
+<li>In causal language: “drinking 4 cups of coffee daily lowers the risk of skin cancer by 20%”.</li>
+</ol>
+<p>The second interpretation (in causal language) is not appropriate because the observed association does not necessarily mean that coffee confers resistance to cancer. One might argue that people who drink a lot of coffee work indoors for long hours and thus have little exposure to the sun, a known risk factor for skin cancer. Therefore, in this is the case, the number of hours spent outdoors is a confounding variable – a correlate of both coffee drinking and skin cancer – can partly or fully explain the observed association. This is why researchers often refrain from explicitly interpreting results as causal effect estimates.</p>
+<p>However, in his <a href="https://pubmed.ncbi.nlm.nih.gov/29565659/">recent commentary in American Journal of Public Health</a>, Miguel Hernán argued that although causal language should be avoided while communicating measures of association, we need to use causal language to accurately describe the aims of our research, be it based on randomized trial or observational data. He suggested that the term “causal effect” can be appropriate in the title and Introduction section of our article when describing the aim of our research, in the Methods section when describing which causal effect we are trying to estimate through an association measure, and in the Discussion section when providing arguments for and against the causal interpretation of our association measure. The only part of the article in which the term “causal effect” has no place is the Results section, which should present the findings without trying to interpret them. If you are interested in knowing more, you can read the commentary here: <a href="https://pubmed.ncbi.nlm.nih.gov/29565659/" class="uri">https://pubmed.ncbi.nlm.nih.gov/29565659/</a></p>
+</div>
+<div id="section-describing-results-an-example" class="section level2">
+<h2>Describing results: An example</h2>
+<p>At this point, you might be wondering how to incorporate all these concepts of communicating model results into practice! Let us look at an example of a table providing the main results from statistical models and accompanying paragraph describing those results.</p>
+<p><a href="https://doi.org/10.1016/S2352-4642(19)30334-7">Hanly et al (2020)</a> examined the role of maternal age at birth in child development among Indigenous and non-Indigenous Australian children in their first school year, and they presented the results from statistical models in Table 2.</p>
+<div class="figure">
+<img src="images/hanly2020.png" style="width:85.0%" alt="" />
+<p class="caption">Taken from: Lancet Child Adolesc Health 2020; 4: 46–57</p>
+</div>
+<p>Now let us see how they explained these results in the text. Note that the descriptive text links the estimated model parameters in the table to a plain-English interpretation. Each point estimate is quoted together with the corresponding 95% confidence intervals. The text re-emphasises the different sets of controls used for each model and p-values are used to support comparisons between different subgroups.</p>
+<blockquote>
+<p>With statistical modelling, we confirmed decreasing developmental vulnerability with increasing maternal age in children of mothers aged 15–29 years for both populations (table 2). However, the slope of model 1 was significantly shallower in Indigenous than non-Indigenous children (β2=–0·013; 95% CI −0·020 to −0·005 vs β4=–0·059; −0·063 to −0·054; p&lt;0·0001), indicating that the decreased risk of developmental vulnerability with each additional year of maternal age between 15 and 29 years was greater in the non-Indigenous children than in the Indigenous children. Controlling for socioeconomic advantage and disadvantage (model 2) reduced the magnitude of the association between maternal age and childhood development between maternal ages of 15 and 29 years in Indigenous (β2=–0·006; −0·013 to 0·001) and non-Indigenous (β4=–0·029; −0·034 to −0·025) children. Further controlling for potentially modifiable factors—including antenatal attendance before 20 weeks, smoking during pregnancy, and preschool or childcare attendance in the year before starting school (model 3)—had little additional impact on the estimated effect of increasing maternal age within the age range of 15–29 years for Indigenous (β2=–0·006; −0·013 to −0·002) or non-Indigenous children (β4=–0·026; −0·031 to −0·022). The stronger association between maternal age and developmental vulnerability for non-Indigenous children compared to Indigenous children was maintained in the adjusted models. We found no association between maternal age and developmental vulnerability among Indigenous children born to mothers aged 35–39 years (β3=–0·008; 95% CI −0·053 to 0·037; table 2). By contrast, increasing risk was observed with increasing maternal age in non-Indigenous children born to mothers aged 35–39 years (β5=0·031; 0·018 to 0·045), although the difference in model slopes for the two groups was not significant in the baseline model (model 1) which adjusted for age, sex and census year (p=0·098). For Indigenous children, the relationship between maternal age and the risk of developmental vulnerability is null or slightly negative in this age range; however, due to the small sample size for this population, the slope did not statistically differ from zero in any of the models.</p>
+</blockquote>
+</div>
+<div id="section-guidelines-for-reporting-model-results" class="section level2">
+<h2>Guidelines for reporting model results</h2>
+<p>The reporting of model results is often inadequate, which hampers the assessment of strengths and weaknesses and generalisability of findings. Also, statistical models should be reported transparently so that readers can follow what was planned, what was done, what was found, and what conclusions were drawn. Therefore, to provide guidance on how to report study results, several reporting guidelines (with checklist of items) have been developed by the methodologists, researchers, and journal editors.</p>
+<p>The use reporting guidelines depends on the underlying study design and data source. You can find the list of these reporting guidelines on the website of <strong>E</strong>nhancing the <strong>QUA</strong>lity and <strong>T</strong>ransparency <strong>O</strong>f health <strong>R</strong>esearch (Equator) Network. <a href="https://www.equator-network.org/reporting-guidelines/" class="uri">https://www.equator-network.org/reporting-guidelines/</a></p>
+<p>As health data scientists, you will be dealing mostly with observational data. So, the most relevant reporting guidelines for you are:</p>
+<ol style="list-style-type: decimal">
+<li><p>The <strong>St</strong>rengthening the <strong>R</strong>eporting of <strong>Ob</strong>servational Studies in <strong>E</strong>pidemiology (STROBE) Statement: guidelines for reporting observational studies <a href="https://www.equator-network.org/reporting-guidelines/strobe/" class="uri">https://www.equator-network.org/reporting-guidelines/strobe/</a></p></li>
+<li><p>The <strong>RE</strong>porting of studies <strong>C</strong>onducted using <strong>O</strong>bservational <strong>R</strong>outinely-collected health <strong>D</strong>ata (RECORD) Statement <a href="https://www.equator-network.org/reporting-guidelines/record/" class="uri">https://www.equator-network.org/reporting-guidelines/record/</a></p></li>
+</ol>
+<p>Download the guidelines and have a look at the checklist items.</p>
+</div>
+<div id="section-references" class="section level2">
+<h2>References</h2>
+<p><em>The papers below are for referencing purpose only</em></p>
+<ol style="list-style-type: decimal">
+<li><p>Sedgwick P. Clinical significance versus statistical significance. BMJ. 2014 Mar 14;348.</p></li>
+<li><p>Persoskie A, Ferrer RA. A most odd ratio: Interpreting and describing odds ratios. American Journal of Preventive Medicine. 2017 Feb 1;52(2):224-8.</p></li>
+<li><p>Holcomb Jr WL, Chaiworapongsa T, Luke DA, Burgdorf KD. An odd measure of risk: use and misuse of the odds ratio. Obstetrics &amp; Gynecology. 2001 Oct 1;98(4):685-8.</p></li>
+<li><p>Altman N, Krzywinski M. Association, correlation and causation.</p></li>
+<li><p>Greenland S, Senn SJ, Rothman KJ, Carlin JB, Poole C, Goodman SN, Altman DG. Statistical tests, P values, confidence intervals, and power: a guide to misinterpretations. European Journal of Epidemiology. 2016 Apr 1;31(4):337-50.</p></li>
+<li><p>Assel M, Sjoberg D, Elders A, Wang X, Huo D, Botchway A, Delfino K, Fan Y, Zhao Z, Koyama T, Hollenbeck B. Guidelines for reporting of statistics for clinical research in urology. BJU International. 2019 Mar;123(3):401-10.</p></li>
+<li><p>Stratton IM, Neil A. How to ensure your paper is rejected by the statistical reviewer. Diabetic Medicine. 2005 Apr 1;22(4):371-3.</p></li>
+<li><p>Greenwood DC, Freeman JV. How to spot a statistical problem: advice for a non-statistical reviewer. BMC Medicine. 2015 Dec;13(1):1-3.</p></li>
+<li><p>Wasserstein RL, Schirm AL, Lazar NA. Moving to a world beyond “p&lt; 0.05”.</p></li>
+<li><p>Norton EC, Dowd BE, Maciejewski ML. Odds ratios—current best practice and use. JAMA 2018 Jul 3;320(1):84-5.</p></li>
+<li><p>Liu W. Preparing better tables. Journal of Public Health and Emergency; 2018, 2(1):</p></li>
+<li><p>Hardwicke TE, Ioannidis JP. Petitions in scientific argumentation: dissecting the request to retire statistical significance. European Journal of Clinical Investigation. 2019 Oct;49(10):e13162.</p></li>
+<li><p>Rothman KJ. Six persistent research misconceptions. Journal of General Internal Medicine. 2014 Jul 1;29(7):1060-4.</p></li>
+<li><p>Rougier NP, Droettboom M, Bourne PE. Ten simple rules for better figures. PLoS Comput Biol. 2014 Sep 11;10(9):e1003833.</p></li>
+<li><p>Katz KA. The (relative) risks of using odds ratios. Archives of dermatology. 2006 Jun 1;142(6):761-4.</p></li>
+<li><p>Wasserstein RL, Lazar NA. The ASA statement on p-values: context, process, and purpose.</p></li>
+<li><p>Hernán MA. The C-word: scientific euphemisms do not improve causal inference from observational data. American Journal of Public Health. 2018 May;108(5):616-9.</p></li>
+<li><p>Andrade C. Understanding relative risk, odds ratio, and related terms: as simple as it can get. The Journal of Clinical Psychiatry. 2015 Jul 22;76(7):857-61.</p></li>
+<li><p>Davies HT, Crombie IK, Tavakoli M. When can odds ratios mislead?. BMJ. 1998 Mar 28;316(7136):989-91.</p></li>
+</ol>
+
+<script type="application/shiny-prerendered" data-context="server-start">
+
+## required packages for examples - note that RMarkdown, learnr (and RStudio!) are also required.
+library("learnr")
+library("knitr")
+library("kableExtra")
+library("janitor")
+library("ggplot2")
+library("dplyr")
+library("compareGroups")
+library("sjPlot")
+library("COVID19")
+
+# Datasets
+lalonde <-MatchIt::lalonde # lalonde data from the MatchIt package
+#covidData <- COVID19::covid19(country = "Australia", level = 2) 
+
+# Chunk options
+knitr::opts_chunk$set(echo = FALSE)
+
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::register_http_handlers(session, metadata = list(id = "au.edu.unsw.cbdrh.hdat9700.tutorials.presenting"))
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+session$onSessionEnded(function() {
+        learnr:::session_stop_event(session)
+      })
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-tab-ex1-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-tab-ex1-code-editor`)), session)
+output$`tutorial-exercise-tab-ex1-output` <- renderUI({
+  `tutorial-exercise-tab-ex1-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-tab-ex2-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-tab-ex2-code-editor`)), session)
+output$`tutorial-exercise-tab-ex2-output` <- renderUI({
+  `tutorial-exercise-tab-ex2-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-tab-ex3-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-tab-ex3-code-editor`)), session)
+output$`tutorial-exercise-tab-ex3-output` <- renderUI({
+  `tutorial-exercise-tab-ex3-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-tab-ex4a-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-tab-ex4a-code-editor`)), session)
+output$`tutorial-exercise-tab-ex4a-output` <- renderUI({
+  `tutorial-exercise-tab-ex4a-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-tab-ex4b-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-tab-ex4b-code-editor`)), session)
+output$`tutorial-exercise-tab-ex4b-output` <- renderUI({
+  `tutorial-exercise-tab-ex4b-result`()
+})
+</script>
+ 
+<script type="application/shiny-prerendered" data-context="server">
+`tutorial-exercise-figs-ex-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-figs-ex-code-editor`)), session)
+output$`tutorial-exercise-figs-ex-output` <- renderUI({
+  `tutorial-exercise-figs-ex-result`()
+})
+</script>
+ <!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="dependencies">
+{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootstrap"]},{"type":"character","attributes":{},"value":["3.3.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/bootstrap"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["viewport"]}},"value":[{"type":"character","attributes":{},"value":["width=device-width, initial-scale=1"]}]},{"type":"character","attributes":{},"value":["js/bootstrap.min.js","shim/html5shiv.min.js","shim/respond.min.js"]},{"type":"character","attributes":{},"value":["css/cerulean.min.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["pagedtable"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/pagedtable-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/pagedtable.js"]},{"type":"character","attributes":{},"value":["css/pagedtable.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["textmate.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-format"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmarkdown/templates/tutorial/resources"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-format.js"]},{"type":"character","attributes":{},"value":["tutorial-format.css","rstudio-theme.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["navigation"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/navigation-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tabsets.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["default.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["1.11.3"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/jquery"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["font-awesome"]},{"type":"character","attributes":{},"value":["5.1.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/fontawesome"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/all.css","css/v4-shims.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.3"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootbox"]},{"type":"character","attributes":{},"value":["4.4.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/bootbox"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["bootbox.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["idb-keyvalue"]},{"type":"character","attributes":{},"value":["3.2.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/idb-keyval"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["idb-keyval-iife-compat.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["kePrint"]},{"type":"character","attributes":{},"value":["0.0.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["kePrint-0.0.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["kePrint.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["kableExtra"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["1.2.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["lightable"]},{"type":"character","attributes":{},"value":["0.0.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lightable-0.0.1"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["lightable.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["kableExtra"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["1.2.1"]}]}]}
+</script>
+<!--/html_preserve-->
+<!--html_preserve-->
+<script type="application/shiny-prerendered" data-context="execution_dependencies">
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130]}},"value":[{"type":"character","attributes":{},"value":["acepack","backports","base","base64enc","bayestestR","boot","broom","checkmate","chron","cluster","coda","codetools","colorspace","compareGroups","compiler","conquer","COVID19","crayon","data.table","datasets","digest","dplyr","effectsize","ellipsis","emmeans","epitools","estimability","evaluate","fastmap","foreign","Formula","generics","ggeffects","ggplot2","glue","graphics","grDevices","grid","gridExtra","gtable","haplo.stats","HardyWeinberg","highr","Hmisc","htmlTable","htmltools","htmlwidgets","httpuv","httr","insight","janitor","jsonlite","kableExtra","knitr","later","lattice","latticeExtra","learnr","lifecycle","lme4","magrittr","markdown","MASS","MatchIt","Matrix","MatrixModels","matrixStats","methods","mice","mime","minqa","modelr","multcomp","munsell","mvtnorm","nlme","nloptr","nnet","parallel","parameters","performance","pillar","pkgconfig","polspline","promises","purrr","quantreg","R6","RColorBrewer","Rcpp","rlang","rmarkdown","rms","rpart","rprojroot","Rsolnp","rstudioapi","rvest","sandwich","scales","shiny","sjlabelled","sjmisc","sjPlot","sjstats","SNPassoc","SparseM","splines","statmod","stats","stringi","stringr","survival","TH.data","tibble","tidyr","tidyselect","tools","truncnorm","utils","vctrs","viridisLite","webshot","withr","writexl","xfun","xml2","xtable","yaml","zoo"]},{"type":"character","attributes":{},"value":["1.4.1","1.1.9","3.6.1","0.1-3","0.7.2","1.3-23","0.7.0","2.0.0","2.3-54","2.1.0","0.19-3","0.2-16","1.4-1","4.1.0","3.6.1","1.0.2","2.2.0","1.3.4","1.12.8","3.6.1","0.6.25","1.0.2","0.3.2","0.3.1","1.5.0","0.5-10","1.3","0.14","1.0.1","0.8-72","1.2-3","0.0.2","0.15.1","3.3.2","1.4.2","3.6.1","3.6.1","3.6.1","2.3","0.3.0","1.7.9","1.6.3","0.8","4.2-0","1.13.1","0.5.0","1.5.1","1.5.4","1.4.2","0.9.5","1.2.0","1.7.1","1.2.1","1.29","1.1.0.1","0.20-38","0.6-28","0.10.1","0.2.0","1.1-23","1.5","1.1","7.3-51.4","3.0.2","1.2-17","0.4-1","0.56.0","3.6.1","3.11.0","0.9","1.2.4","0.1.8","1.4-10","0.5.0","1.1-1","3.1-143","1.2.2.2","7.3-12","3.6.1","0.8.2","0.4.8","1.4.6","2.0.3","1.1.15","1.1.1","0.3.4","5.67","2.4.1","1.1-2","1.0.5","0.4.7","2.3","5.1-3.1","4.1-15","1.3-2","1.16","0.11","0.3.6","2.5-1","1.1.1","1.5.0","1.1.6","2.8.5","2.8.4","0.18.0","1.9-2","1.78","3.6.1","1.4.34","3.6.1","1.5.3","1.4.0","2.44-1.1","1.0-10","3.0.3","1.1.2","1.1.0","3.6.1","1.0-8","3.6.1","0.3.4","0.3.0","0.5.2","2.2.0","1.1","0.17","1.3.2","1.8-4","2.2.1","1.8-8"]}]}]}
+</script>
+<!--/html_preserve-->
+</div>
+
+</div> <!-- topics -->
+
+<div class="topicsContainer">
+<div class="topicsPositioner">
+<div class="band">
+<div class="bandContent topicsListContainer">
+
+<!-- begin doc-metadata -->
+<div id="doc-metadata">
+<h2 class="title toc-ignore" style="display:none;">HDAT9700: Presenting and summarising model results</h2>
+</div>
+<!-- end doc-metadata -->
+
+</div> <!-- bandContent.topicsListContainer -->
+</div> <!-- band -->
+</div> <!-- topicsPositioner -->
+</div> <!-- topicsContainer -->
+
+
+</div> <!-- bandContent page -->
+</div> <!-- pageContent band -->
+
+
+
+
+<script>
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+</script>
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+
+</body>
+
+</html>
