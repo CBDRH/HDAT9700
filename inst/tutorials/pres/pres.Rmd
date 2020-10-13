@@ -45,8 +45,11 @@ As data scientists, you will always explore your research questions of interest 
 At the end of this chapter, you will be able to: 
 
 1.	Evaluate characteristics of good plots and tables
+
 2.	Understand how to report statistical significance by interpreting P-values and confidence intervals  
+
 3.	Communicate the estimates for measures of association
+
 4.	Identify key guidelines and checklists for reporting of statistics
 
 
@@ -66,13 +69,20 @@ Tables and figures are an integral part of presenting model results in a well-wr
 One of the decisions we must make is, which data belong in a table and which data belong in a figure. To decide that, we first need to understand the differences between them.  
 
 Figures are helpful because 
+
 * Figures have strong visual impact
+
 * Figures are used to show trends and patterns in data 
+
 * Figures can be used to highlight the most important results 
 
+
 Tables can be helpful because 
+
 * Tables can give precise values
+
 * We can display a lot of information (many variables with many values) in a table
+
 
 ## Making better tables
 >Tables are for communication, not data storage 
