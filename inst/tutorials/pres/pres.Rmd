@@ -41,15 +41,16 @@ Welcome to HDAT9700 Statistical Modelling II Chapter 10!
 
 As data scientists, you will always explore your research questions of interest by using various analytical strategies and statistical models you have already learned so far. Once your statistical analyses are complete, you will need to summarize and present the results for the readers. This chapter will help you understand how to present and interpret model results appropriately and effectively. 
 
-Learning outcomes 
+### Learning outcomes 
 At the end of this chapter, you will be able to: 
+
 1.	Evaluate characteristics of good plots and tables
 2.	Understand how to report statistical significance by interpreting P-values and confidence intervals  
 3.	Communicate the estimates for measures of association
 4.	Identify key guidelines and checklists for reporting of statistics
 
 
-Pre-reading 
+### Pre-reading 
 Most of the content in this chapter is provided as written course notes. Although we referenced external papers and reports, we do not expect you to read every one. 
 Our suggested list of prereadings for this chapter include: 
 
