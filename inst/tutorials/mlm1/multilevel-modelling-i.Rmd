@@ -37,6 +37,8 @@ birwt.dat <- read.csv("data/smoking_data.csv", header=T) %>%
 ## Overview  
 Welcome to HDAT9700 Statistical Modelling II - Multilevel Modelling part I! 
 
+![](https://youtu.be/OzGgbrGn7ls)
+
 This chapter introduces multilevel modelling---a statistical approach to analyse grouped or clustered data. You will cover:
 
 * Multilevel structures
@@ -65,6 +67,8 @@ The text is available online [here](https://link.springer.com/chapter/10.1007/97
 
 
 ## Multilevel contexts
+
+![](https://youtu.be/eBItxNkZCLs)
 
 Health systems often have a complex structure, with factors at different levels influencing health outcomes. For example, the success of a surgery may depend on the patients' own health status but may also be influenced by characteristics of their surgeon, the hospital they are attending or the environment or country that they are living in. 
 
@@ -400,6 +404,8 @@ baseplot
 
 ## Fixed parameters or random effects? 
 
+![](https://youtu.be/mEcXhYNkJ38)
+
 Consider the statistical model
 
 $$
@@ -434,6 +440,8 @@ Under this formulation, the values $u_{0j}$ represent unexplained group level ef
 **An important distinction of the multilevel model is that rather than have an additional model parameter for each group residual $u_{0j}$, only one additional parameter is estimated: the variance $\sigma_{u0}^{2}$**
 
 ## Residuals
+
+![](https://youtu.be/v5QKE7HoGuc)
 
 In the two-level multilevel model 
 $$
@@ -555,6 +563,8 @@ where $n_{j}$ denotes the number of observations in group $j$.
 * What is important is the absolute group size, not the proportion of a group observed. e.g. it doesn't matter if we have 10 patients from a hospital with 20 patients or 2,000 patients, the level of shrinkage is the same. 
 
 ## Fitting MLMs in R
+
+![](https://youtu.be/Yd0lH6O_X4I)
 
 There are numerous packages available for fitting multilevel models in R with the package `lme4` probably the most widely used. As with any choice of R packages, different options come with various pros and cons. All packages will be able to deal with simple models, but for more complex scenarios the choice of package may depend on your application. Some of the available packages and their pros and cons are listed below.
 
@@ -872,6 +882,8 @@ The parameter $\sigma_{u01}$ is the _covariance_
 
 ### How do we interpret correlated random intercepts and random slopes?
 
+![](https://youtu.be/BIroLtHSKGk)
+
 **Positive covariance**  
 
 Positive values of $\sigma_{u01}$ indicate that positive random intercepts tend to have positive random slopes and negative random intercepts tend to have negative random slopes. This corresponds to a **fanning-out** pattern for the fitted group lines:
@@ -889,6 +901,17 @@ Negative values of $\sigma_{u01}$ indicate that positive random intercepts tend 
 $\sigma_{u01}$ close to zero indicate no consistent relationship between the slopes and the intercepts:
 
 ![](images/mlm15.png){width="75%"}
+
+## Activity
+
+<div class="shiny">
+
+### Activity
+Use the [interactive Shiny app](https://cbdrh.shinyapps.io/mlm1/) to connect ideas between multilevel data, multilevel models, and fitting and interpreting models in R. The app can also be launched by entering `hdat9700tutorials::run('mlm1')` at the console. 
+
+The app allows you to generate multilevel data under different data generation mechanisms. You can then fit a multilevel model to the data, visualise the output and review the corresponding R syntax and model output.
+
+</div>
 
 ## Practical 4 {data-progressive=TRUE}
 
