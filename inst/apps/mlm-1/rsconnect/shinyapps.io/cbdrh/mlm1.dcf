@@ -1,0 +1,12 @@
+name: mlm1
+title: mlm1
+username:
+account: cbdrh
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2999074
+bundleId: 3754247
+url: https://cbdrh.shinyapps.io/mlm1/
+when: 1603007570.73433
+asMultiple: FALSE
+asStatic: FALSE
