@@ -95,3 +95,11 @@ chapter9 <- function() {
   learnr::run_tutorial("mi", utils::packageName())
 }
 
+#' Chapter 10. Presenting and summarising model results
+#'
+#' Launch the tutorial for chapter 10
+#'
+#' @export
+chapter10 <- function() {
+  learnr::run_tutorial("pres", utils::packageName())
+}
