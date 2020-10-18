@@ -43,6 +43,8 @@ incentives <- read.csv("data/incentives.csv", header=T)
 ## Overview  
 Welcome to Chapter 7 of HDAT9700: Statistical Modelling II! 
 
+![](https://youtu.be/8SnPFQK0hf0)
+
 In this Chapter we will continue to work on multilevel modelling, covering topics such as model comparison, model predictions and models for binary outcomes
 
 ### Pre-reading
@@ -51,13 +53,11 @@ The pre-reading for this chapter is [Hanly, Savva, Clifford & Whelan (2014). Var
 
 ### Core reading:
 
-The reference text for this chapter is Andy Field, Jeremy Miles, Zoë Field (2012) Discovering statistics using R, Chapter 19 (Available from the UNSW library, also accessible [here](https://nyu-cdsc.github.io/learningr/assets/discoveringstatistics.pdf))
+The reference text for this chapter is Andy Field, Jeremy Miles, Zoë Field (2012) Discovering statistics using R, **Chapter 19** (Available from the UNSW library, also accessible [here](https://nyu-cdsc.github.io/learningr/assets/discoveringstatistics.pdf))
 
 ### Additional reading: 
 
 Online videos from the Centre for Multilevel Modelling, University of Bristol [http://www.bristol.ac.uk/cmm/learning/videos/](http://www.bristol.ac.uk/cmm/learning/videos/)
-
-[Daniel McNeish (2017) Small Sample Methods for Multilevel Modeling: A Colloquial Elucidation of REML and the Kenward-Roger Correction, Multivariate Behavioral Research, 52:5, 661-670](https://doi.org/10.1080/00273171.2017.1344538). 
 
 
 ## Recap
@@ -73,19 +73,23 @@ Health systems often have a complex structure, with factors at different levels 
 
 ![Patients nested within hospitals (**Strictly hierarchical**)](images/context1.png){width="75%"}
 
+***
+
 ![Patients attending multiple hospitals (**multiple membership**)](images/context4.png){width="75%"}
+
+***
 
 ![Patients from different areas attending multiple hospitals (**cross-classified** )](images/context5.png){width="75%"}
 
 
-### 2. Nuisance or opportunity? 
+### 2. A nuisance or an opportunity? 
 
 #### A nuisance? 
 
 Multilevel structures often give rise to dependency between observations in a dataset. Lower level units clustered within the same higher level unit may share charateristics and as a result, the usual assumption of independence between observations is violated. In some cases, this dependence is considered a nuisance, and something to get around. Practioners might
 
 * Ignore 
-* Use a statistical asdjustment to obtain correct standard errors 
+* Use a statistical adjustment to correct the standard errors for dependency between observational units
 * Add fixed effects (e.g. a dummy variable) for each category of the higher level 
 * Control for characteristics of the higher level 
 
@@ -104,17 +108,18 @@ Multilevel modeling treats group-level residuals as being randomly drawn from a 
 
 ![](images/mlm5.png){width="75%"}
 
+The values $u_{0j}$ represent unexplained group level effects, also referred to as _residuals_ or _random effects_. Mathematically, we write this assumption as:
+
 $$
 u_{0j} \sim N(0, \sigma_{u0}^{2})
 $$
-The values $u_{0j}$ represent unexplained group level effects, also referred to as _residuals_ or _random effects_.
 
 
 ## Model comparison
 
-Two nested multilevel models can be compared using a likelihood ratio test.
+![](https://youtu.be/-Pdzm-1E75E)
 
-The test statistic for this test is the difference in deviance for the smaller and larger model, which follows a chi-square distribution with degrees of freedom equal to the number of additional parameters in the larger compared to the smaller model. 
+Two nested multilevel models can be compared using a likelihood ratio test. The test statistic for this test is the difference in deviance for the smaller and larger model, which follows a chi-square distribution with degrees of freedom equal to the number of additional parameters in the larger compared to the smaller model. Note that for the likelihood ratio test the models must be nested, i.e. the parameters of the smpler model should be a subset of the parameters of the more complex model.  
 
 ***
 
@@ -125,9 +130,9 @@ $\begin{aligned}
 
 ***
 
-Recall that the deviance is $-2 \times \textrm{log-likelihood}$ and that we use the Deviance because it has convenient statistical proporties, in particular it follows a chi-square distribution. 
+You may recall from HDAT9600 Statistical Modelling I that the deviance is defined as $-2 \times \textrm{log-likelihood}$ and that we use the Deviance because it has convenient statistical properties, in particular it follows a chi-square distribution. 
 
-Nested models can also be compared using the following criteria.
+Multilevel models can also be compared using the following criteria.
 
 **Akaike's Information Criterion (AIC)**  
 
@@ -137,9 +142,7 @@ Nested models can also be compared using the following criteria.
 
 * The BIC is similar to the AIC but penalises more heavily for the number of parameters used in the model. This is preferable for models with large sample sizes and a small number of parameters.
 
-Note that the AIC and BIC don't have any real interpretation in isolation, but can be used to compare nested models, with smaller values indicating a better model fit.
-
-(Field, Miles and Field (2012) Discovering Statisics Using R Chapter 19)
+Note that the AIC and BIC don't have any real interpretation in isolation, but can be used to compare models, with smaller values indicating a better model fit (Field, Miles and Field (2012) Discovering Statistics Using R Chapter 19). The AIC and BIC can be used to compare non-nested models.   
 
 *** 
 
@@ -172,7 +175,7 @@ anova(m0, m1)
 
 # The AIC and BIC are both smaller for the model that includes
 # maternal age, and the log-likelihood test is highly 
-# significant indcating that m1 is the preferred model.
+# significant indicating that m1 is the preferred model.
 # (no surprises here)
 
 ```
@@ -193,7 +196,7 @@ If you really want a p-value for a parameter you can compare two models, one wit
 
 To determine whether a multilevel model is neccessary, usual practice is to assess the significance of the random intercept parameter $\sigma_{u0}^{2}$ in an empty random intercept model (i.e. no predictors). As p-values from REML estimates of this parameter are unreliable (and not provided in R), it is preferable to compare the empty random intercept model to an empty single-level model using a log-likelihood test.
 
-The usual trick of performing a log-likelihood test using the `anova` function doesn't work on the output of `lm()` so we can perform the test manually, using the `logLik()` function to extract the log-likelihood for each model. 
+The usual trick of performing a log-likelihood test using the `anova` function doesn't work on the output of `lmer()` so we can perform the test manually, using the `logLik()` function to extract the log-likelihood for each model. 
 
 ```{r ex3, exercise=TRUE, exercise.lines=10}
 
@@ -208,7 +211,7 @@ logLik(m_single)
 
 
 ### Model building
-It is recommended to use an iterative process when developing a multilevel models. You should start with a very basic model and gradually build in complexity, comparing to the simpler model with each step. 
+It is recommended to use an iterative process when developing a multilevel model. You should start with a very basic model and gradually build in complexity, comparing to the simpler model with each step. 
 
 For example, when developing a random intercept model you might follow these steps: 
 
@@ -218,8 +221,14 @@ For example, when developing a random intercept model you might follow these ste
 
 3. Add a random slope for the explanatory variable of interest to test whether the effect varies significantly over higher-level units.
 
+At each step, you can compare the more complex model to the simpler model using the LRT, AIC or BIC. Note that when comaparing models in this gradual model building process:
+
+* You should avoid adding fixed _and_ random parameters to a model in the same step - it won't be clear if any improvement is due to the fixed part or to the random part. 
+
 
 ## Model predictions
+
+![](https://youtu.be/QrZ9U9tpb7E)
 
 There are many reasons why we might be interested in making predictions from a model.
 
@@ -265,7 +274,7 @@ baseplot
 
 ### Predicting group-level residuals
 
-Recall that in a multilevel model we don't get direct estimates of the group-level residuals such as $u_{0j}$ or $u_{1j}$, instead we get an estimate of their variance e.g. $\sigma_{u0}^{2}$. However, we can obtain estimates of the residuals after fitting the model. These estimates are referred to as posterior estimates, empirical Bayes estimates or BLUPs (Best Linear Unbiased Predictors).
+Recall that in a multilevel model we don't get direct estimates of the group-level residuals such as $u_{0j}$ or $u_{1j}$, instead we get an estimate of their variance e.g. $\sigma_{u0}^{2}$ and $\sigma_{u1}^{2}$ (and where relevant their covariance $\sigma_{u01}$). However, we can obtain estimates of the residuals after fitting the model. These estimates are referred to as posterior estimates, empirical Bayes estimates or BLUPs (Best Linear Unbiased Predictors).
 
 The estimated residuals can be used to test the underlying assumptions of these values (i.e. that they are normally distributed with mean 0). Severe departures from this would indicate issues with the model. 
 
@@ -280,6 +289,13 @@ To extract the estimated residuals in R we use the `ranef()` function from the `
 
 
 ### BLUP estimates of level 2 residuals
+
+The example in the code chunk below demonstrates how to access and store the BLUP estimates from a simple random intercept model. The key functions are: 
+
+* `ranef()` to extract the random effect estimates from a saved model object. 
+* `lattice::dotplot()` to plot the estimated level 2 residuals as a caterpillar plot. 
+* `as.data.frame()` to save the random effect estimates and their standard deviations fo furhter processing.
+
 ```{r ex5, exercise=TRUE, exercise.lines=20}
 # Fit the model
 m1 <- lmer(birwt ~ mage + (1|momid), data = birwt.dat)
@@ -288,17 +304,18 @@ m1 <- lmer(birwt ~ mage + (1|momid), data = birwt.dat)
 re1 <- ranef(m1, condVar = TRUE)
 
 # Use dotplot for a quick caterpillar plot
-dotplot(re1)  
+lattice::dotplot(re1)  
 
 # Use as.data.frame to store the estimates
 df_re1 <- as.data.frame(re1)
 
 ```
 
+* Note that the outut from dotplot is fine for a quick exploration, but to obtain a publication-quality figure you would want to plot these nicely with `ggplot`. 
 
 ## Practical 1
 
-You are provided with a dataset **bp** which provides information on blood pressure and Body Mass Index for individuals nested within areas. The following six variables are included:
+You are provided with a dataset **bp** which provides information on blood pressure and Body Mass Index for individuals nested within areas. The following eight variables are included:
 
 * **area** Indicator for areas
 * **id** Indicators for individuals
@@ -331,7 +348,7 @@ The outcome of interest is blood pressure. Take some time to familiarise yoursel
 m0 <- lm(bpc ~ 1, data=bp)
 
 # Empty random intercept model
-m1 <- lmer(bpc + 1 ~ (1|area), data=bp, REML = FALSE)
+m1 <- lmer(bpc ~ 1 + (1|area), data=bp, REML = FALSE)
 
 # Is random intercept significant?
 logLik(m0)
@@ -357,7 +374,7 @@ logLik(m1)  # Yes, it is!
 
 #### Fit a random interept model for blood pressure including BMI as a predictor. Is this an improvement on the previous model? Plot the fitted lines by area.
 
-``` {r ex9, exercise=TRUE, exercise.lines=10}
+``` {r ex9, exercise=TRUE, exercise.lines=20}
 
 
 ```
@@ -377,7 +394,7 @@ logLik(m1)  # Yes, it is!
 
 #### Store the random effects estimates and plot a caterpillar graph. Is the area-level random effect significantly different from zero for all areas?
 
-``` {r ex10, exercise=TRUE, exercise.lines=10}
+``` {r ex10, exercise=TRUE, exercise.lines=25}
 
 
 ```
@@ -387,17 +404,30 @@ logLik(m1)  # Yes, it is!
 ```
 
 ``` {r ex10-hint-2}
-# Full solution
+## Full solution
+
+# Fit the model
 m2 <- lmer(bpc ~ bmic + (1|area), data=bp, REML = FALSE)
 
-re1 <- as.data.frame(ranef(m1))
+# Store the random effects
+re1 <- as.data.frame(ranef(m2))
+head(re1)
 
-ggplot(data=re1, aes(x=condval, y=grp)) +
+# Check the random effects are normally distributed
+ggplot(re1, aes(x = condval)) + geom_histogram(bins=12)
+
+# Let's make it interactive so the viewer can hover over lines to see the name of the area
+library(ggiraph)
+plot <- ggplot(data=re1, aes(x=condval, y=grp, tooltip = grp)) +
   geom_vline(xintercept=0, color = "red", size = 1.2) +
-  geom_point() +
+  geom_point_interactive() +
   geom_errorbarh(aes(xmin = condval - 2*condsd, xmax = condval + 2*condsd), height=0) +
   labs(title="Caterpillar Plot", x = "Estimated area-level residual", y = "Area ID") +
   coord_flip()
+
+# Plot the interactive graph object
+girafe(ggobj = plot, width_svg = 20, height_svg = 10)
+
 
 ```
 
@@ -422,20 +452,35 @@ ggplot(data=re1, aes(x=condval, y=grp)) +
 
 
 ``` {r ex12-hint-1}
-# Add the BMI variable to the fixed and random part of the model syntax
+# Add the BMI variable to the random part of the model syntax using the syntax (1 + bmic|area)
 ```
 
 ``` {r ex12-hint-2}
-m5 <- lmer(bpc ~ bmic + sex + (1 + bmic|area), data=bp, REML = FALSE)
+# Fit the model
+m3 <- lmer(bpc ~ bmic + sex + (1|area), data=bp, REML = FALSE)
 
-# But note the warning
+m5 <- lmer(bpc ~ bmic + sex + (1+bmic|area), data=bp, REML = FALSE)
+
+summary(m3)
+
+summary(m5)
+
+anova(m3,m5)
+
+# The comparison of deviance would suggest the more complex model is an improvement
+# BUT note that the variance of the random slope is very small (0.002), and note the 
+# warning about the singularity: the random effects covariance is exactly 1.0 so there 
+# is an issue with the estimation here. 
+
 ```
 
 ## Modelling binary outcomes
 
+![](https://youtu.be/U3inYIjaBNo)   
+
 In our previous examples we have looked at multilevel models for continuous outcomes, such as birthweight measured in grams. But often outcomes of interest are coded dichotomously (such as preterm birth yes/no), or are inheritently dichotomous (such as death). Examples of multilevel questions for binary outcomes include:
 
-1. What characteristics of mothers are associated with preterm birth.
+1. What characteristics of mothers are associated with preterm birth?
 
 2. Does the likelihood of death following ICU admission vary across ICUs?
 
@@ -478,14 +523,14 @@ $$
 
 Note that there is no level one residual in this model.
 
-Similar to a single-level logistic regression model, \beta_{0} and \beta_{1} are estimated on the log-odds scale. We can take the exponent to obtain the odds of the outcome occuring.
+Similar to a single-level logistic regression model, $\beta_{0}$ and $\beta_{1}$ are estimated on the log-odds scale. We can take the exponent to obtain the odds of the outcome occurring.
 
 For example,
 
-* $e^{\beta_{0}}$ is the odds that $y$=1 when $x$=1 and $u$=0.
-* $e^{\beta_{0}}$ is the odds ratio of experiencing the outcome associated with each one-unit increase in the variable $x$.
+* $e^{\beta_{0}}$ is the odds that $y$=1 when $x$=0 and $u_{0j}$=0.
+* $e^{\beta_{1}}$ is the odds ratio of experiencing the outcome associated with each one-unit increase in the variable $x$.
 
-As with multilevel models for continuous outcomes, the intercept for higher-level group $j$ is $\beta_{0} + U_{j}$.
+As with multilevel models for continuous outcomes, the intercept for higher-level group $j$ is $\beta_{0} + u_{0j}$.
 
 
 ### Variance Partition Coefficient
@@ -498,7 +543,7 @@ $$
 \frac{\sigma^{2}_{u0}}{\sigma^{2}_{u0} + \sigma^{2}_{e^{*}}}
 $$
 
-where $\sigma^{2}_{e^{*}$ is approximated by $\pi^{2}/3 \approx 3.29$ for models using the logit link and by $1$ for models using the probit link.
+where $\sigma^{2}_{e^{*}}$ is approximated by $\pi^{2}/3 \approx 3.29$ for models using the logit link and by $1$ for models using the probit link.
 
 So for a multilvel logistic regression model, the VPC would be given by
 $$
@@ -514,7 +559,7 @@ This example is based on the paper [Variation in Incentive Effects across Neighb
 
 Monetary incentives are commonly used in survey research as an effective way to boost survey participation. An experiment was carried out to compare the effectiveness of two different cash incentives (\$10 versus \$25) on recruiting sampled households to a longitudinal study. The survey sample was a two-staged clustered random sample: in the first stage 20 neighbourhoods were sampled; in the second stage, 60 addresses were sampled from each neighbourhood.
 
-Within each neighbourhood, half of the sampled households were assigned to receive a /$10 cash incentive and half were assigned to receive \$25. Neighbourhood-level variables, such as the percentage of high SES households in each area, were available from the national Census.
+Within each neighbourhood, half of the sampled households were assigned to receive a \$10 cash incentive and half were assigned to receive \$25. Neighbourhood-level variables, such as the percentage of high SES households in each area, were available from the national Census.
 
 #### Research questions
 
@@ -542,8 +587,8 @@ Answering these questions could help with the survey design, in particular the l
 A snapshot of the data from the experiment described above might look like this:
 
 ```{r eval=TRUE}
-data <- cbind("Neighbourhood j" = c(rep(1,4), rep(2,4)),
-              "Household i" = c(seq(1,4), seq(1,4)),
+data <- cbind("Neighbourhood j" = c(rep("A",4), rep("B",4)),
+              "Household i" = c(letters[1:4], letters[1:4]),
               "Incentive" = c(0,0,1,1,0,0,1,1),
               "% high SES" = c(rep(20,4), rep(5,4)),
               "Participation" = c(0,1,1,1,0,0,1,0)
@@ -566,7 +611,7 @@ $ses_{j}$ = percentage high SES in area $j$
 Because we have a binary outcome we can use a logistic regression model. Recall from HDAT9600 the expression for a single-level model with one predictor can be written as:
 
 $$
-\text{log} \left(  \frac{\text{Pr}(y_{i}=1)}{1-\text{Pr}(y_{i}=1)} \right) = \beta_{0} + \beta_{1}x_{i}
+\text{log} \left(  \frac{\text{Pr}(y_{ij}=1)}{1-\text{Pr}(y_{ij}=1)} \right) = \beta_{0} + \beta_{1}x_{ij}
 $$
 Recall:
 
@@ -578,11 +623,11 @@ Recall:
 We can simplify our notation by writing
 
 $$
-\text{Pr}(y_{i}=1) = \pi_{i}
+\text{Pr}(y_{ij}=1) = \pi_{ij}
 $$
 Thus our single level model becomes
 $$
-\text{log} \left(\frac{\pi_{i}}{1-\pi_{i}}\right)=\beta_{0} + \beta_{1}x_{i}
+\text{log} \left(\frac{\pi_{ij}}{1-\pi_{ij}}\right)=\beta_{0} + \beta_{1}x_{ij}
 $$
 
 The single-level logistic regression model assumes a single intercept $\beta_{0}$. A multilevel random intercept logistic regression model assumes a seperate intercept or each high-level unit. We write this as
@@ -591,11 +636,9 @@ $$
 $$
 As with in the model for continuous outcomes, the values $u_{0j}$ are referred to random intercepts and they represent departures from the global intercept for each higher-level group $j$.
 
-The intercept for group 1 is $\beta_{0} + u_{01}$
-
-The intercept for group 2 is $\beta_{0} + u_{02}$
-
-The intercept for group 3 is $\beta_{0} + u_{03}$
+* The intercept for group 1 is $\beta_{0} + u_{01}$ 
+* The intercept for group 2 is $\beta_{0} + u_{02}$ 
+* The intercept for group 3 is $\beta_{0} + u_{03}$ 
 
 And so on.
 
@@ -611,9 +654,11 @@ $$
 \pi_{ij} = \text{Pr}(\text{Participation}_{ij}=1)
 $$
 
+i.e. $\pi_{ij}$ is the probability of household $i$ in area $j$ participating with the survey request. 
+
 ### Graphical interpretation: Random Intercept Model
 
-Fitting a random intercept logistic regression model to the incentive experiment data would correspond to the following picture:
+Fitting a **random intercept** logistic regression model to the incentive experiment data would correspond to the following picture:
 
 ```{r ri}
 
@@ -645,11 +690,11 @@ Note:
 * The effect of the higher incentive is the same in each neighbourhood
 
 
-### Graphical interpretation: Random Slope Model
+### Graphical interpretation: Random Slope Models
 
-Here we review how the incentive
+The model underlying the previous figure constrained the higher incentive effect to be equal across all areas. The following figure reflects a model where that constraint is lifted by adding a random effect for incentive in a random intercept - random slope model. The next three figures show three possible patterns which differ in the covariance between random intercepts and random slopes. 
 
-#### Positive covariance between random intercept and random slope
+#### 1. Positive covariance between random intercept and random slope
 ```{r rsp}
   x %>%
     ggplot() +
@@ -665,11 +710,12 @@ Note:
 
 * The baseline response varies across neighbourhoods (random intercept)
 * The effect of the higher incentive varies across neighbourhoods (random slope)
-* The incentive effect is higher in areas where the baseline response is **higher**
+* The incentive effect is higher in areas where the baseline response is **higher** 
+* This pattern would indicate a **positive** covariance $\sigma_{u01}$ in the random effects variance-covariance matrix. 
 
 ***
 
-#### Negative covariance between random intercept and random slope
+#### 2. Negative covariance between random intercept and random slope
 ```{r rsn}
   x %>%
     ggplot() +
@@ -685,11 +731,12 @@ Note:
 
 * The baseline response varies across neighbourhoods (random intercept)
 * The effect of the higher incentive varies across neighbourhoods (random slope)
-* The incentive effect is higher in areas where the baseline response is **lower**
+* The incentive effect is higher in areas where the baseline response is **lower** 
+* This pattern would indicate a **negative** covariance $\sigma_{u01}$ in the random effects variance-covariance matrix. 
 
 ***
 
-#### Zero covariance between random intercept and random slope
+#### 3. Null covariance between random intercept and random slope
 ```{r rs0}
   x %>%
     ggplot() +
@@ -706,30 +753,31 @@ Note:
 
 * The baseline response varies across neighbourhoods (random intercept)
 * The effect of the higher incentive varies across neighbourhoods (random slope)
-* There is no association between the magnitude of the random intercept and the random slope
+* There is no association between the magnitude of the random intercept and the random slope 
+* This pattern would indicate a **null** covariance $\sigma_{u01}$ in the random effects variance-covariance matrix. 
 
 ***
 
 ## Fitting GLM models in R
-Generalised linear models ,including models for non-continuous outcomes, can be estimated using the `glmer()` function from the `lme4` package in R.
+Generalised linear models, including models for non-continuous outcomes, can be estimated using the `glmer()` function from the `lme4` package in R.
 
 Like the `glm()` function for single-level models, the `glmer()` function can fit a variety of GLMs by varying the `family = ` and `link()` parameters.
 
 The syntax for a `glmer()` model combines elements of the `glm()` and `lmer()` syntax that you have already seen. Consider the following example for a multilevel logistic regression model with a random intercept and slope.
 
-A single level logistic regression model would be specified as below:
+A single-level logistic regression model would be specified as below:
 ```{r echo=TRUE, eval=FALSE, exercise=FALSE}
 glm(y ~ 1 + x, family = binomial(link="logit"), data = mydata)
 ```
 
 
-A multilevel logistic regression model would be specified as below:
+A multilevel logistic regression model for a continuous outcome would be specified as below:
 ```{r echo=TRUE, eval=FALSE, exercise=FALSE}
 lmer(y ~ 1 + x + (1+x|hospital), data = mydata)
 ```
 
 
-The syntax for `glmer()` combines elements from `glm()` and `lmer()`. A multilvel logistic regression model (with reandom intercept and random slope for variable x) would be specified like this:
+The syntax for `glmer()` combines elements from `glm()` and `lmer()`. A multilevel logistic regression model (with random intercept and random slope for variable x) would be specified like this:
 ```{r echo=TRUE, eval=FALSE, exercise=FALSE}
 glmer(y ~ 1 + x + (1+x|hospital), family = binomial(link="logit"), data = mydata)
 ```
@@ -743,7 +791,7 @@ In this practical, you will fit a **multilevel logistic regression model**, emul
 Your tutorial environment is preloaded with a dataset named **incentives**. This (simulated) dataset contains data on 200 areas with 50 observations per area. Three variables are recorded:
 
 * **area** a numeric indicator for area
-* **inc** a binary indicatory for receipt of a lower (0=\$10) or higher (1=\$25) incentive amount
+* **inc** a binary indicator for receipt of a lower (0=\$10) or higher (1=\$25) incentive amount
 * **resp** a binary indicator for survey participation (1) or refusal (0)
 
 Familiarise yourself with the dataset and answer the following questions.
@@ -814,21 +862,69 @@ m3 <- glmer(resp ~ 1 + inc + (1 + inc|area), family = binomial(link="logit"), da
 
 #### Which hypothesis is there most support for? (a) incentives are more effective in areas with low baseline response or (b) incentives are more effective in areas with high baseline response.
 
-``` {r ex16, exercise=TRUE, exercise.lines=10}
+``` {r ex16, exercise=TRUE, exercise.lines=15}
 
 
 ```
 
 
 ``` {r ex16-hint-1}
-# Examine the correlation estiamte in the model summary
+# Examine the correlation estimate in the model summary
 
-# Or, combine the as.data.frame() and ranef() functions to access and store the random effects. Then look at a scatterplot of the random intercepts versus random slopes.
+# Or, combine the as.data.frame() and ranef() functions to access and store the random effects. 
+# Then look at a scatterplot of the random intercepts versus random slopes.
 
 # Or, predict from the model and plot the average predictions by area
 ```
 
+``` {r ex16-hint-2}
+# Examine the correlation estimate in the model summary
 
+# Fit model
+m3 <- glmer(resp ~ 1 + inc + (1 + inc|area), family = binomial(link="logit"), data = incentives)
+
+# Examine variance-covariance matrix
+lme4::VarCorr(m3)
+
+```
+
+``` {r ex16-hint-3}
+# Combine the as.data.frame() and ranef() functions to access and store the random effects.
+# Then look at a scatterplot of the random intercepts versus random slopes.
+
+# Fit model
+m3 <- glmer(resp ~ 1 + inc + (1 + inc|area), family = binomial(link="logit"), data = incentives)
+
+# Store the random effect estimates in a data.frame
+re <- as.data.frame(ranef(m3, cond = TRUE))
+
+# Scatterplot of random intercepts versus random slopes. 
+plot(re$condval[re$term=="(Intercept)"], re$condval[re$term=="inc"])
+
+```
+
+``` {r ex16-hint-4}
+# Predict from the model and plot the average predictions by area
+
+
+# Fit Model
+m3 <- glmer(resp ~ 1 + inc + (1 + inc|area), family = binomial(link="logit"), data = incentives)
+
+# Get predictions
+incentives$p3 <- predict(m3)
+
+# Plot predictions (note use of reorder() to sort x-axis from smallest p value)
+library(dplyr)
+incentives %>% group_by(area, inc) %>% summarise(p = mean(p3)) %>% 
+ggplot(aes(x = reorder(area, p), y = p, color = as.factor(inc))) + geom_point() +
+labs(x = "Area", y = "Probability of response (log odds scale)")
+```
+
+``` {r ex16-hint-5}
+# All of these approaches indicate a positve covariance between random intercepts across areas 
+# and the random slope for incentive, i.e. the incentive is more effective where 
+# baseline participation is high.
+```
 
 ## Summary
 
