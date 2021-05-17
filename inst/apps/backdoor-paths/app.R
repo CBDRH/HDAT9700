@@ -25,7 +25,7 @@ ui <- fluidPage(
             sliderInput("connectivity", "Set the degree of connectivity", value = 0.5, min = 0.2, max = 0.8, step = 0.1),
             helpText("Choosing a low number of nodes with low connectivity will produce a trivial or boring DAG. On the other hand,
                      choosing a high number of nodes with high connectivity will result in a very complex DAG"),
-            radioButtons("effect", "What effect are you intersted in?", choices = c('total', 'direct'), selected = 'direct', inline = TRUE),
+            radioButtons("effect", "What effect are you intersted in?", choices = c('total', 'direct'), selected = 'total', inline = TRUE),
             helpText("For the total effect, just focus on closing backdoor paths. For the direct effect you will also need to
                      look at frontdoor paths, i.e. control for mediators."),
             br(),
