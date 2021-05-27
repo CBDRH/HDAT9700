@@ -16,7 +16,8 @@
                                  "'There's no use boiling your cabbage twice' - Irish proverb",
                                  "'It's the inspired student that continues to learn on their own. That's what separates the real achievers in the world from those who pedal along, finishing assignments.' - Neil deGrasse Tyson, American astrophysicist, author, and science communicator",
                                  "'If you start wielding a hammer, then all your problems look like nails. And maybe they’re not.' - Neil deGrasse Tyson, American astrophysicist, author, and science communicator",
-                                 "'Not everything that can be counted counts, and not everything that counts can be counted.' - Albert Einstein, German-American theoretical physicist"
+                                 "'Not everything that can be counted counts, and not everything that counts can be counted.' - Albert Einstein, German-American theoretical physicist",
+                                 "'I don’t know that I’ll be drinking a beer tonight, I might go a little higher up the shelf.' - The Hon. Daniel Andrews, Premier of Victoria (On announcing relaxed restrictions following the extended COVID-19 lockdown in Victoria throughout winter 2020)"
   )
   , 1)
   )

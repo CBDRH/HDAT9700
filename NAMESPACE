@@ -2,6 +2,7 @@
 
 export(.onAttach)
 export(chapter1)
+export(chapter10)
 export(chapter2)
 export(chapter3)
 export(chapter4)
