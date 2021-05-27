@@ -859,10 +859,10 @@ matchit(formula, data, method = "nearest", distance = "logit", ratio=1, discard 
 
 ***
 
-The example below matches treated and untreated units based on the variables *black* (an indicator for African-American status) and *re74* (income in 1974). The matching method is 1:1 nearest neghbour matching, based on the propensity score. 
+The example below matches treated and untreated units based on the variables *race* (Black, Hispanic or White) and *re74* (income in 1974). The matching method is 1:1 nearest neghbour matching, based on the propensity score. 
 
 ``` {r ex4, exercise=FALSE, eval=TRUE, echo=TRUE}
-match1 <- matchit(treat ~ black + re74, data=lalonde,
+match1 <- matchit(treat ~ race + re74, data=lalonde,
                   method = "nearest", distance = "logit", ratio=1, discard = "none")
 
 match1
@@ -942,7 +942,7 @@ Calling the `summary()` function on the output of `matchit` returns a comparison
 
 
 ``` {r ex7, exercise=FALSE, eval=TRUE, echo=TRUE}
-match4 <- matchit(treat ~ age + educ + black + hispan + married + nodegree + re74 + re75, data=lalonde, method = "nearest")
+match4 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "nearest")
 
 summary(match4)
 ```
@@ -952,7 +952,7 @@ Examining the above output we can see that the matching step has improved the ba
 * In the raw data, treated individuals were younger on average compared to untreated individuals (25.8 years versus 28.0 years)  
 * In the matched data, the treated and untreated individuals had a similar age on average (25.8 years versus 25.3 years)
 
-The data still aren't perfectly matched however. For example, in the matched data the proportion of black individuals is higher in the treated group (84%) than the untreated group (47%).
+The data still aren't perfectly matched however. For example, in the matched data the proportion of Black individuals is still notably higher in the treated group (84%) than the untreated group (47%).
 
 ### Graphical summaries
 `MatchIt` provides three main graphical summaries:
@@ -973,7 +973,7 @@ plot(match4, type="QQ")
 Example code and output for the jitter plot graphical diagnostic are shown below.
 
 ``` {r ex9, exercise=FALSE, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
-match4 <- matchit(treat ~ age + educ + black + hispan + married + nodegree + re74 + re75, data=lalonde, method = "nearest")
+match4 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "nearest")
 
 plot(match4, type="jitter")
 ```
@@ -984,7 +984,7 @@ plot(match4, type="jitter")
 Example code and output for the histogram graphical diagnostic are shown below.
 
 ``` {r ex10, exercise=FALSE, eval=TRUE, echo=TRUE}
-match4 <- matchit(treat ~ age + educ + black + hispan + married + nodegree + re74 + re75, data=lalonde, method = "nearest")
+match4 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "nearest")
 
 plot(match4, type="hist")
 ```
@@ -995,7 +995,7 @@ plot(match4, type="hist")
 Example code and output for the Q-Q graphical diagnostic are shown below.
 
 ``` {r ex11, exercise=FALSE, eval=TRUE, echo=TRUE}
-match4 <- matchit(treat ~ age + educ + black + hispan + married + nodegree + re74 + re75, data=lalonde, method = "nearest")
+match4 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "nearest")
 
 plot(match4, type="QQ")
 ```
@@ -1024,7 +1024,7 @@ summary(match5)
 ``` {r ex12-hint}
 # Nearest neighbour propensity score matching (2:1 ratio) 
 
-match5 <- matchit(treat ~ age + educ + black + hispan + married + nodegree + re74 + re75, data=lalonde, method = "nearest", distance = "logit", ratio = 2)
+match5 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "nearest", distance = "logit", ratio = 2)
 
 summary(match5)
 ```
@@ -1043,7 +1043,7 @@ summary(match6)
 ``` {r ex13-hint}
 # Optimal matching based on the mahalanobis distance (2:1 ratio)
 
-match6 <- matchit(treat ~ age + educ + black + hispan + married + nodegree + re74 + re75, data=lalonde, method = "optimal", distance = "mahalanobis", ratio = 2)
+match6 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "optimal", distance = "mahalanobis", ratio = 2)
 
 summary(match6)
 ```
@@ -1062,7 +1062,7 @@ summary(match7)
 ``` {r ex14-hint}
 # Coarsened exact matching
 
-match7 <- matchit(treat ~ age + educ + black + hispan + married + nodegree + re74 + re75, data=lalonde, method = "cem")
+match7 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "cem")
 
 summary(match7)
 ```
@@ -1075,13 +1075,13 @@ Once the optimal balance in $L$ variables has been achieved, the final step is t
 
 ``` {r prac4setup}
 # Nearest neighbour propensity score matching (2:1 ratio) 
-match5 <- matchit(treat ~ age + educ + black + hispan + married + nodegree + re74 + re75, data=lalonde, method = "nearest", distance = "logit", ratio = 2)
+match5 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "nearest", distance = "logit", ratio = 2)
 
 # Optimal matching based on the Mahalanobis distance (2:1 ratio)
-match6 <- matchit(treat ~ age + educ + black + hispan + married + nodegree + re74 + re75, data=lalonde, method = "optimal", distance = "mahalanobis", ratio = 2)
+match6 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "optimal", distance = "mahalanobis", ratio = 2)
 
 # Coarsened exact matching (2:1 ratio)
-match7 <- matchit(treat ~ age + educ + black + hispan + married + nodegree + re74 + re75, data=lalonde, method = "cem")
+match7 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "cem")
 
 ```
 
