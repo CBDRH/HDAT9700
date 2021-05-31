@@ -71,7 +71,7 @@ Each lecture will be followed by a practical session where you will write your o
 
 The prereading for this chapter is "On Time Series Analysis of Public Health and Biomedical Data" by Scott L Zeger, Rafael Irizarry and Roger D Peng available [here](https://www.annualreviews.org/doi/10.1146/annurev.publhealth.26.021304.144517).
 
-For those wanting more detail, I suggest "Time series analysis and its applications: with R examples" (Chapters 1-3) by Robert H Shumway and David S Stoffer, which can be downloaded [here](https://www.stat.pitt.edu/stoffer/tsa4/) or through the UNSW library. The content goes beyond what is covered in this Chapter, but there are a lot of examples and R code for those who are interested.  David S Stoffer is also the author of the `astsa` R package (**A**pplied **S**tatistical **T**ime **S**eries **A**nalysis).
+For those wanting more detail, I suggest "Time series analysis and its applications: with R examples" (Chapters 1-3) by Robert H Shumway and David S Stoffer, which can be downloaded [here](https://www.stat.pitt.edu/stoffer/tsa4/) or through the UNSW library. The content goes beyond what is covered in this Chapter, but there are a lot of examples and R code for those who are interested.  David S Stoffer is also the author of the `astsa` R package (Applied Statistical Time Series Analysis).
 
 Some other useful resources:
 

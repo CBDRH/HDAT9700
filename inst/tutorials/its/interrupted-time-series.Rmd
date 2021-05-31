@@ -101,21 +101,21 @@ There will be three short lectures:
 
 Each lecture will be followed by a practical session where you will write your own R code to explore the concepts and methods we discuss.   
 
-The prereading for this chapter is Bernal JL, Cummins S, Gasparrini A. Interrupted time series regression for the evaluation of public health interventions: a tutorial. *Int J Epidemiol* 2016;46:348-355. [DOI: 10.1093/ije/dyw098](https://academic.oup.com/ije/article/46/1/348/2622842)
+The prereading for this chapter is Bernal JL, Cummins S, Gasparrini A. Interrupted time series regression for the evaluation of public health interventions: a tutorial. *Int J Epidemiol* 2016;46:348-355. [doi: 10.1093/ije/dyw098](https://academic.oup.com/ije/article/46/1/348/2622842)
 
-The reference text is Shadish WR, Cook TD, Campbell DT. Experimental and quasi-experimental designs for generalized causal inference. 2002. Boston: Houghton Mifflin. ISBN: 0395615569. [Chapter 6](https://github.com/CBDRH/HDAT9700/blob/master/inst/tutorials/its/Shadish_Chapter6.pdf)
+The reference text is Shadish WR, Cook TD, Campbell DT. Experimental and quasi-experimental designs for generalized causal inference. 2002. Boston: Houghton Mifflin. ISBN: 0395615569. A pdf of the Chapter is available on OpenLearning.
 
 Some other useful references include:
 
-* Soumerai et al. How Do You Know Which Health Care Effectiveness Research You Can Trust? A Guide to Study Design for the Perplexed. *Prev Chronic Dis* 2015;12:150187.[DOI: 10.5888/pcd12.150187](http://dx.doi.org/10.5888/pcd12.150187)
+* Soumerai et al. How Do You Know Which Health Care Effectiveness Research You Can Trust? A Guide to Study Design for the Perplexed. *Prev Chronic Dis* 2015;12:150187.[doi: 10.5888/pcd12.150187](http://dx.doi.org/10.5888/pcd12.150187)
 
-* Jandoc et al. Interrupted time series analysis in drug utilization research is increasing: systematic review and recommendations. *J Clin Epidemiol* 2015;68(8):950-6. [DOI: 10.1016/j.jclinepi.2014.12.018](https://www.sciencedirect.com/science/article/pii/S0895435615001237) **This article has useful guidance for the reporting of interrupted time series analysis methods.**
+* Jandoc et al. Interrupted time series analysis in drug utilization research is increasing: systematic review and recommendations. *J Clin Epidemiol* 2015;68(8):950-6. [doi: 10.1016/j.jclinepi.2014.12.018](https://www.sciencedirect.com/science/article/pii/S0895435615001237) **This article has useful guidance for the reporting of interrupted time series analysis methods.**
 
-* Lopez Bernal et al. A methodological framework for model selection in interrupted time series studies. *J Clin Epidemiol* 2018;103:82-91 [DOI: 10.1016/j.jclinepi.2018.05.026](https://www.sciencedirect.com/science/article/pii/S0895435617314117)
+* Lopez Bernal et al. The use of controls in interrupted time series studies of public health interventions. *Int J Epidemiol* 2018;0(0):1-12 [doi: 10.1093/ije/dyy135](https://academic.oup.com/ije/advance-article/doi/10.1093/ije/dyy135/5049576)
 
-* Lopez Bernal et al. The use of controls in interrupted time series studies of public health interventions. *Int J Epidemiol* 2018;0(0):1-12 [DOI: 10.1093/ije/dyy135](https://academic.oup.com/ije/advance-article/doi/10.1093/ije/dyy135/5049576)
+* Lagarde. How to do (or not to do): Assessing the impact of a policy change with routine longitudinal data. *Health Policy Planning* 2012;27(1):76-83. [doi: 10.1093/heapol/czr004](https://doi.org/10.1093/heapol/czr004)
 
-* Lagarde. How to do (or not to do): Assessing the impact of a policy change with routine longitudinal data. *Health Policy Planning* 2012;27(1):76-83. [DOI: 10.1093/heapol/czr004](https://doi.org/10.1093/heapol/czr004)
+* Schaffer et al. Interrupted time series analysis using autoregressive integrated moving average (ARIMA) models: a guide for evaluating large-scale health interventions. *BMC Medical Research Methodology* 2021;21(58). [doi: 10.1186/s12874-021-01235-8](https://bmcmedresmethodol.biomedcentral.com/articles/10.1186/s12874-021-01235-8)
 
 Let's get started!  
 
