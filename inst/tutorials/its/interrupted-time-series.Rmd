@@ -478,7 +478,7 @@ Run the code below to create three variables: the intervention indicator that re
 
 ```{r vector, exercise=TRUE, exercise.eval=FALSE}
 # Create vector for introduction of seatbelt law
-belt <- append(rep(0,sum(as.yearmon(time(UKDD))<='Jan 1983')), rep(1,sum(as.yearmon(time(UKDD))>'Jan 1983')))
+belt <- ifelse(as.yearmon(time(UKDD))>='Feb 1983',1,0) 
 
 # Convert to ts object and view
 # This isn't essential but does help to check that you created the variable correctly
@@ -492,7 +492,7 @@ print(UKDD.time)
 # Create vector for time since intervention
 # Zero if before the intervention
 # Otherwise equal to time since start of study - date before intervention
-belt.after <- append(rep(0,sum(as.yearmon(time(UKDD))<'Feb 1983')), seq(1,sum(as.yearmon(time(UKDD))>='Feb 1983'))) %>% ts(start=c(1975,1), frequency=12)
+belt.after <- append(rep(0,sum(as.yearmon(time(UKDD))<'Feb 1983')),seq(1,sum(as.yearmon(time(UKDD))>='Feb 1983'))) %>% ts(start=c(1975,1), frequency=12)
 print(belt.after)
 ```
 
@@ -506,12 +506,13 @@ It is important to only consider lagged or delayed effects when it makes sense f
 
 ```{r shift, exercise=TRUE, exercise.eval=FALSE}
 # Create vector for introduction of seatbelt law, lagged by one month
-belt.lag <- append(rep(0,sum(as.yearmon(time(UKDD))<='Feb 1983')), rep(1,sum(as.yearmon(time(UKDD))>'Feb 1983'))) %>% ts(start=c(1975,01), frequency=12)
+belt.lag <- ifelse(as.yearmon(time(UKDD))>='Mar 1983',1,0)  %>% ts(start=c(1975,01), frequency=12)
 print(belt.lag)
 
 # Create vector for time since intervention
-belt.after.lag <- append(rep(0,sum(as.yearmon(time(UKDD))<='Mar 1983')), seq(1,sum(as.yearmon(time(UKDD))>'Mar 1983'))) %>% ts(start=c(1975,01), frequency=12)
+belt.after.lag <- append(rep(0,sum(as.yearmon(time(UKDD))<'Mar 1983')),seq(1,sum(as.yearmon(time(UKDD))>='Mar 1983'))) %>% ts(start=c(1975,1), frequency=12)
 print(belt.after.lag)
+
 ```
 
 
@@ -637,16 +638,21 @@ alp <- ts(alprazolam, start=c(2014,7), end=c(2018,1), frequency=12)
 ```
 ```{r exercise2_1-hint-1}
 # To create intervention variable use:
-step <- append(rep(0,sum(as.yearmon(time(alp))<'Feb 2017')),rep(1,sum(as.yearmon(time(alp))>='Feb 2017')))
-               
+step <- ifelse(as.yearmon(time(alp))>='Feb 2017',1,0) %>% ts(start=c(2014,07), frequency=12)
+step   
+
 ```
 ```{r exercise2_1-hint-2}
 # To create sequence variables use:
-time <- seq(1, length(alp))
+time <- seq(1, length(alp)) %>% ts(start=c(2014,07), frequency=12)
+time
+
 ```
 ```{r exercise2_1-hint-3}
 # To create sequence variable for time since intervention use:
-after <- append(rep(0,sum(as.yearmon(time(alp))<'Feb 2017')),seq(1,sum(as.yearmon(time(alp))>='Feb 2017'),1))
+after <- append(rep(0,sum(as.yearmon(time(alp))<'Feb 2017')),seq(1,sum(as.yearmon(time(alp))>='Feb 2017'))) %>% ts(start=c(2014,07),frequency=12)
+after
+
 ```
 
 ***
@@ -924,7 +930,7 @@ sp.time <- seq(1, length(sp))
 sp.time
 
 # Step change  
-sp.vax <- append(rep(0,sum(time(sp)<'1796')), rep(1,sum(time(sp)>='1796')))
+sp.vax <- ifelse(time(sp)<'1796',0,1) 
 sp.vax
 
 # Change in slope

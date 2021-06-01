@@ -29,7 +29,7 @@ library("formatR")
 library("zoo")
 
 resp <- read.csv(file="data/uk-deaths-by-sex.csv", header=TRUE)
-resp_ts <- ts(resp, start=c(1974,1), frequency=12)
+resp_ts <- ts(resp, start=c(2001,1), frequency=12)
 
 air <- read.csv(file="data/international-airline-passengers.csv", header=TRUE)
 air <- ts(air[,2], start=c(1948,1), end=c(1959,12), frequency = 12)
@@ -47,10 +47,7 @@ p <- ts(p, start=c(2000,1), frequency=12)
 set.seed(123)
 vector1 <- sample(40:80, 48, replace=TRUE)
 
-# Now transform it into a time series (ts) object
-# Let's assume the vector is monthly data from July 2005 to June 2009
 x1 <- ts(vector1, start=c(2005,7), end=c(2009,6), frequency=12)
-
 
 ```
 
@@ -78,6 +75,12 @@ Some other useful resources:
 * Rob J Hyndman and George Athanasopoulos (Monash University) [Forecasting: Principles and Practice](https://otexts.com/fpp2/)
 
 * Penn State [Applied Time Series Analysis](https://newonlinecourses.science.psu.edu/stat510/) 
+
+While the following two papers are about intervention analysis, they also start by discussing properties of time series data which is relevant for this Chapter:
+
+* Lagarde. How to do (or not to do): Assessing the impact of a policy change with routine longitudinal data. *Health Policy Planning* 2012;27(1):76-83. [doi: 10.1093/heapol/czr004](https://doi.org/10.1093/heapol/czr004)
+
+* Schaffer et al. Interrupted time series analysis using autoregressive integrated moving average (ARIMA) models: a guide for evaluating large-scale health interventions. *BMC Medical Research Methodology* 2021;21(58). [doi: 10.1186/s12874-021-01235-8](https://bmcmedresmethodol.biomedcentral.com/articles/10.1186/s12874-021-01235-8)
 
 
 Let's get started!  
@@ -116,7 +119,7 @@ Here are a couple of examples of time series:
 
 ![**Figure.** An example of a time series: all cause mortality during the 1918 influenza pandemic (Source: Public domain)](images/Influenza_Pandemic.png)
 
-![**Figure.** An example of time series: smallpox, polio and measles before and after introduction of vaccination (Source: Our World in Data [https://ourworldindata.org/]](images/Vaccination.jpg)
+![**Figure.** An example of time series: smallpox, polio and measles before and after introduction of vaccination (Source: Our World in Data https://ourworldindata.org/)](images/Vaccination.jpg)
 
 
 ***
@@ -404,7 +407,7 @@ quiz(caption = "Quiz 1.4: Seasonality",
     question("Which of the series above show seasonality?",
     answer("All of them"),
     answer("Series 2 and 4"),
-    answer("Series 1, 2 and 4", correct=TRUE, message="Series 1 is expenditure on eating out in Australia, Series 2 is births in the US, and Series 4 is daily electricity demand in Victoria"),
+    answer("Series 1, 2 and 4", correct=TRUE, message="Series 1 is expenditure on eating in restaurants in Australia, Series 2 is births in the US, and Series 4 is daily electricity demand in Victoria"),
     answer("Series 2 and 3"),
     answer("Series 1 and 2"),
     random_answer_order = FALSE, allow_retry = TRUE),
@@ -538,7 +541,7 @@ legend("topleft", legend=c("Observed","Trend"), col=c("blue","red"), lty=c("soli
 
 ## Practical 1 ##
 
-In this practical session you will visualise and explore a time series. For these exercises you will use data on combined monthly deaths from bronchitis, emphysema, and asthma by sex. The start date is January 1974.
+In this practical session you will visualise and explore a time series. For these exercises you will use data on monthly deaths in the UK by sex obtained from the Office for National Statistics (https://www.ons.gov.uk/). The start date is January 2001.
 
 You will learn the following functions:  
 
@@ -1064,17 +1067,15 @@ air_yr <- aggregate(air, nfrequency=1)
 
 Now it's time to bring it all together and estimate a time series model. 
 
-There are two types of time series models. The first is **ordinary regression models** that use time as a predictor variable. 
+The most basic type is **ordinary regression models** that use time as a predictor variable. 
 
 This type of modelling is appropriate if your time series has a linear or easily modelled trend and limited autocorrelation and seasonality. 
 
-Including a time variable and dummy variables representing seasonal units (e.g. month or quarter) as predictors in your model can control for linear trends and seasonality, and allow you to estimate the trend and the seasonal variation if desired. 
+Including a time variable and dummy variables representing seasonal units (e.g. month or quarter) as predictors in your model can control for linear trends and seasonality, and allow you to estimate the trend and the seasonal variation if desired. If your model has autocorrelation, sometimes controlling for trend and seasonality is enough to eliminate it.
 
-However, in real-life research and practice the patterns of the data are sometimes unclear, with considerable error, and it can be difficult to determine the patterns in the data. After creating your model, it is also important to check for autocorrelation of residuals - if present, even after controlling for trend and seasonality, an ordinary regression model may not be appropriate.
+In real-life research and practice the patterns of the data can be complex, with considerable error, and it can be difficult to determine the patterns in the data. After creating your model, it is also important to check for autocorrelation of residuals - if present, even after controlling for trend and seasonality, an ordinary regression model may not be appropriate.
 
-The second type is **ARIMA models**, which are more complex models that relate the present value of a series to past values and past errors. ARIMA models can deal with changing trends, and significant autocorrelation and seasonality. 
-
-Today we will focus on ARIMA modelling.
+There are various approaches for modelling data with substantial autocorrelation and/or complex seasonality. We will cover one such approach, **ARIMA models**, which relate the present value of a series to past values and past errors. 
 
 ***
 
@@ -1403,14 +1404,14 @@ There is a clear increasing trend, and clear seasonality, so therefore a first o
 
 **Step 2:** Select AR and MA orders
 
-Start by check ACF/PACF plots
+Start by check ACF/PACF plots. We should always check the ACF/PACF plots on the detrended and deseasoned data. Therefore, we will specify a first order difference and a seasonal difference.
 
 ```{r arima1c, exercise=TRUE, exercise.eval=FALSE, fig.width=5}
 # Remember to run ACF/PACF plots on transformed series
-acf2(diff(log(AirPassengers))) 
+acf2(diff(diff(log(AirPassengers)),12)) 
 ```
 
-In this case, it's not entirely clear! It looks like the PACF plot might be tailing off, which suggests an MA model. But the seasonality is clear.
+In this case, it's not entirely clear, It looks like the PACF plot is tailing off, which suggests an MA model. 
 
 Let's check using `auto.arima()` - remember to use the logged series, but not the differenced series. We've already determined that both a first and seasonal difference will be required, so we'll specify *d*=1 and *D*=1 and let `auto.arima()` do the rest. 
 
@@ -1461,7 +1462,7 @@ You will learn the functions:
 
 #### Exercise 3.1 Step 1 - Stationarity
 ```{r exercise3_1, exercise.cap="Exercise 3.1", tidy=TRUE, exercise=TRUE, exercise.eval=FALSE,  exercise.lines=6}
-# Check the data "p" for stationarity - what transformations will be needed?
+# Check the data "p" for stationarity - will a transformation be needed?
 
 
 # Check the transformed data for stationarity
@@ -1469,7 +1470,7 @@ You will learn the functions:
 
 ```
 ```{r exercise3_1-hint-1}
-# Check for stationarity by plotting the data, and using adf.test() and/or kpss.test()
+# Check for stationarity by plotting the data, plotting the decomposed series, and/or using adf.test() or kpss.test()
 ```
 
 ***
@@ -1480,7 +1481,7 @@ You will learn the functions:
 
 
 # Check auto.arima - what does it suggest?
-# Consider which parameters to pre-specify
+# Consider whether d and/or D should be prespecified
 
 
 
