@@ -122,31 +122,32 @@ $(document).ready(function () {
 <h2>Overview</h2>
 <p>Welcome to HDAT9700 Time Series Analysis! <img src="https://youtu.be/W6Vfa3wEfjU" /></p>
 <p>In this chapter we will focus on time series data.</p>
-<p>There will be three short lectures:</p>
+<p>There will be three sections covering the following topics:</p>
 <ol style="list-style-type: decimal">
 <li>Working with time series data in R</li>
 <li>Statistical properties of time series data</li>
 <li>Fitting time series models</li>
 </ol>
-<p>Each lecture will be followed by a practical session where you will write your own R code to explore the concepts and methods we discuss.</p>
-<p>The prereading for this chapter is “On Time Series Analysis of Public Health and Biomedical Data” by Scott L Zeger, Rafael Irizarry and Roger D Peng available <a href="https://www.annualreviews.org/doi/10.1146/annurev.publhealth.26.021304.144517">here</a>.</p>
-<p>For those wanting more detail, I suggest “Time series analysis and its applications: with R examples” (Chapters 1-3) by Robert H Shumway and David S Stoffer, which can be downloaded <a href="https://www.stat.pitt.edu/stoffer/tsa4/">here</a> or through the UNSW library. The content goes beyond what is covered in this Chapter, but there are a lot of examples and R code for those who are interested. David S Stoffer is also the author of the <code>astsa</code> R package (Applied Statistical Time Series Analysis).</p>
+<p>Each section will be followed by a practical session where you will write your own R code to explore the concepts and methods we discuss.</p>
+<p>The prereadings for this chapter are:</p>
+<ul>
+<li><p>“Time series regression studies in environmental epidemiology” by Krishnan Bhaskaran, Antonio Gasparrini, Shakoor Hajat, Liam Smeeth, and Ben Armstrong available <a href="https://academic.oup.com/ije/article/42/4/1187/657875">here</a> or on OpenLearning. This paper focusses on environmental epidemiology but many of the concepts apply to other types of time series data too.</p></li>
+<li><p>“On Time Series Analysis of Public Health and Biomedical Data” by Scott L Zeger, Rafael Irizarry and Roger D Peng available <a href="https://www.annualreviews.org/doi/10.1146/annurev.publhealth.26.021304.144517">here</a> or on OpenLearning.</p></li>
+</ul>
 <p>Some other useful resources:</p>
 <ul>
-<li><p>Rob J Hyndman and George Athanasopoulos (Monash University) <a href="https://otexts.com/fpp2/">Forecasting: Principles and Practice</a></p></li>
-<li><p>Penn State <a href="https://newonlinecourses.science.psu.edu/stat510/">Applied Time Series Analysis</a></p></li>
+<li>Rob J Hyndman and George Athanasopoulos (Monash University) <a href="https://otexts.com/fpp2/">Forecasting: Principles and Practice</a></li>
 </ul>
-<p>While the following two papers are about intervention analysis, they also start by discussing properties of time series data which is relevant for this Chapter:</p>
+<p>While the following two papers are about intervention analysis (covered in the next Chapter), they also start by discussing properties of time series data which is relevant for this Chapter:</p>
 <ul>
 <li><p>Lagarde. How to do (or not to do): Assessing the impact of a policy change with routine longitudinal data. <em>Health Policy Planning</em> 2012;27(1):76-83. <a href="https://doi.org/10.1093/heapol/czr004">doi: 10.1093/heapol/czr004</a></p></li>
 <li><p>Schaffer et al. Interrupted time series analysis using autoregressive integrated moving average (ARIMA) models: a guide for evaluating large-scale health interventions. <em>BMC Medical Research Methodology</em> 2021;21(58). <a href="https://bmcmedresmethodol.biomedcentral.com/articles/10.1186/s12874-021-01235-8">doi: 10.1186/s12874-021-01235-8</a></p></li>
 </ul>
+<p>For those wanting more detail, I suggest “Time series analysis and its applications: with R examples” (Chapters 1-3) by Robert H Shumway and David S Stoffer, which can be downloaded <a href="https://www.stat.pitt.edu/stoffer/tsa4/">here</a> or through the UNSW library. The content goes beyond what is covered in this Chapter, but there are a lot of examples and R code for those who are interested. David S Stoffer is also the author of the <code>astsa</code> R package (Applied Statistical Time Series Analysis).</p>
 <p>Let’s get started!</p>
 </div>
-<div id="section-lecture-1-working-with-time-series-data" class="section level2">
-<h2>Lecture 1: Working with time series data</h2>
-<div id="section-what-are-time-series-data" class="section level3">
-<h3>What are time series data?</h3>
+<div id="section-what-are-time-series-data" class="section level2">
+<h2>What are time series data?</h2>
 <p>Time series data are everywhere. Some examples include:</p>
 <ul>
 <li>Daily maximum temperature</li>
@@ -154,10 +155,10 @@ $(document).ready(function () {
 <li>Monthly cardiovascular mortality rate</li>
 <li>Yearly cancer incidence per 100,000 population.</li>
 </ul>
-<p>To interpret time series data, it is important to understand the underlying structure, and how this affects its behaviour. For instance, a sudden drop in prescriptions for antibiotics in a given month may represent a true decline, or just be part of the normal variation of those data.</p>
+<p>To interpret time series data, it is important to understand the underlying structure, and how this affects its behaviour. For instance, if you observe a sudden drop in prescriptions for antibiotics in a given month, how do you know if it represents a true decline, or is just be part of the normal variation of those data?</p>
 <p>A time series is a chronological sequence of measurements equally spaced through time, with one observation for every time point. The time unit can be daily, weekly, monthly, etc.; however, it is always the same for a given series. Time series data can be raw measures, such as the daily maximum temperature, or hourly blood pressure readings, or it can be a summary (aggregate) statistic, such as counts, rates, ratios, averages, or percentages.</p>
-<p>In the context of health data, one of the advantages of time series data is that they often involve aggregate data (such as counts of hospital separations), and thus they don’t necessarily require access to identifiable person-level data. Thus, these data are often easier to access as aggregate data often do not require ethics approval, and there are currently a many freely available time series datasets available online.</p>
-<p>Time series data have several unique properties. The chronological ordering is important. Time series data are also well suited to visualisation. Most importantly, observations made at neighbouring time points are often correlated and thus not independent, meaning that they do not meet the assumptions necessary for standard regression analysis. Therefore, specialised methods for analysing time series data are needed.</p>
+<p>In the context of health data, one of the advantages of time series data is that they often involve aggregate data (such as counts of hospital separations), and thus they don’t necessarily require access to identifiable person-level data. Thus, these data are often easier to access as aggregate data often do not require ethics approval, and there are currently many freely available time series datasets available online. For instance, Pharmaceutical Benefits Scheme (PBS) dispensing claims can be downloaded here: <a href="https://www.pbs.gov.au/info/statistics/dos-and-dop/dos-and-dop" class="uri">https://www.pbs.gov.au/info/statistics/dos-and-dop/dos-and-dop</a>.</p>
+<p>Time series data have several unique properties. First, the chronological ordering is important. Time series data are also well suited to visualisation. Most importantly, observations made at neighbouring time points are often correlated and thus not independent, meaning that they do not meet the assumptions necessary for standard regression analysis. Therefore, specialised methods for analysing time series data are often needed.</p>
 <p>There are many potential uses for time series analysis in health. These include:</p>
 <ul>
 <li><strong>Descriptive analysis</strong> to understand trends or patterns over time, or to compare patterns between jurisdictions or specific populations;</li>
@@ -175,7 +176,7 @@ $(document).ready(function () {
 </div>
 <div class="figure">
 <img src="images/Vaccination.jpg" alt="" />
-<p class="caption"><strong>Figure.</strong> An example of time series: smallpox, polio and measles before and after introduction of vaccination (Source: Our World in Data <a href="https://ourworldindata.org/" class="uri">https://ourworldindata.org/</a>)</p>
+<p class="caption"><strong>Figure.</strong> An example of a time series: smallpox, polio and measles before and after introduction of vaccination (Source: Our World in Data <a href="https://ourworldindata.org/" class="uri">https://ourworldindata.org/</a>)</p>
 </div>
 <hr />
 <p>Check out the short video about the definition and uses for time series data: <img src="https://youtu.be/eMp3s_X2uOc" /></p>
@@ -191,11 +192,12 @@ $(document).ready(function () {
 </div>
 <hr />
 </div>
-<div id="section-working-with-time-series-data-in-r" class="section level3">
-<h3>Working with time series data in R</h3>
+<div id="section-working-with-time-series-data-in-r" class="section level2">
+<h2>Working with time series data in R</h2>
 <p>In this first section we will describe how to set up your time series data in R, explore the structure of the data, and conduct some basic visualisations.</p>
-<div id="section-creating-time-series-objects" class="section level4">
-<h4>Creating time series objects</h4>
+<hr />
+<div id="section-creating-time-series-objects" class="section level3">
+<h3>Creating time series objects</h3>
 <p>To start off with, we will convert our data to the form of an R time series (<em>ts</em>) object, rather than a data frame. A <em>ts</em> object is a vector or matrix of data sampled chronologically at equispaced points in time. Information about the time points at which the data were sampled is held in an <em>index</em>, rather than as its own variable.</p>
 <p>The <code>ts()</code> function converts a numeric vector or matrix into a ts object. In the case of a matrix, each column is assumed to contain a separate time series. A multivariate <em>ts</em> object is called an <em>mts</em> object.</p>
 <p>The syntax is:</p>
@@ -258,15 +260,16 @@ start = c(2015, 1), end = c(2017, 52), frequency = 52
 <p>Strictly speaking, there are 52.18 weeks in a year (365.25/7). However, many time series functions require integers and in most cases the impact will be minimal.</p>
 Let’s try it out.
 <div class="tutorial-exercise" data-label="tsobject" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># Create a vector with 48 random observations taking values between 40 and 80
+<pre class="text"><code># Create a vector with 48 random observations taking values between 40 and 80.
 set.seed(123)
 vector1 &lt;- sample(40:80, 48, replace = TRUE)
 
-# Now transform it into a time series (ts) object Let&#39;s assume the vector is
-# monthly data from July 2005 to June 2009
+# Now transform it into a time series (ts) object.  Let&#39;s assume the vector
+# represents monthly data from July 2005 to June 2009.
 x1 &lt;- ts(vector1, start = c(2005, 7), end = c(2009, 6), frequency = 12)
 
-# Now plot the time series
+# Now plot the time series. ts objects are automatically be plotted as line
+# graphs.
 plot(x1)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":5,"fig.height":3.5,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":480,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
@@ -280,7 +283,8 @@ time(x1)</code></pre>
 <p>As you can see, the ts object index stores time as a fraction, not a date. To convert the time index to date formats, we can use <code>as.Date()</code>, <code>as.yearmon()</code>, <code>as.yearqtr()</code> which are part of the <code>zoo</code> package.</p>
 <div class="tutorial-exercise" data-label="time2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># Extract time information
-as.yearmon(time(x1))</code></pre>
+as.yearmon(time(x1))
+as.Date(time(x1))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
 <hr />
@@ -295,8 +299,8 @@ as.yearmon(time(x1))</code></pre>
 </div>
 <hr />
 </div>
-<div id="section-combining-multiple-time-series-objects" class="section level4">
-<h4>Combining multiple time series objects</h4>
+<div id="section-combining-multiple-time-series-objects" class="section level3">
+<h3>Combining multiple time series objects</h3>
 <p><code>ts.union()</code> and <code>ts.intersect()</code> can be used to combine two ts objects into one mts object. <code>ts.union()</code> will perform an outer join, and will create <em>NAs</em> to fill in missing values. <code>ts.intersect()</code> will restrict to the time periods where the two series overlap (inner join).</p>
 However, in both cases the individual ts objects must have the same frequency, although they don’t have to have the same start and/or end. Try it below with the ts objects <code>x2</code> and <code>x3</code>, and observe the difference when using <code>ts.union()</code> vs <code>ts.intersect()</code>.
 <div class="tutorial-exercise" data-label="tsunion" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
@@ -342,9 +346,9 @@ print(x5)</code></pre>
 <hr />
 </div>
 </div>
-<div id="section-visualising-time-series-data" class="section level3">
-<h3>Visualising time series data</h3>
-<p>Time series data are well suited to visualisation. One of the first steps when working with time series data should be to plot it. The simplest approach is to use the base <code>plot()</code> function. For more customisation options, you can use a more sophisticated function like <code>autoplot()</code>, which is part of the <code>ggplot2</code> package and automatically converts the ts object to a data frame so that it can be plotted with <code>ggplot2</code>.</p>
+<div id="section-visualising-time-series-data" class="section level2">
+<h2>Visualising time series data</h2>
+<p>Time series data are well suited to visualisation. One of the first steps when working with time series data is to plot your series. The simplest approach is to use the base <code>plot()</code> function. For more customisation options, you can use a more sophisticated function like <code>autoplot()</code>, which is part of the <code>ggplot2</code> package and automatically converts the ts object to a data frame so that it can be plotted with <code>ggplot2</code>.</p>
 <p>If you have multiple time series in one mts object, they can be plotted in one graph on separate facets using <code>plot()</code> and the argument <code>plot.type="m"</code> (<em>m</em> = multiple, the default), or on the same graph using <code>plot.type="s"</code> (<em>s</em> = single plot).</p>
 <p>Let’s look at an example. Below, we will extract data on weekly respiratory and cardiovascular mortality in Los Angeles (1970 to 1979) collected as part of the LA Pollution-Mortality Study. These series are in the <code>lap</code> dataset that is part of the <code>astsa</code> package. Remember that since a ts object is a vector/matrix, to extract specific columns you must use [ ], rather than $.</p>
 First, plot these time series on separate facets, and then on the same plot. We will also customise the graphs by adding a title and axis labels, setting an appropriate range for the y-axis, and using different colours and line types to distinguish between the two time series.
@@ -354,9 +358,11 @@ data(lap, package = &quot;astsa&quot;)
 mort &lt;- lap[, c(2:3)]
 
 # Plot 1: multiple facets with customisation
-plot(mort, plot.type = &quot;m&quot;, xlab = &quot;Week&quot;, col = &quot;blue&quot;, lty = &quot;solid&quot;, main = &quot;LA Respiratory and Cardiovascular Mortality, 1970-1979&quot;)
+par(cex.lab = 0.9, cex.axis = 0.9, cex.main = 0.9)
+plot(mort, plot.type = &quot;m&quot;, xlab = &quot;Week&quot;, col = &quot;blue&quot;, lty = &quot;solid&quot;, main = &quot;Fig 1: LA Respiratory and Cardiovascular Mortality, 1970-1979&quot;)
 
 # Plot 2: single plot with customisation
+par(cex.lab = 0.9, cex.axis = 0.9, cex.main = 0.9)
 plot(mort, plot.type = &quot;s&quot;, ylab = &quot;Deaths&quot;, xlab = &quot;Week&quot;, col = c(&quot;blue&quot;, &quot;red&quot;), 
     lty = c(&quot;solid&quot;, &quot;solid&quot;), ylim = c(0, 150), main = &quot;Fig 1: LA Respiratory and Cardiovascular Mortality, 1970-1979&quot;)
 # Add a legend
@@ -367,20 +373,19 @@ legend(&quot;topright&quot;, legend = c(&quot;Respiratory&quot;, &quot;Cardiovas
 <p>Think about when you would prefer each of these types of plots - what are the strengths and weaknesses of each?</p>
 <p>In this video I describe what makes a good plot: <img src="https://youtu.be/YZ9LrP5O9wc" /></p>
 <hr />
-</div>
 <div id="section-components-of-a-time-series" class="section level3">
 <h3>Components of a time series</h3>
 <p>A time series is made up of three principal components, which are:</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Trend:</strong> A trend is a long-term increase or decrease in the data. It can be linear, or non-linear (e.g. exponential growth). A cyclic trend occurs when there is a repeating cycle of increases and decreases of no fixed period, often lasting for several years. An example would be the boom and bust of the stock market, or the sunspot cycle; however, cyclic trends are uncommon in health services data.</p></li>
-<li><p><strong>Seasonality:</strong> Seasonality occurs when the time series is affected by calendar time, such as time of year or day of the week. Seasonality is always of a fixed and known frequency. It can be due to natural causes, such as the variation in weather patterns between seasons, or business/administrative processes, such as weekend/weekday effects. Whether there is seasonality may depend on the time unit of your series (e.g. daily, weekly, etc.).</p></li>
-<li><p><strong>Error:</strong> The error is the remaining random variation unexplained by the trend or seasonality.</p></li>
+<li><p><strong>Seasonality:</strong> Seasonality occurs when the time series is affected by calendar time, such as time of year or day of the week. Seasonality is always of a fixed and known frequency. It can be due to natural causes, such as the variation in weather patterns between seasons, or business/administrative processes, such as differences between weekends and weekdays. Whether there is seasonality will depend on the time unit of your series (e.g. daily, weekly, etc.).</p></li>
+<li><p><strong>Error:</strong> The error is the remaining random variation unexplained by the trend or seasonality. Extreme values that are much larger or smaller than expected are considered outliers.</p></li>
 </ol>
 <hr />
 <p>This videos provides a brief overview of these components: <img src="https://youtu.be/UEWbiPB81Fk" /></p>
 <hr />
 <p>Let’s look at a few examples of time series with different properties.</p>
-<p>Load the <code>flu</code> dataset which is part of the <code>astsa</code> package. It contains data on pneumonia and influenza deaths per 10,000 population the United States. It is already a ts object and does not have to be converted.</p>
+<p>Load the <code>flu</code> dataset which is part of the <code>astsa</code> package. It contains data on pneumonia and influenza deaths per 10,000 population in the United States. It is already a ts object and does not have to be converted.</p>
 Like any dataset, one of the first steps when working with time series data is to explore the data. Below, we’ll use the functions <code>start()</code>, <code>end()</code>, <code>frequency()</code>, <code>length()</code>, and <code>summary()</code> to explore the time series.
 <div class="tutorial-exercise" data-label="sum" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>data(flu, package = &quot;astsa&quot;)
@@ -403,9 +408,10 @@ summary(flu, digits = 2)</code></pre>
 </div>
 <p>Now we know that the series starts in January 1968 and ends in December 1978, and that the data are monthly (frequency = 12). The maximum value is 0.82 deaths per 10,000 population and the minimum is 0.18 deaths per 10,000 population.</p>
 <hr />
-Now visualise the flu time series by plotting it. Think about the kind of pattern that you expect to see. Always remember when creating graphs to choose clear axis labels, and to set the y-axis limits to something reasonable, as axes that are too narrow or too wide can be misleading.
+Now visualise the flu time series by plotting it. Think about the kind of pattern that you expect to see. Always remember when creating graphs to choose clear axis labels, and to set the y-axis limits to something reasonable, as axes that are too narrow or too wide can be misleading or difficult to interpret.
 <div class="tutorial-exercise" data-label="plotflu" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># Plot flu data
+par(cex.lab = 0.9, cex.axis = 0.9, cex.main = 0.9)
 plot(flu, ylab = &quot;Deaths per 10,000 people&quot;, xlab = &quot;Month&quot;, main = &quot;Pneumonia and influenza deaths\nin the US (1968-1978)&quot;, 
     ylim = c(0, 1))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":480,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
@@ -423,6 +429,7 @@ Now let’s look at a different time series. Here is the yearly number of intern
 data(austa, package = &quot;fpp&quot;)
 
 # Plot austa data
+par(cex.lab = 0.9, cex.axis = 0.9, cex.main = 0.9)
 plot(austa, ylab = &quot;International visitors (millions)&quot;, xlab = &quot;Year&quot;, main = &quot;International visitors to Australia (1980-2010)&quot;, 
     ylim = c(0, 6))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":480,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
@@ -439,6 +446,7 @@ plot(austa, ylab = &quot;International visitors (millions)&quot;, xlab = &quot;Y
 data(hor, package = &quot;astsa&quot;)
 
 # Plot hor data
+par(cex.lab = 0.9, cex.axis = 0.9, cex.main = 0.9)
 plot(hor, ylab = &quot;Occupancy rates (%)&quot;, xlab = &quot;Quarter&quot;, main = &quot;Hawaiian hotel occupancy rates (1982-2015)&quot;, 
     ylim = c(50, 100))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":480,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
@@ -467,8 +475,9 @@ plot(hor, ylab = &quot;Occupancy rates (%)&quot;, xlab = &quot;Quarter&quot;, ma
 </div>
 </div>
 <hr />
-<div id="section-visualising-seasonal-effects" class="section level4">
-<h4>Visualising seasonal effects</h4>
+</div>
+<div id="section-visualising-seasonal-effects" class="section level3">
+<h3>Visualising seasonal effects</h3>
 <p>Another way of plotting seasonal time series is to use the function <code>seasonplot()</code> or <code>ggseasonplot()</code> from the <code>forecast</code> package. This can also help identify outliers, by comparing values to the same time period in previous years, as it can sometimes be difficult to identify extreme values in the presence of seasonal effects.</p>
 Here’s what a seasonal plot looks like for the flu data:
 <div class="tutorial-exercise" data-label="season" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
@@ -490,8 +499,8 @@ tapply(hor, INDEX = cycle(hor), FUN = summary)</code></pre>
 <p>And this confirms that the occupancy rates are highest in the 1st quarter (Jan-Mar). We also see that rates in the fourth quarter of 2001 stands out as being lower than all other quarters.</p>
 <hr />
 </div>
-<div id="section-decomposition" class="section level4">
-<h4>Decomposition</h4>
+<div id="section-decomposition" class="section level3">
+<h3>Decomposition</h3>
 <p>An easy way to visualise the components of a time series (trend, seasonality, error) is to use the <code>decompose()</code> function. This function separates out the trend component, seasonal component and random error from your time series. This function will give an error if there is no seasonality in the data (e.g. yearly data).</p>
 <p>First, you need to identify whether your time series is <em>additive</em> or <em>multiplicative</em>.</p>
 <ul>
@@ -503,8 +512,7 @@ tapply(hor, INDEX = cycle(hor), FUN = summary)</code></pre>
 </ul>
 <p><span class="math display">\[\text{Time series}=\text{Trend}\times\text{Seasonal} \times \text{Error}\]</span></p>
 <hr />
-<p>Let’s use the data on monthly corticosteroid prescriptions (millions) in Australia (Jul 1991 to Jun 2008) (<code>h02</code> in the <code>fpp</code> package).</p>
-<p><img src="time-series-analysis_files/figure-html/unnamed-chunk-4-1.png" width="480" /></p>
+<p>Let’s use the data on monthly corticosteroid prescriptions (millions) in Australia (Jul 1991 to Jun 2008) (<code>h02</code> in the <code>fpp</code> package). <img src="time-series-analysis_files/figure-html/unnamed-chunk-4-1.png" width="480" /></p>
 <p><strong>Figure.</strong> Monthly corticosteroid prescriptions in Australia</p>
 <hr />
 The raw data has slightly increasing variance, so let’s use a multiplicative model indicated using the argument <code>type=</code>. Note that “additive” is the default type.
@@ -544,8 +552,9 @@ deseason &lt;- h02/dec$seasonal
 h02.d &lt;- ts.union(h02, deseason)
 
 # Plot them both on the same graph
+par(cex.lab=.9,cex.axis=.9,cex.main=.9)
 plot(h02.d, plot.type=&quot;s&quot;, ylim=c(0,1.5), col=c(&quot;blue&quot;,&quot;red&quot;), lty=c(&quot;solid&quot;,&quot;dashed&quot;), ylab=&quot;Corticosteroid Rx (millions)&quot;, xlab=&quot;Month&quot;)
-legend(&quot;topleft&quot;, legend=c(&quot;Observed&quot;,&quot;Seasonally adjusted&quot;), col=c(&quot;blue&quot;,&quot;red&quot;), lty=c(&quot;solid&quot;,&quot;dashed&quot;))</code></pre>
+legend(&quot;topleft&quot;, legend=c(&quot;Observed&quot;,&quot;Seasonally adjusted&quot;), col=c(&quot;blue&quot;,&quot;red&quot;), lty=c(&quot;solid&quot;,&quot;dashed&quot;),cex=.8)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":480,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.setup":"dec","exercise.checker":"NULL"}</script>
 </div>
 <hr />
@@ -555,18 +564,18 @@ You can also plot the smoothed trend along with the raw data.
 h02.t &lt;- ts.union(h02, dec$trend)
 
 # Plot them both on the same graph
+par(cex.lab = 0.9, cex.axis = 0.9, cex.main = 0.9)
 plot(h02.t, plot.type = &quot;s&quot;, ylim = c(0, 1.5), col = c(&quot;blue&quot;, &quot;red&quot;), lty = c(&quot;solid&quot;, 
     &quot;dashed&quot;), ylab = &quot;Corticosteroid Rx (millions)&quot;, xlab = &quot;Month&quot;)
 legend(&quot;topleft&quot;, legend = c(&quot;Observed&quot;, &quot;Trend&quot;), col = c(&quot;blue&quot;, &quot;red&quot;), lty = c(&quot;solid&quot;, 
-    &quot;dashed&quot;))</code></pre>
+    &quot;dashed&quot;), cex = 0.8)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":480,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.setup":"dec","exercise.checker":"NULL"}</script>
 </div>
 <hr />
 </div>
 </div>
-</div>
-<div id="section-practical-1" class="section level2">
-<h2>Practical 1</h2>
+<div id="section-practical-1-visualising-time-series-data" class="section level2">
+<h2>Practical 1: Visualising time series data</h2>
 <p>In this practical session you will visualise and explore a time series. For these exercises you will use data on monthly deaths in the UK by sex obtained from the Office for National Statistics (<a href="https://www.ons.gov.uk/" class="uri">https://www.ons.gov.uk/</a>). The start date is January 2001.</p>
 <p>You will learn the following functions:</p>
 <ul>
@@ -580,7 +589,7 @@ legend(&quot;topleft&quot;, legend = c(&quot;Observed&quot;, &quot;Trend&quot;),
 <hr />
 <div id="section-exercise-1.1-creating-a-ts-object" class="section level4">
 <h4>Exercise 1.1 Creating a ts object</h4>
-<div class="tutorial-exercise" data-label="exercise1_1" data-caption="Exercise 1.1" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="9">
+<div class="tutorial-exercise" data-label="exercise1_1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="9">
 <pre class="text"><code># Check if the data &#39;resp&#39; is in the format of a ts object using class()
 
 
@@ -594,7 +603,7 @@ legend(&quot;topleft&quot;, legend = c(&quot;Observed&quot;, &quot;Trend&quot;),
 </div>
 <div id="section-exercise-1.2-checking-structure-of-time-series" class="section level4">
 <h4>Exercise 1.2 Checking structure of time series</h4>
-<div class="tutorial-exercise" data-label="exercise1_2" data-caption="Exercise 1.2" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="14">
+<div class="tutorial-exercise" data-label="exercise1_2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="14">
 <pre class="text"><code># Check start and end dates of resp_ts
 
 
@@ -617,7 +626,7 @@ head(resp_ts)</code></pre>
 </div>
 <div id="section-exercise-1.3-data-exploration" class="section level4">
 <h4>Exercise 1.3 Data exploration</h4>
-<div class="tutorial-exercise" data-label="exercise1_3" data-caption="Exercise 1.3" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="6">
+<div class="tutorial-exercise" data-label="exercise1_3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="6">
 <pre class="text"><code># What is the minimum value in males/females? maximum value in males/females?
 
 
@@ -632,7 +641,7 @@ summary(resp_ts)</code></pre>
 </div>
 <div id="section-exercise-1.4-data-visualisation" class="section level4">
 <h4>Exercise 1.4 Data visualisation</h4>
-<div class="tutorial-exercise" data-label="exercise1_4" data-caption="Exercise 1.4" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="10">
+<div class="tutorial-exercise" data-label="exercise1_4" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="10">
 <pre class="text"><code># Plot the male and female time series in different facets
 
 
@@ -645,39 +654,54 @@ summary(resp_ts)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":480,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="exercise1_4-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># To plot on the same graph, use the argument &quot;plot.type=&quot;s&quot; &quot;</code></pre>
+<pre class="text"><code># To plot on the same facet, use the argument plot.type=&quot;s&quot; 
+# To plot on the different facets, use the argument plot.type=&quot;m&quot;</code></pre>
 </div>
 <div class="tutorial-exercise-support" data-label="exercise1_4-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># To change the plot colours or linetype, use the arguments &quot;col=&quot; or &quot;lty=&quot;</code></pre>
+<pre class="text"><code># To modify the plot, use the following code:
+plot(resp_ts, plot.type=, col= , lty= , ylab= , xlab= , ylim= )</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise1_4-hint-3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># Too add a legend use:
+legend()</code></pre>
 </div>
 <hr />
 </div>
 <div id="section-exercise-1.5-data-decomposition" class="section level4">
 <h4>Exercise 1.5 Data decomposition</h4>
-<div class="tutorial-exercise" data-label="exercise1_5" data-caption="Exercise 1.5" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="12">
-<pre class="text"><code># When you plotted your series, did you observe any trend? any seasonality? any
-# outliers?  Create a plot of the decomposed time series for males (call it
-# &#39;males&#39;), and see if it confirms what you observed above
+<div class="tutorial-exercise" data-label="exercise1_5" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="12">
+<pre class="text"><code># Save the components of the decomposed series for males into a separate data
+# frame (call it &#39;males&#39;).
+
+
+# When you plotted your series in Exercise 1.4, did you observe any trend? any
+# seasonality? any outliers?  Create a plot of the decomposed time series for
+# males and see if it confirms what you observed above.
 
 
 
-
-# Plot the trend on the same plot as the raw data for males only</code></pre>
+# Plot the trend on the *same* plot as the raw data for males only. Remember to
+# use colours and a legend to distinguish the series.</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":5,"fig.height":4.5,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":480,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="exercise1_5-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># To decompose the males time series:
-males &lt;- decompose(resp_ts[,1])</code></pre>
+males &lt;- decompose(resp_ts[,1])
+head(males)</code></pre>
 </div>
 <div class="tutorial-exercise-support" data-label="exercise1_5-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># To combine the raw data with the trend data, use 
+<pre class="text"><code># To plot the decomposed series:
+plot(males)</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise1_5-hint-3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># To combine the raw data with the trend data which can then be plotted, use: 
 ts.union(resp_ts[,1], males$trend)</code></pre>
 </div>
 <hr />
 </div>
 <div id="section-exercise-1.6-data-manipulation" class="section level4">
 <h4>Exercise 1.6 Data manipulation</h4>
-<div class="tutorial-exercise" data-label="exercise1_6" data-caption="Exercise 1.6" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="6">
+<div class="tutorial-exercise" data-label="exercise1_6" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="6">
 <pre class="text"><code># Create a ts object with the male:female respiratory death ratio
 
 
@@ -691,8 +715,8 @@ ratio &lt;- resp_ts[,1]/resp_ts[,2]</code></pre>
 <hr />
 </div>
 </div>
-<div id="section-lecture-2-statistical-properties-of-time-series" class="section level2">
-<h2>Lecture 2: Statistical properties of time series</h2>
+<div id="section-statistical-properties-stationarity" class="section level2">
+<h2>Statistical properties: Stationarity</h2>
 <p>Now let’s talk about the statistical properties of time series data. Let’s start with some basic notation.</p>
 <p>Let <span class="math inline">\(Y_t\)</span> represent the values of your time series (<span class="math inline">\(Y\)</span>) at times <span class="math inline">\(t\)</span>, from <span class="math inline">\(t_1\)</span> through <span class="math inline">\(t_n\)</span>, where <span class="math inline">\(n\)</span> is the number of observations or time points in your series.</p>
 <hr />
@@ -700,7 +724,7 @@ ratio &lt;- resp_ts[,1]/resp_ts[,2]</code></pre>
 <h3>Stationarity</h3>
 <p>To facilitate working with time series data, your time series should be <strong>stationary</strong>.</p>
 <p>A time series is considered <em>strictly stationary</em> if the distribution of a sequence of <em>i</em> observations is unchanged by shifts in time. That means that the probability distribution of <span class="math inline">\(Y_t\)</span> at times <span class="math inline">\((t_1, t_2, t_3,... t_i)\)</span> is the same as the distribution at times <span class="math inline">\((t_1+m,t_2+m,t_3+m,...t_i+m)\)</span> (where <span class="math inline">\(m\)</span> is a constant by which times are shifted).</p>
-<p><strong>Why is stationarity important?</strong> A stationary series is easier to work with because it is stable over time and can thus be modelled with fewer parameters. While a stationarity series may fluctuate, it will always revert to a constant mean, meaning that it is easier to predict. It does not have any trend or seasonality. However, a strictly stationary series is rare, and it is often enough to assume <em>weak stationarity</em>.</p>
+<p><strong>Why is stationarity important?</strong> A stationary series is easier to work with because it is stable over time and can thus be modelled with fewer parameters. While a stationarity series may fluctuate, it will always revert to a constant mean, meaning that it is easier to predict. It does not have any trend or seasonality and variance is constant. However, a strictly stationary series is rare, and it is often enough to assume <em>weak stationarity</em>.</p>
 <p>A weakly stationary series has three properties:</p>
 <ol style="list-style-type: decimal">
 <li>the mean of <span class="math inline">\(Y_t\)</span> is the same for all <span class="math inline">\(t\)</span>;</li>
@@ -719,11 +743,12 @@ ratio &lt;- resp_ts[,1]/resp_ts[,2]</code></pre>
 <p><strong>Figure.</strong> Examples of white noise series (SD = standard deviation)</p>
 <hr />
 </div>
-<div id="section-how-to-deal-with-non-stationarity" class="section level4">
-<h4>How to deal with non-stationarity</h4>
+</div>
+<div id="section-how-to-deal-with-non-stationarity" class="section level3">
+<h3>How to deal with non-stationarity</h3>
 <p>White noise series are rare, and it is unusual that a time series is stationary to begin with. There are two main causes of non-stationarity: the presence of a trend, or non-constant variance.</p>
-<p>One way of dealing with non-stationarity is to apply a transformation to the data. If the variance is changing over time, this can be addressed by a log transformation (<span class="math inline">\(\log(Y_t)\)</span>).</p>
-<p>On the other hand, if there is a linear trend in the data, taking the first difference of the data (<span class="math inline">\(Y_t-Y_{t-1}\)</span>) will usually result in a stationary series. If there is still a trend, then a second differencing will be required, but that is rare.</p>
+<p>One way of dealing with non-stationarity is to apply a transformation to the data. If the variance is changing over time, this can be addressed by a natural log transformation (<span class="math inline">\(\log(Y_t)\)</span>).</p>
+<p>On the other hand, if there is a linear trend in the data, taking the first difference of the data (<span class="math inline">\(Y_t-Y_{t-1}\)</span>) will usually result in a stationary series. If there is still a trend, then a second differencing will be required, but that is not common.</p>
 <p>Let’s try it with the corticosteroid data we saw earlier.</p>
 <p><img src="time-series-analysis_files/figure-html/unnamed-chunk-7-1.png" width="480" /></p>
 <hr />
@@ -739,7 +764,7 @@ plot(log(h02), ylab = &quot;Corticosteroid Rx (log)&quot;, ylim = c(-1.5, 0.5))<
 plot(diff(log(h02)), ylab = &quot;Corticosteroid Rx (log, diff)&quot;, ylim = c(-1, 0.5))</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":5,"fig.height":3.5,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":480,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
-<p>Now the series is stationary. However, the seasonality is still a problem - we will deal with this later!</p>
+<p>Now the series is almost stationary, but seasonality is still a problem - we will deal with this later!</p>
 <p>Note that when you take the first difference, you will lost the first observation of your time series since you can’t calculate a difference for this observation.</p>
 <hr />
 <p>You can also formally test for non-stationarity using the Augmented Dickey-Fuller (ADF) test, or the Kwiatkowski-Phillips-Schmidt-Shin (KPSS) test. The functions are <code>adf.test()</code> and <code>kpss.test()</code>, both available in the <code>tseries</code> package.</p>
@@ -776,9 +801,9 @@ kpss.test(diff(log(h02)))</code></pre>
 <hr />
 </div>
 </div>
-<div id="section-autocorrelation" class="section level3">
-<h3>Autocorrelation</h3>
-<p>As mentioned, time series data cannot usually be analysed using standard regression methods due to correlation between observations within the series, i.e. autocorrelation.</p>
+<div id="section-statistical-properties-autocorrelation" class="section level2">
+<h2>Statistical properties: Autocorrelation</h2>
+<p>As mentioned, time series data cannot usually be analysed using standard regression methods due to correlation between observations within the series, i.e. autocorrelation. The presence of autocorrelation can lead to incorrect standard errors.</p>
 To check for first order autocorrelation (correlation with the previous observation), use the <code>lag1.plot()</code> function in the <code>astsa</code> package to plot the correlation between <span class="math inline">\(Y_t\)</span> and its first order lag <span class="math inline">\(Y_{t-1}\)</span>. Let’s look at two examples below.
 <div class="tutorial-exercise" data-label="lag" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># Check first order autocorrelation for the monthly Hawaiian occupancy rates
@@ -810,11 +835,11 @@ acf(austa)</code></pre>
 pacf(austa)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":4,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":384,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
-<p>Here there is no significant partial autocorrelation. Therefore, the higher order autocorrelation observed in the ACF plot above was entirely due to autocorrelation at lag 1.</p>
+<p>Here there is no significant partial autocorrelation. Therefore, the higher order autocorrelation observed in the ACF plot above was entirely due to autocorrelation at lag 1. This suggests that adjusting for first-order autocorrelation (at lag 1) only should be sufficient.</p>
 <hr />
-<div id="section-how-to-deal-with-autocorrelation" class="section level4">
-<h4>How to deal with autocorrelation</h4>
-<p>Data that are autocorrelated are often not stationary. Therefore, sometimes differencing the data (or otherwise controlling for trend) will be enough to remove the autocorrelation, so always perform any necessary transformations before checking for autocorrelation. Otherwise, it may be necessary to include one or more lag terms as predictors in your regression analysis. We will cover other approaches for dealing with autocorrelation in more detail later.</p>
+<div id="section-how-to-deal-with-autocorrelation" class="section level3">
+<h3>How to deal with autocorrelation</h3>
+<p>Data that are autocorrelated are typically not stationary. Therefore, sometimes differencing the data (or otherwise controlling for trend) will be enough to remove the autocorrelation, so always perform any necessary transformations before checking for autocorrelation. Otherwise, it may be necessary to include one or more lag terms as predictors in your regression analysis. We will cover other approaches for dealing with autocorrelation in more detail later.</p>
 <div class="tutorial-exercise" data-label="acfdiff" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># Plot the lag-1 correlation and ACF for the differenced austa data
 lag1.plot(diff(austa))
@@ -835,13 +860,13 @@ acf(diff(austa))</code></pre>
 <hr />
 </div>
 </div>
-<div id="section-seasonality" class="section level3">
-<h3>Seasonality</h3>
+<div id="section-statistical-properties-seasonality" class="section level2">
+<h2>Statistical properties: Seasonality</h2>
 <p>Lots of time series are seasonal - we have seen some examples already. Seasonality refers to variations that occur at regular time intervals. For instance, hospitalisations for respiratory infections are more common in the winter months, but emergency department visits for accidents and injuries are more common in the summer, when people are outside and more active. If you have daily data, you may have both weekly and yearly seasonality - people are less likely to see a doctor on the weekends, but also on yearly holidays like Christmas and New Year’s Eve.</p>
 <p><img src="time-series-analysis_files/figure-html/unnamed-chunk-9-1.png" width="576" /></p>
 <p><strong>Figure.</strong> Examples of seasonal time series</p>
 <hr />
-<p>ACF plots can also help identify seasonality. If you have monthly seasonality, then you would expect to see significant autocorrelation at lag 12. If you don’t, then the seasonality may not be strong enough to need adjustment.</p>
+<p>We already saw how to check for seasonality using visualisation. However, ACF plots can also help identify seasonality. If you have monthly seasonality, then you would expect to see significant autocorrelation at lag 12. If you don’t, then the seasonality may not be strong enough to need adjustment.</p>
 <p>You can plot both the ACF and the PACF simultaneously using the function <code>acf2()</code> in the <code>astsa</code> package. Let’s try it with the corticosteroid data. Since we know our data are seasonal, we’ll specify <code>max.lag=24</code> to make sure to observe the seasonal effects. Confusingly, note that for seasonal data, the x-axis (“Lag”) is labelled as fractions of the unit of time (year). Thus, in the following plot “Lag 1” is actually “Lag 12” (one year). Also, <code>acf2()</code> <em>doesn’t</em> plot the autocorrelation at lag 0 (like <code>acf()</code>) so don’t ignore the first bar!</p>
 <div class="tutorial-exercise" data-label="acf2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># Plot the PACF for corticosteroid prescriptions in Australia
@@ -850,11 +875,10 @@ acf2(h02, max.lag = 24)</code></pre>
 </div>
 <p>Here you see that the autocorrelation is greatest between <span class="math inline">\(Y_t\)</span> and <span class="math inline">\(Y_{t-1}\)</span> as well as <span class="math inline">\(Y_t\)</span> and <span class="math inline">\(Y_{t-12}\)</span> (“Lag 1” in the plot) suggesting that there is strong seasonality that should be controlled for.</p>
 <hr />
-<div id="section-how-to-deal-with-seasonality" class="section level4">
-<h4>How to deal with seasonality</h4>
+<div id="section-how-to-deal-with-seasonality" class="section level3">
+<h3>How to deal with seasonality</h3>
 <p>Sometimes, you aren’t interested in estimating the seasonal effects. In this case, the simplest way to get rid of them is to aggregate the data to yearly. However, aggregating data to larger time units will reduce the number of observations.</p>
 <p>To aggregate data, we use the function <code>aggregate()</code>; however, we also need to specify <em>how</em> we will aggregate the data. This could be by calculating the sum, the mean, the median, etc. specified using the <code>FUN=</code> argument. Be careful when aggregating data, and think about whether it is meaningful to combine your data. For instance, it doesn’t make sense to sum rates, percentages or ratios.</p>
-<hr />
 <p>The syntax to go from monthly to quarterly and monthly to yearly is below. Let’s use the data on monthly corticosteroid prescriptions again. Since these data are in millions of prescriptions, we can add them up using <code>FUN=sum</code>.</p>
 <div class="tutorial-exercise" data-label="agg" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># Plot raw data again
@@ -901,9 +925,8 @@ plot(diff(diff(log(h02)), lag = 12), ylab = &quot;Corticosteroid Rx (millions)&q
 <hr />
 </div>
 </div>
-</div>
-<div id="section-practical-2" class="section level2">
-<h2>Practical 2</h2>
+<div id="section-practical-2-statistical-properties-of-time-series" class="section level2">
+<h2>Practical 2: Statistical properties of time series</h2>
 <p>In this practical session you will identify stationarity, autocorrelation and seasonality. For these exercises you will use data on monthly international airline passengers (in thousands) from Jan 1948 to Dec 1960.</p>
 <p>You will learn the functions:</p>
 <ul>
@@ -914,7 +937,7 @@ plot(diff(diff(log(h02)), lag = 12), ylab = &quot;Corticosteroid Rx (millions)&q
 <hr />
 <div id="section-exercise-2.1-stationarity" class="section level4">
 <h4>Exercise 2.1 Stationarity</h4>
-<div class="tutorial-exercise" data-label="exercise2_1" data-caption="Exercise 2.1" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="18">
+<div class="tutorial-exercise" data-label="exercise2_1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="23">
 <pre class="text"><code># &#39;Air&#39; is the ts object containing the airline passengers time series
 head(air)
 
@@ -925,8 +948,13 @@ head(air)
 # and plot the data again
 
 
-# Is there a trend? If so, apply an appropriate transformation and plot the
-# data again
+# Is there a trend? If so, take a first order difference and plot the data
+# again
+
+
+
+# Is there seasonality? If so, take a seasonal difference and plot the data
+# again
 
 
 
@@ -935,33 +963,41 @@ head(air)
 </div>
 <div class="tutorial-exercise-support" data-label="exercise2_1-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># If there is non-constant variance transform the data using log()
-
-# If there is a trend transform the data using diff()</code></pre>
+plot(log(air))</code></pre>
 </div>
 <div class="tutorial-exercise-support" data-label="exercise2_1-hint-2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># To plot the log-transformed and differenced series, use:
-plot(diff(log(air)))
-
-# If you plot &quot;plot(log(diff(air)))&quot; this will give an error as you cannot take the log of a negative number</code></pre>
+<pre class="text"><code># If there is a trend transform the data using diff()
+plot(diff(log(air)))</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise2_1-hint-3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># If there is seasonality transform the data using diff(, lag=12)
+plot(diff(diff(log(air)),12))</code></pre>
+</div>
+<div class="tutorial-exercise-support" data-label="exercise2_1-hint-4" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
+<pre class="text"><code># If you plot &quot;plot(log(diff(air)))&quot; this will give an error as you cannot take the log of a negative number</code></pre>
 </div>
 <hr />
 </div>
 <div id="section-exercise-2.2-autocorrelation" class="section level4">
 <h4>Exercise 2.2 Autocorrelation</h4>
-<div class="tutorial-exercise" data-label="exercise2_2" data-caption="Exercise 2.2" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="6">
+<div class="tutorial-exercise" data-label="exercise2_2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="12">
 <pre class="text"><code># Plot the ACF/PACF plots on the raw data - what does this tell you about
 # autocorrelation and seasonality?
 
 
 
-# Plot the ACF/PACF plots on the transformed data</code></pre>
+# Plot the ACF/PACF plots on the transformed data from above
+
+
+
+# What do these tell you about your data?</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
 <hr />
 </div>
 <div id="section-exercise-2.3-seasonality" class="section level4">
 <h4>Exercise 2.3 Seasonality</h4>
-<div class="tutorial-exercise" data-label="exercise2_3" data-caption="Exercise 2.3" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="7">
+<div class="tutorial-exercise" data-label="exercise2_3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="7">
 <pre class="text"><code># Aggregate the data to yearly and call the new series air_yr
 
 
@@ -971,27 +1007,29 @@ plot(diff(log(air)))
 </div>
 <div class="tutorial-exercise-support" data-label="exercise2_3-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># To aggregate, use:
-air_yr &lt;- aggregate(air, nfrequency=1)</code></pre>
+air_yr &lt;- aggregate(air, nfrequency=1)
+head(air_yr)</code></pre>
 </div>
 <hr />
 </div>
 </div>
-<div id="section-lecture-3-time-series-models" class="section level2">
-<h2>Lecture 3: Time series models</h2>
+<div id="section-time-series-models" class="section level2">
+<h2>Time series models</h2>
 <p>Now it’s time to bring it all together and estimate a time series model.</p>
-<p>The most basic type is <strong>ordinary regression models</strong> that use time as a predictor variable.</p>
+<p>The most basic type is <strong>ordinary least squares (OLS) regression models</strong> (often linear regression) that use time as a predictor variable.</p>
 <p>This type of modelling is appropriate if your time series has a linear or easily modelled trend and limited autocorrelation and seasonality.</p>
 <p>Including a time variable and dummy variables representing seasonal units (e.g. month or quarter) as predictors in your model can control for linear trends and seasonality, and allow you to estimate the trend and the seasonal variation if desired. If your model has autocorrelation, sometimes controlling for trend and seasonality is enough to eliminate it.</p>
-<p>In real-life research and practice the patterns of the data can be complex, with considerable error, and it can be difficult to determine the patterns in the data. After creating your model, it is also important to check for autocorrelation of residuals - if present, even after controlling for trend and seasonality, an ordinary regression model may not be appropriate.</p>
-<p>There are various approaches for modelling data with substantial autocorrelation and/or complex seasonality. We will cover one such approach, <strong>ARIMA models</strong>, which relate the present value of a series to past values and past errors.</p>
+<p>In real-life research and practice the patterns of the data can be complex, with considerable error, and it can be difficult to determine the patterns in the data. After creating your model, it is also important to check for autocorrelation of residuals - if present, even after controlling for trend and seasonality, an OLS regression model may not be appropriate.</p>
+<p>There are various approaches for modelling data with autocorrelation and/or complex seasonality. We will cover one such approach, <strong>ARIMA models</strong>, which relate the present value of a series to past values and past errors.</p>
 <hr />
-<div id="section-arima-models" class="section level3">
-<h3>ARIMA models</h3>
+</div>
+<div id="section-autoregressive-moving-average-and-seasonal-models" class="section level2">
+<h2>Autoregressive, moving average and seasonal models</h2>
 <p>Simply put, <strong>A</strong>utoregressive <strong>I</strong>ntegrated <strong>M</strong>oving <strong>A</strong>verage (ARIMA) models are models of a single dependent variable (<span class="math inline">\(Y_t\)</span>) as a function of past values of <span class="math inline">\(Y\)</span> and past values of the error terms (<span class="math inline">\(\epsilon_t\)</span>).</p>
 <p>Before getting into full ARIMA models, let’s introduce a few basic model types first.</p>
 <hr />
-<div id="section-autoregressive-ar-model" class="section level4">
-<h4>Autoregressive (AR) Model</h4>
+<div id="section-autoregressive-ar-model" class="section level3">
+<h3>Autoregressive (AR) Model</h3>
 <p>In an autoregressive (AR) model, the value of <span class="math inline">\(Y_t\)</span> is predicted by one or multiple lagged values of <span class="math inline">\(Y_t\)</span>.</p>
 <p>This can be expressed as:</p>
 <p><span class="math display">\[Y_t = c+ \phi _1 Y_{t-1} + \phi _2 Y_{t-2}+ ... + \phi _p Y_{t-p} + \epsilon _t\]</span> Here, <span class="math inline">\(c\)</span> is a constant, <span class="math inline">\(\phi\)</span> is the magnitude of the autocorrelation, <span class="math inline">\(p\)</span> is the lag, and <span class="math inline">\(\epsilon_t\)</span> is the error.</p>
@@ -1008,8 +1046,8 @@ air_yr &lt;- aggregate(air, nfrequency=1)</code></pre>
 <p><strong>Figure.</strong> Examples of ACF plots</p>
 <hr />
 </div>
-<div id="section-moving-average-ma-model" class="section level4">
-<h4>Moving Average (MA) Model</h4>
+<div id="section-moving-average-ma-model" class="section level3">
+<h3>Moving Average (MA) Model</h3>
 <p>A moving average model is when <span class="math inline">\(Y_t\)</span> depends on past values of the error <span class="math inline">\(\epsilon_t\)</span>. This is not to be confused with moving average smoothing.</p>
 <p>This can be expressed as:</p>
 <p><span class="math display">\[Y_t = c + \epsilon _t + \theta _1\epsilon _{t-1} + \theta _2 \epsilon _{t-2} + ... + \theta _q \epsilon _{t-q}\]</span> Here <span class="math inline">\(c\)</span> is a constant, <span class="math inline">\(\theta\)</span> is the value of the autocorrelation, and <span class="math inline">\(q\)</span> is the number of lags.</p>
@@ -1026,8 +1064,8 @@ air_yr &lt;- aggregate(air, nfrequency=1)</code></pre>
 <p><strong>Figure.</strong> Examples of ACF plots</p>
 <hr />
 </div>
-<div id="section-seasonal-models" class="section level4">
-<h4>Seasonal models</h4>
+<div id="section-seasonal-models" class="section level3">
+<h3>Seasonal models</h3>
 <p>A seasonal model is when <span class="math inline">\(Y_t\)</span> depends on past values of <span class="math inline">\(Y_t\)</span> at a regular interval (the season) and is a type of autocorrelation.</p>
 <p>It can be expressed as:</p>
 <p><span class="math display">\[ Y_t = c + \Phi Y_{t-s} + \epsilon_t \]</span> Here <span class="math inline">\(c\)</span> is a constant, <span class="math inline">\(\Phi\)</span> is the value of the autocorrelation, and <span class="math inline">\(s\)</span> is the seasonality (e.g. 12 for monthly, 4 for quarterly).</p>
@@ -1044,8 +1082,8 @@ air_yr &lt;- aggregate(air, nfrequency=1)</code></pre>
 <hr />
 </div>
 </div>
-<div id="section-autoregressive-integrated-moving-average-arima-model" class="section level3">
-<h3>Autoregressive integrated moving average (ARIMA) model</h3>
+<div id="section-autoregressive-integrated-moving-average-arima-model" class="section level2">
+<h2>Autoregressive integrated moving average (ARIMA) model</h2>
 <p>An ARIMA model is a combination of an <strong>AR</strong> model, <strong>MA</strong> model, and differencing (<strong>I</strong>ntegration) to induce stationarity. A model without differencing is sometimes called an ARMA model.</p>
 <div id="section-arima-notation" class="section level4">
 <h4>ARIMA notation</h4>
@@ -1059,14 +1097,13 @@ air_yr &lt;- aggregate(air, nfrequency=1)</code></pre>
 <p>If there is seasonality, the ARIMA model is expressed as: <span class="math inline">\((p,d,q)\times (P,D,Q)_S\)</span>. Here, <em>D</em> is the degree of seasonal differencing, and <em>P</em> and <em>Q</em> are the autoregressive and moving average terms for the seasonal component.</p>
 <hr />
 </div>
-</div>
 <div id="section-fitting-the-model" class="section level3">
 <h3>Fitting the model</h3>
+<hr />
 <div id="section-step-1-determine-if-your-time-series-is-non-stationary" class="section level4">
 <h4>Step 1: Determine if your time series is non-stationary</h4>
-<p>The first step in fitting your ARIMA model is to plot your time series to check for non-stationarity, i.e. changing variance or trends, as well as seasonality.</p>
-<p>To deal with non-constant variance, apply a log transformation. Take note if a first difference or seasonal difference may be required - you do not have the apply the differencing yourself as this will be taken care of within the ARIMA model. Generally, if a first difference (<em>d</em>=1) is required and the data are seasonal, a seasonal difference (<em>D</em>=1) will also be required. It is unusual to require more than one first/seasonal difference.</p>
-<p>The ACF plot can also be used to check for seasonality.</p>
+<p>The first step in fitting your ARIMA model is to plot your time series to check for non-stationarity, i.e. changing variance or trends, as well as seasonality. This may include a plot of the time series, a plot of the decomposed series, seasonal plots, and/or ACF plots.</p>
+<p>To deal with non-constant variance, apply a log transformation. Take note if a first difference (to adjust for trends) or seasonal difference (to adjust for seasonality) may be required - you do not have the apply the differencing yourself as this will be taken care of within the ARIMA model. Generally, if your series has a trend and a first difference (<em>d</em>=1) is required, if the data are seasonal, a seasonal difference (<em>D</em>=1) will also be required. It is unusual to require more than one first/seasonal difference.</p>
 <hr />
 </div>
 <div id="section-step-2-identify-potential-ar-and-ma-orders-using-the-acfpacf-plots" class="section level4">
@@ -1128,8 +1165,8 @@ Tails off
 </div>
 <div id="section-step-3-estimate-the-model-and-check-model-fit" class="section level4">
 <h4>Step 3: Estimate the model and check model fit</h4>
-<p>Next estimate your model, and check the model fit using residuals. If your model has a poor fit, then you will have to choose a different AR or MA order. Sometimes, determining the AR and MA terms is an iterative process, involving a lot of trial and error.</p>
-<p>Aim for the simplest model (i.e. lowest AR and MA orders), that has a good fit (no remaining autocorrelation, normally distributed residuals). Information criteria (AIC and BIC) can be useful in determining the best fitting model.</p>
+<p>Next estimate your model, and check the model fit by plotting the residuals. Recall that there are three assumptions your residuals must meet: normally distributed, constant variance, and independence (no autocorrelation). If your model has a poor fit, then you will have to choose a different AR or MA order. Sometimes, determining the AR and MA terms is an iterative process, involving trial and error.</p>
+<p>Aim for the simplest model (i.e. lowest AR and MA orders), that has a good fit. Information criteria (AIC and BIC) can be useful in determining the best fitting model.</p>
 <hr />
 <p><div class="panel-heading tutorial-quiz-title">Quiz 3.1: Basic models</div></p>
 <div class="panel panel-default">
@@ -1148,8 +1185,12 @@ Tails off
 <p>In this video, I talk about ARIMA models, including how to interpret the residual plots produced by <code>sarima()</code> and determine whether your model has a good fit. <img src="https://youtu.be/DlHmaTqvCxQ" /></p>
 <hr />
 </div>
-<div id="section-worked-example-1" class="section level4">
-<h4>Worked example 1</h4>
+</div>
+</div>
+<div id="section-arima-model-worked-examples" class="section level2">
+<h2>ARIMA model worked examples</h2>
+<div id="section-worked-example-1" class="section level3">
+<h3>Worked example 1</h3>
 <p>Let’s work through an example.</p>
 <p><em>z</em> is a simulated time series generated from the following AR(2) (the same as ARIMA(2,0,0)) model: <span class="math display">\[Y_t = 1.5Y_{t-1} - 0.75Y_{t-2} + \epsilon_t\]</span></p>
 <div class="tutorial-exercise" data-label="ar" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
@@ -1189,7 +1230,7 @@ We see that the AIC is lower for ARIMA(3,0,1), while the BIC is lower for ARIMA(
 <pre class="text"><code>auto.arima(z, d=0, seasonal=FALSE, ic=&#39;bic&#39;)</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
-<p>Now it gives us ARIMA(2,0,0). We also see that AR1 = 1.44, and AR2 = -0.67, not that different from the true parameters (1.5 and -0.75).</p>
+<p>Now it gives us ARIMA(2,0,0). We also see that AR1 = 1.44, and AR2 = -0.67, not that different from the true parameters (1.5 and -0.75). Since ARIMA(2,0,0) is a simpler model (fewer parameters) than ARIMA(3,0,1), it is preferable.</p>
 The last step is to check the model fitting by visualising the residuals.
 <div class="tutorial-exercise" data-label="resid" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code>sarima(z, p=2, d=0, q=0)</code></pre>
@@ -1218,10 +1259,10 @@ The last step is to check the model fitting by visualising the residuals.
 </ul>
 <p>The most important thing to remember is there is no perfect model - there are just good models and bad models!</p>
 <hr />
-</div>
 <div id="section-worked-example-2" class="section level4">
 <h4>Worked example 2</h4>
 <p>Let’s use data on the thousands of international airline passengers (1949-1960).</p>
+<hr />
 <p><strong>Step 1:</strong> Check for non-stationarity</p>
 <div class="tutorial-exercise" data-label="arima1a" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
 <pre class="text"><code># Load data on monthly airline passengers and plot
@@ -1273,8 +1314,8 @@ sarima(log(AirPassengers), p=0, d=1, q=1, P=0, D=1, Q=1, S=12)</code></pre>
 <hr />
 </div>
 </div>
-<div id="section-practical-3" class="section level2">
-<h2>Practical 3</h2>
+<div id="section-practical-3-arima-models" class="section level2">
+<h2>Practical 3: ARIMA models</h2>
 <p>In this practical session you will estimate and fit an ARIMA model. For these exercises you will use simulated data “<em>p</em>”.</p>
 <p>You will learn the functions:</p>
 <ul>
@@ -1286,26 +1327,26 @@ sarima(log(AirPassengers), p=0, d=1, q=1, P=0, D=1, Q=1, S=12)</code></pre>
 <hr />
 <div id="section-exercise-3.1-step-1---stationarity" class="section level4">
 <h4>Exercise 3.1 Step 1 - Stationarity</h4>
-<div class="tutorial-exercise" data-label="exercise3_1" data-caption="Exercise 3.1" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="6">
-<pre class="text"><code># Check the data &#39;p&#39; for stationarity - what transformations will be needed?
+<div class="tutorial-exercise" data-label="exercise3_1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="6">
+<pre class="text"><code># Check the data &#39;p&#39; for stationarity - will a transformation be needed?
 
 
 # Check the transformed data for stationarity</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="exercise3_1-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
-<pre class="text"><code># Check for stationarity by plotting the data, and using adf.test() and/or kpss.test()</code></pre>
+<pre class="text"><code># Check for stationarity by plotting the data, plotting the decomposed series, and/or using adf.test() or kpss.test()</code></pre>
 </div>
 <hr />
 </div>
 <div id="section-exercise-3.2-step-2---ar-and-ma-orders" class="section level4">
 <h4>Exercise 3.2 Step 2 - AR and MA orders</h4>
-<div class="tutorial-exercise" data-label="exercise3_2" data-caption="Exercise 3.2" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="7">
+<div class="tutorial-exercise" data-label="exercise3_2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="7">
 <pre class="text"><code># Plot the ACF/PACF plots - what are the potential AR/MA terms?
 
 
-# Check auto.arima - what does it suggest?  Consider which parameters to
-# pre-specify</code></pre>
+# Check auto.arima - what does it suggest?  Consider whether d and/or D should
+# be prespecified</code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":true,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
 <div class="tutorial-exercise-support" data-label="exercise3_2-hint-1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="0">
@@ -1320,7 +1361,7 @@ auto.arima(p, d=1)</code></pre>
 </div>
 <div id="section-exercise-3.3-step-3---estimating-model-and-checking-fit" class="section level4">
 <h4>Exercise 3.3 Step 3 - Estimating model and checking fit</h4>
-<div class="tutorial-exercise" data-label="exercise3_3" data-caption="Exercise 3.3" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="9">
+<div class="tutorial-exercise" data-label="exercise3_3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="9">
 <pre class="text"><code># Run the ARIMA model using sarima()
 
 
@@ -1351,26 +1392,21 @@ library("magrittr")
 library("formatR")
 library("zoo")
 
-resp <- read.csv(file="data/uk-deaths-by-sex.csv", header=TRUE)
-resp_ts <- ts(resp, start=c(2001,1), frequency=12)
-
-air <- read.csv(file="data/international-airline-passengers.csv", header=TRUE)
-air <- ts(air[,2], start=c(1948,1), end=c(1959,12), frequency = 12)
-
-set.seed(1)
-z <- arima.sim(model=list(order=c(2,0,0), ar=c(1.5, -0.75)), n=200)
-
-model1 <- sarima(z, p=3, d=0, q=1, details=FALSE)
-model2 <- sarima(z, p=2, d=0, q=0, details=FALSE)
-
 set.seed(1)
 p <- arima.sim(model=list(order=c(1,1,0), seasonal=list(order=c(1,1,0)), ar=c(.75)), n=100)
 p <- ts(p, start=c(2000,1), frequency=12)
 
 set.seed(123)
-vector1 <- sample(40:80, 48, replace=TRUE)
+x1 <- sample(40:80, 48, replace=TRUE) %>% ts(start=c(2005,7), end=c(2009,6), frequency=12)
 
-x1 <- ts(vector1, start=c(2005,7), end=c(2009,6), frequency=12)
+resp <- read.csv(file="data/uk-deaths-by-sex.csv", header=TRUE)
+resp_ts <- ts(resp, start=c(2001,1), frequency=12)
+
+air <- read.csv(file="data/international-airline-passengers.csv", header=TRUE) 
+air <- ts(air[,2], start=c(1948,1), end=c(1959,12), frequency = 12)
+
+set.seed(1)
+z <- arima.sim(model=list(order=c(2,0,0), ar=c(1.5, -0.75)), n=200)
 
 </script>
  
@@ -1385,7 +1421,7 @@ session$onSessionEnded(function() {
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1_1-1", question = structure("Which of these would not be considered a time series?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_c12548b",     option = "Number of illicit drug related ambulance calls per week over two years",     value = "Number of illicit drug related ambulance calls per week over two years",     label = structure("Number of illicit drug related ambulance calls per week over two years", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_a114a2d",     option = "Proportion of people taking antidepressants who discontinue use per month over 5 years",     value = "Proportion of people taking antidepressants who discontinue use per month over 5 years",     label = structure("Proportion of people taking antidepressants who discontinue use per month over 5 years", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_b5ce839",     option = "Percent decrease in BMI measured over 1 year in 100 individuals",     value = "Percent decrease in BMI measured over 1 year in 100 individuals",     label = structure("Percent decrease in BMI measured over 1 year in 100 individuals", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_28f20",     option = "Yearly rates of smoking in males and females over 20 years",     value = "Yearly rates of smoking in males and females over 20 years",     label = structure("Yearly rates of smoking in males and females over 20 years", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_79ae58d",     option = "They are all examples of time series data", value = "They are all examples of time series data",     label = structure("They are all examples of time series data", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1_1-1-answer", question = "quiz1_1-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich of these would not be considered a time series?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 472701706.279881, options = list()), class = c("learnr_radio", "tutorial_question")))
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1_1-1", question = structure("Which of these would not be considered a time series?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_e0a8f4b",     option = "Number of illicit drug-related ambulance calls per week over two years",     value = "Number of illicit drug-related ambulance calls per week over two years",     label = structure("Number of illicit drug-related ambulance calls per week over two years", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_22551ee",     option = "Proportion of people taking antidepressants who discontinue use per month over 5 years",     value = "Proportion of people taking antidepressants who discontinue use per month over 5 years",     label = structure("Proportion of people taking antidepressants who discontinue use per month over 5 years", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_5d25e7",     option = "Percent decrease in BMI measured over 1 year in 100 individuals",     value = "Percent decrease in BMI measured over 1 year in 100 individuals",     label = structure("Percent decrease in BMI measured over 1 year in 100 individuals", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_f06b435",     option = "Yearly rates of smoking in males and females over 20 years",     value = "Yearly rates of smoking in males and females over 20 years",     label = structure("Yearly rates of smoking in males and females over 20 years", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_4afeb00",     option = "They are all examples of time series data", value = "They are all examples of time series data",     label = structure("They are all examples of time series data", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1_1-1-answer", question = "quiz1_1-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich of these would not be considered a time series?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 352888631.335673, options = list()), class = c("learnr_radio", "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
@@ -1410,7 +1446,7 @@ output$`tutorial-exercise-time2-output` <- renderUI({
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1_2-1", question = structure("How would you specify the start, end, and frequency for biannual data from first half of 2000 to second half of 2014?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_613ba82",     option = "start = 2000, end = 2014, frequency = 2", value = "start = 2000, end = 2014, frequency = 2",     label = structure("start = 2000, end = 2014, frequency = 2", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_9cde8f8",     option = "start = c(2000,2), end = c(2014,2), frequency = 1",     value = "start = c(2000,2), end = c(2014,2), frequency = 1",     label = structure("start = c(2000,2), end = c(2014,2), frequency = 1", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_5a0f6d8",     option = "start = 2000, end = 2014, frequency = 1", value = "start = 2000, end = 2014, frequency = 1",     label = structure("start = 2000, end = 2014, frequency = 1", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_1c735f1",     option = "start = c(2000,1), end = c(2014,2), frequency = 2",     value = "start = c(2000,1), end = c(2014,2), frequency = 2",     label = structure("start = c(2000,1), end = c(2014,2), frequency = 2", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_3e5dd89",     option = "None of them are correct", value = "None of them are correct",     label = structure("None of them are correct", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1_2-1-answer", question = "quiz1_2-1"), loading = structure("<strong>Loading:<\u002fstrong> \nHow would you specify the start, end, and frequency for biannual data from first half of 2000 to second half of 2014?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 1434638449.33194, options = list()), class = c("learnr_radio", "tutorial_question")))
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1_2-1", question = structure("How would you specify the start, end, and frequency for biannual data from first half of 2000 to second half of 2014?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_662b95d",     option = "start = 2000, end = 2014, frequency = 2", value = "start = 2000, end = 2014, frequency = 2",     label = structure("start = 2000, end = 2014, frequency = 2", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_75a6bbf",     option = "start = c(2000,2), end = c(2014,2), frequency = 1",     value = "start = c(2000,2), end = c(2014,2), frequency = 1",     label = structure("start = c(2000,2), end = c(2014,2), frequency = 1", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_6f1ca55",     option = "start = 2000, end = 2014, frequency = 1", value = "start = 2000, end = 2014, frequency = 1",     label = structure("start = 2000, end = 2014, frequency = 1", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_845ac18",     option = "start = c(2000,1), end = c(2014,2), frequency = 2",     value = "start = c(2000,1), end = c(2014,2), frequency = 2",     label = structure("start = c(2000,1), end = c(2014,2), frequency = 2", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_d8a38fc",     option = "None of them are correct", value = "None of them are correct",     label = structure("None of them are correct", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1_2-1-answer", question = "quiz1_2-1"), loading = structure("<strong>Loading:<\u002fstrong> \nHow would you specify the start, end, and frequency for biannual data from first half of 2000 to second half of 2014?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 118464402.944836, options = list()), class = c("learnr_radio", "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
@@ -1421,15 +1457,15 @@ output$`tutorial-exercise-tsunion-output` <- renderUI({
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1_3-1", question = structure("A mts object created by ts.intersect will always be shorter than a mts object created by ts.union", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_6aeae64",     option = "True", value = "True", label = structure("True", html = TRUE, class = c("html",     "character")), correct = FALSE, message = structure("If both ts objects have the same start and end dates, then the resulting mts object will have the same        length regardless of whether ts.union or ts.intersect is used", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_c9c733c", option = "False",     value = "False", label = structure("False", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1_3-1-answer", question = "quiz1_3-1"), loading = structure("<strong>Loading:<\u002fstrong> \nA mts object created by ts.intersect will always be shorter than a mts object created by ts.union\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 220900141.397135, options = list()), class = c("learnr_radio", "tutorial_question")))
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1_3-1", question = structure("A mts object created by ts.intersect will always be shorter than a mts object created by ts.union", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_8dde8c4",     option = "True", value = "True", label = structure("True", html = TRUE, class = c("html",     "character")), correct = FALSE, message = structure("If both ts objects have the same start and end dates, then the resulting mts object will have the same        length regardless of whether ts.union or ts.intersect is used", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_b032ce5", option = "False",     value = "False", label = structure("False", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1_3-1-answer", question = "quiz1_3-1"), loading = structure("<strong>Loading:<\u002fstrong> \nA mts object created by ts.intersect will always be shorter than a mts object created by ts.union\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 1413167835.34194, options = list()), class = c("learnr_radio", "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1_3-2", question = structure("ts objects with different frequencies can be combined using ts.union or ts.intersect", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_6f55217",     option = "True", value = "True", label = structure("True", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_fc26240",     option = "False", value = "False", label = structure("False", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1_3-2-answer", question = "quiz1_3-2"), loading = structure("<strong>Loading:<\u002fstrong> \nts objects with different frequencies can be combined using ts.union or ts.intersect\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 1917812664.10695, options = list()), class = c("learnr_radio", "tutorial_question")))
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1_3-2", question = structure("ts objects with different frequencies can be combined using ts.union or ts.intersect", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_a9d0d43",     option = "True", value = "True", label = structure("True", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_78e4574",     option = "False", value = "False", label = structure("False", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1_3-2-answer", question = "quiz1_3-2"), loading = structure("<strong>Loading:<\u002fstrong> \nts objects with different frequencies can be combined using ts.union or ts.intersect\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 2082045882.03047, options = list()), class = c("learnr_radio", "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1_3-3", question = structure("Non-overlapping ts objects can be combined using ts.union", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_e2efa2e",     option = "True", value = "True", label = structure("True", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_2cd0402",     option = "False", value = "False", label = structure("False", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1_3-3-answer", question = "quiz1_3-3"), loading = structure("<strong>Loading:<\u002fstrong> \nNon-overlapping ts objects can be combined using ts.union\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 280666860.369304, options = list()), class = c("learnr_radio", "tutorial_question")))
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1_3-3", question = structure("Non-overlapping ts objects can be combined using ts.union", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_66f6630",     option = "True", value = "True", label = structure("True", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_d97c3f2",     option = "False", value = "False", label = structure("False", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1_3-3-answer", question = "quiz1_3-3"), loading = structure("<strong>Loading:<\u002fstrong> \nNon-overlapping ts objects can be combined using ts.union\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 1624882565.24336, options = list()), class = c("learnr_radio", "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
@@ -1468,11 +1504,11 @@ output$`tutorial-exercise-plothor-output` <- renderUI({
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1_4-1", question = structure("Which of the series above show seasonality?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_a731b01",     option = "All of them", value = "All of them", label = structure("All of them", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_57f0b21",     option = "Series 2 and 4", value = "Series 2 and 4", label = structure("Series 2 and 4", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_a8214cf",     option = "Series 1, 2 and 4", value = "Series 1, 2 and 4",     label = structure("Series 1, 2 and 4", html = TRUE, class = c("html",     "character")), correct = TRUE, message = structure("Series 1 is expenditure on eating in restaurants in Australia, Series 2 is births in the US, and Series 4 is daily electricity demand in Victoria", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_5203fb2", option = "Series 2 and 3",     value = "Series 2 and 3", label = structure("Series 2 and 3", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_300c867",     option = "Series 1 and 2", value = "Series 1 and 2", label = structure("Series 1 and 2", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1_4-1-answer", question = "quiz1_4-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich of the series above show seasonality?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 1679964219.21771, options = list()), class = c("learnr_radio", "tutorial_question")))
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1_4-1", question = structure("Which of the series above show seasonality?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_88588db",     option = "All of them", value = "All of them", label = structure("All of them", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_dfc845a",     option = "Series 2 and 4", value = "Series 2 and 4", label = structure("Series 2 and 4", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_7794db3",     option = "Series 1, 2 and 4", value = "Series 1, 2 and 4",     label = structure("Series 1, 2 and 4", html = TRUE, class = c("html",     "character")), correct = TRUE, message = structure("Series 1 is expenditure on eating in restaurants in Australia, Series 2 is births in the US, and Series 4 is daily electricity demand in Victoria", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_214b4e", option = "Series 2 and 3",     value = "Series 2 and 3", label = structure("Series 2 and 3", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_ba4ef04",     option = "Series 1 and 2", value = "Series 1 and 2", label = structure("Series 1 and 2", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1_4-1-answer", question = "quiz1_4-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich of the series above show seasonality?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 1538864187.28341, options = list()), class = c("learnr_radio", "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1_4-2", question = structure("Which of these time series would you least expect to exhibit seasonality?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_17f5d75",     option = "Monthly prescriptions for antibiotics", value = "Monthly prescriptions for antibiotics",     label = structure("Monthly prescriptions for antibiotics", html = TRUE, class = c("html",     "character")), correct = FALSE, message = structure("Antibiotics are more commonly prescribed in the winter, when rates of respiratory infections are highest", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_777ed4d", option = "Monthly cancer mortality",     value = "Monthly cancer mortality", label = structure("Monthly cancer mortality", html = TRUE, class = c("html",     "character")), correct = TRUE, message = structure("While deaths according to other causes such as cardiovascular disease do exhibit seasonality, cancer deaths generally do not", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_82f2059", option = "Daily alcohol-related ED admissions",     value = "Daily alcohol-related ED admissions", label = structure("Daily alcohol-related ED admissions", html = TRUE, class = c("html",     "character")), correct = FALSE, message = structure("Alcohol-related ED admissions would exhibit weekly seasonality, being more common on weekends", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_9998e06", option = "Monthly counts of drownings",     value = "Monthly counts of drownings", label = structure("Monthly counts of drownings", html = TRUE, class = c("html",     "character")), correct = FALSE, message = structure("Drownings are more common in summer", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1_4-2-answer", question = "quiz1_4-2"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich of these time series would you least expect to exhibit seasonality?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 714733110.167176, options = list()), class = c("learnr_radio", "tutorial_question")))
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz1_4-2", question = structure("Which of these time series would you least expect to exhibit seasonality?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_2ffb2cc",     option = "Monthly prescriptions for antibiotics", value = "Monthly prescriptions for antibiotics",     label = structure("Monthly prescriptions for antibiotics", html = TRUE, class = c("html",     "character")), correct = FALSE, message = structure("Antibiotics are more commonly prescribed in the winter, when rates of respiratory infections are highest", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_a564aa4", option = "Monthly cancer mortality",     value = "Monthly cancer mortality", label = structure("Monthly cancer mortality", html = TRUE, class = c("html",     "character")), correct = TRUE, message = structure("While deaths according to other causes such as cardiovascular disease do exhibit seasonality, cancer deaths generally do not", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_8abf277", option = "Daily alcohol-related ED admissions",     value = "Daily alcohol-related ED admissions", label = structure("Daily alcohol-related ED admissions", html = TRUE, class = c("html",     "character")), correct = FALSE, message = structure("Alcohol-related ED admissions would exhibit weekly seasonality, being more common on weekends", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_55d794d", option = "Monthly counts of drownings",     value = "Monthly counts of drownings", label = structure("Monthly counts of drownings", html = TRUE, class = c("html",     "character")), correct = FALSE, message = structure("Drownings are more common in summer", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1_4-2-answer", question = "quiz1_4-2"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich of these time series would you least expect to exhibit seasonality?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 1369898551.36209, options = list()), class = c("learnr_radio", "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
@@ -1585,7 +1621,7 @@ learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label 
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz2_1-2", question = structure("Which is not a property of a stationary series?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_54fda74",     option = "It doesn't fluctuate", value = "It doesn't fluctuate",     label = structure("It doesn&#39;t fluctuate", html = TRUE, class = c("html",     "character")), correct = TRUE, message = structure("A stationarity series can fluctuate, but always reverts to a constant mean", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_ff46b5", option = "It has a constant mean",     value = "It has a constant mean", label = structure("It has a constant mean", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_7095143",     option = "It has constant variance", value = "It has constant variance",     label = structure("It has constant variance", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_d19fe6c",     option = "It doesn't exhibit a trend", value = "It doesn't exhibit a trend",     label = structure("It doesn&#39;t exhibit a trend", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz2_1-2-answer", question = "quiz2_1-2"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich is not a property of a stationary series?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 2041647046.04928, options = list()), class = c("learnr_radio", "tutorial_question")))
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz2_1-2", question = structure("Which is not a property of a weakly stationary series?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_54fda74",     option = "It doesn't fluctuate", value = "It doesn't fluctuate",     label = structure("It doesn&#39;t fluctuate", html = TRUE, class = c("html",     "character")), correct = TRUE, message = structure("A stationarity series can fluctuate, but always reverts to a constant mean", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_ff46b5", option = "It has a constant mean",     value = "It has a constant mean", label = structure("It has a constant mean", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_7095143",     option = "It has constant variance", value = "It has constant variance",     label = structure("It has constant variance", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_d19fe6c",     option = "It doesn't exhibit a trend", value = "It doesn't exhibit a trend",     label = structure("It doesn&#39;t exhibit a trend", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz2_1-2-answer", question = "quiz2_1-2"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich is not a property of a weakly stationary series?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 2041647046.04928, options = list()), class = c("learnr_radio", "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
@@ -1667,7 +1703,7 @@ output$`tutorial-exercise-exercise2_3-output` <- renderUI({
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz3_1-1", question = structure("Which of these statements is incorrect?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_7215c1e",     option = "White noise processes can have seasonality", value = "White noise processes can have seasonality",     label = structure("White noise processes can have seasonality", html = TRUE, class = c("html",     "character")), correct = TRUE, message = structure("White noise processes have no autocorrelation", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_ad37f36", option = "Seasonality can be identified from ACF plots",     value = "Seasonality can be identified from ACF plots", label = structure("Seasonality can be identified from ACF plots", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_20b9200",     option = "Significant autocorrelation can result in oscillatory series",     value = "Significant autocorrelation can result in oscillatory series",     label = structure("Significant autocorrelation can result in oscillatory series", html = TRUE, class = c("html",     "character")), correct = FALSE, message = structure("If autocorrelation is negative, then that results in an oscillatory series", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_bc75bce", option = "Autocorrelation must be accounted for in regression models",     value = "Autocorrelation must be accounted for in regression models",     label = structure("Autocorrelation must be accounted for in regression models", html = TRUE, class = c("html",     "character")), correct = FALSE, message = structure("The presence of autocorrelation can lead to invalid inference", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz3_1-1-answer", question = "quiz3_1-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich of these statements is incorrect?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 144407856.432755, options = list()), class = c("learnr_radio", "tutorial_question")))
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz3_1-1", question = structure("Which of these statements is incorrect?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_7215c1e",     option = "White noise processes can have seasonality", value = "White noise processes can have seasonality",     label = structure("White noise processes can have seasonality", html = TRUE, class = c("html",     "character")), correct = TRUE, message = structure("White noise processes have no trend, seasonality or autocorrelation", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_ad37f36", option = "Seasonality can be identified from ACF plots",     value = "Seasonality can be identified from ACF plots", label = structure("Seasonality can be identified from ACF plots", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_20b9200",     option = "Significant autocorrelation can result in oscillatory series",     value = "Significant autocorrelation can result in oscillatory series",     label = structure("Significant autocorrelation can result in oscillatory series", html = TRUE, class = c("html",     "character")), correct = FALSE, message = structure("If autocorrelation is negative, then that results in an oscillatory series", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_bc75bce", option = "Autocorrelation must be accounted for in regression models",     value = "Autocorrelation must be accounted for in regression models",     label = structure("Autocorrelation must be accounted for in regression models", html = TRUE, class = c("html",     "character")), correct = FALSE, message = structure("The presence of autocorrelation can lead to invalid inference", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Incorrect", html = TRUE, class = c("html", "character")), incorrect = structure("Incorrect", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz3_1-1-answer", question = "quiz3_1-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich of these statements is incorrect?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 144407856.432755, options = list()), class = c("learnr_radio", "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
@@ -1771,7 +1807,7 @@ output$`tutorial-exercise-exercise3_3-output` <- renderUI({
 <!--/html_preserve-->
 <!--html_preserve-->
 <script type="application/shiny-prerendered" data-context="execution_dependencies">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93]}},"value":[{"type":"character","attributes":{},"value":["astsa","backports","base","bslib","checkmate","cli","colorspace","compiler","crayon","curl","datasets","digest","dplyr","ellipsis","evaluate","expsmooth","fansi","fastmap","fma","forecast","formatR","fpp","fpp2","fracdiff","generics","ggplot2","glue","graphics","grDevices","grid","gtable","highr","htmltools","htmlwidgets","httpuv","httr","jquerylib","jsonlite","kableExtra","knitr","later","lattice","learnr","lifecycle","lmtest","magrittr","markdown","methods","mime","munsell","nlme","nnet","parallel","pillar","pkgconfig","promises","purrr","quadprog","quantmod","R6","Rcpp","rlang","rmarkdown","rprojroot","rstudioapi","rvest","sass","scales","shiny","stats","stringi","stringr","svglite","systemfonts","tibble","tidyselect","timeDate","tools","tseries","TTR","urca","utf8","utils","vctrs","viridisLite","webshot","withr","xfun","xml2","xtable","xts","yaml","zoo"]},{"type":"character","attributes":{},"value":["1.13","1.2.1","4.1.0","0.2.5.1","2.0.0","2.5.0","2.0-1","4.1.0","1.4.1","4.3.1","4.1.0","0.6.27","1.0.6","0.3.2","0.14","2.3","0.5.0","1.1.0","2.4","8.14","1.10","0.5","2.4","1.5-1","0.1.0","3.3.3","1.4.2","4.1.0","4.1.0","4.1.0","0.3.0","0.9","0.5.1.1","1.5.3","1.6.1","1.4.2","0.1.4","1.7.2","1.3.4","1.33","1.2.0","0.20-44","0.10.1","1.0.0","0.9-38","2.0.1","1.1","4.1.0","0.10","0.5.0","3.1-152","7.3-16","4.1.0","1.6.1","2.0.3","1.2.0.1","0.3.4","1.5-8","0.4.18","2.5.0","1.0.6","0.4.11","2.7","2.0.2","0.13","1.0.0","0.4.0","1.1.1","1.6.0","4.1.0","1.6.1","1.4.0","2.0.0","1.0.2","3.1.2","1.1.1","3043.102","4.1.0","0.10-48","0.24.2","1.3-0","1.2.1","4.1.0","0.3.8","0.4.0","0.5.2","2.4.2","0.23","1.3.2","1.8-4","0.12.1","2.2.1","1.8-9"]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95]}},"value":[{"type":"character","attributes":{},"value":["assertthat","astsa","backports","base","bslib","checkmate","cli","colorspace","compiler","crayon","curl","datasets","DBI","digest","dplyr","ellipsis","evaluate","expsmooth","fansi","fastmap","fma","forecast","formatR","fpp","fpp2","fracdiff","generics","ggplot2","glue","graphics","grDevices","grid","gtable","highr","htmltools","htmlwidgets","httpuv","httr","jquerylib","jsonlite","kableExtra","knitr","later","lattice","learnr","lifecycle","lmtest","magrittr","markdown","methods","mime","munsell","nlme","nnet","parallel","pillar","pkgconfig","promises","purrr","quadprog","quantmod","R6","Rcpp","rlang","rmarkdown","rprojroot","rstudioapi","rvest","sass","scales","shiny","stats","stringi","stringr","svglite","systemfonts","tibble","tidyselect","timeDate","tools","tseries","TTR","urca","utf8","utils","vctrs","viridisLite","webshot","withr","xfun","xml2","xtable","xts","yaml","zoo"]},{"type":"character","attributes":{},"value":["0.2.1","1.13","1.2.1","4.1.0","0.2.5.1","2.0.0","2.5.0","2.0-1","4.1.0","1.4.1","4.3.1","4.1.0","1.1.1","0.6.27","1.0.6","0.3.2","0.14","2.3","0.5.0","1.1.0","2.4","8.14","1.10","0.5","2.4","1.5-1","0.1.0","3.3.5","1.4.2","4.1.0","4.1.0","4.1.0","0.3.0","0.9","0.5.1.1","1.5.3","1.6.1","1.4.2","0.1.4","1.7.2","1.3.4","1.33","1.2.0","0.20-44","0.10.1","1.0.0","0.9-38","2.0.1","1.1","4.1.0","0.10","0.5.0","3.1-152","7.3-16","4.1.0","1.6.1","2.0.3","1.2.0.1","0.3.4","1.5-8","0.4.18","2.5.0","1.0.6","0.4.11","2.7","2.0.2","0.13","1.0.0","0.4.0","1.1.1","1.6.0","4.1.0","1.6.1","1.4.0","2.0.0","1.0.2","3.1.2","1.1.1","3043.102","4.1.0","0.10-48","0.24.2","1.3-0","1.2.1","4.1.0","0.3.8","0.4.0","0.5.2","2.4.2","0.23","1.3.2","1.8-4","0.12.1","2.2.1","1.8-9"]}]}]}
 </script>
 <!--/html_preserve-->
 </div>
