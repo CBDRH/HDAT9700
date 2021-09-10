@@ -15,7 +15,7 @@ The learnr tutorial files can be found in the subfolder `inst/tutorials`. Long f
 | Interrupted Time Series Analysis      | its     | Andrea    |
 | Multilevel Modelling I                | mlm1    | Mark      |
 | Multilevel Modelling II               | mlm2    | Mark      |
-| Growth Curve Modelling                | mlm3    | Kylie-Ann |
+| Multilevel Modelling III              | mlm3    | Mark      |
 | Missing Data and Multiple Imputation  | mi      | Mark      | 
 | Presenting and summarising model results  | pres   | Shawon    |
 
