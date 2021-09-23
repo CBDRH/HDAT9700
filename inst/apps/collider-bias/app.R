@@ -193,7 +193,7 @@ output$plot <- renderPlot({
                             labels = c("No infection, no asthma",
                                        "Infection, no asthma",
                                        "No infection, Asthma",
-                                       "No asthma, no infection")) +
+                                       "Asthma and infection")) +
         guides(fill = guide_legend(nrow=2)) +
         theme(legend.position="top") +
         labs(y = "Count", x = "Number of ED admissions")
