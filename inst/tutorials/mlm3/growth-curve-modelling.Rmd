@@ -24,7 +24,8 @@ library("nlme")
 library("reshape")
 
 # Load data
-incontinenceData = read.csv("data/incontinence.csv", header = TRUE)
+load("data/incontinenceData.Rda")
+
 
 # Set up long data
 LI<-melt(incontinenceData, id.vars = c("Person", "Treatment", "Clinic"), measure.vars = c("Incontinence_Baseline", "Incontinence_6_Months", "Incontinence_12_Months", "Incontinence_18_Months"), variable = "Time",  value = "Incontinence_Score")
