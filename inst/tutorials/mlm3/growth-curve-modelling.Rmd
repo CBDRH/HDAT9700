@@ -197,8 +197,8 @@ Exploring the Data in Long Format
 boxplot <- ggplot(longIncontinenceData, aes(x = Time_cat, y = Incontinence_Score)) +
             geom_boxplot() +
             scale_y_continuous(name = "Difficulty with Incontinence Score", limits=c(0, 10)) +
-            stat_summary(fun.y=mean, geom="line", aes(group=1)) +
-            stat_summary(fun.y=mean, geom="point")
+            stat_summary(fun=mean, geom="line", aes(group=1)) +
+            stat_summary(fun=mean, geom="point")
 boxplot 
 
 
@@ -533,8 +533,8 @@ In our example study of the effect of prostate cancer treatment on urinary incon
 boxplot_treatment <- ggplot(longIncontinenceData, aes(x = Time_cat, y = Incontinence_Score)) + 
   geom_boxplot() + 
   scale_y_continuous(name = "Difficulty with Incontinence Score", limits=c(0, 10)) + 
-  stat_summary(fun.y=mean, geom="line", aes(group=1)) + 
-  stat_summary(fun.y=mean, geom="point") + 
+  stat_summary(fun=mean, geom="line", aes(group=1)) + 
+  stat_summary(fun=mean, geom="point") + 
   facet_wrap(~Treatment)
 
 boxplot_treatment
@@ -556,7 +556,7 @@ boxplot_treatment
 ```{r 12-solution}
 TimeTreatment <-lme(Incontinence_Score ~ Time + I(Time^2) + Treatment, 
                     data = longIncontinenceData, 
-                    random = ~Time|Person, 
+                    random = ~1|Person, 
                     method ="ML", 
                     na.action = na.exclude, 
                     control = list(opt="optim"), 
@@ -603,8 +603,8 @@ To complete this chapter, this section provides an advanced extension of the wor
 boxplot_clinic <- ggplot(longIncontinenceData, aes(x = Time_cat, y = Incontinence_Score)) + 
   geom_boxplot() + 
   scale_y_continuous(name = "Difficulty with Incontinence Score", limits=c(0, 10)) + 
-  stat_summary(fun.y=mean, geom="line", aes(group=1)) + 
-  stat_summary(fun.y=mean, geom="point") + facet_wrap(~Clinic)
+  stat_summary(fun=mean, geom="line", aes(group=1)) + 
+  stat_summary(fun=mean, geom="point") + facet_wrap(~Clinic)
 
 boxplot_clinic
 ```
