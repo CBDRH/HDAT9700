@@ -28,26 +28,21 @@ library("magrittr")
 library("formatR")
 library("zoo")
 
-resp <- read.csv(file="data/uk-deaths-by-sex.csv", header=TRUE)
-resp_ts <- ts(resp, start=c(2001,1), frequency=12)
-
-air <- read.csv(file="data/international-airline-passengers.csv", header=TRUE)
-air <- ts(air[,2], start=c(1948,1), end=c(1959,12), frequency = 12)
-
-set.seed(1)
-z <- arima.sim(model=list(order=c(2,0,0), ar=c(1.5, -0.75)), n=200)
-
-model1 <- sarima(z, p=3, d=0, q=1, details=FALSE)
-model2 <- sarima(z, p=2, d=0, q=0, details=FALSE)
-
 set.seed(1)
 p <- arima.sim(model=list(order=c(1,1,0), seasonal=list(order=c(1,1,0)), ar=c(.75)), n=100)
 p <- ts(p, start=c(2000,1), frequency=12)
 
 set.seed(123)
-vector1 <- sample(40:80, 48, replace=TRUE)
+x1 <- sample(40:80, 48, replace=TRUE) %>% ts(start=c(2005,7), end=c(2009,6), frequency=12)
 
-x1 <- ts(vector1, start=c(2005,7), end=c(2009,6), frequency=12)
+resp <- read.csv(file="data/uk-deaths-by-sex.csv", header=TRUE)
+resp_ts <- ts(resp, start=c(2001,1), frequency=12)
+
+air <- read.csv(file="data/international-airline-passengers.csv", header=TRUE) 
+air <- ts(air[,2], start=c(1948,1), end=c(1959,12), frequency = 12)
+
+set.seed(1)
+z <- arima.sim(model=list(order=c(2,0,0), ar=c(1.5, -0.75)), n=200)
 
 ```
 
@@ -58,36 +53,38 @@ Welcome to HDAT9700 Time Series Analysis!
 
 In this chapter we will focus on time series data. 
 
-There will be three short lectures:  
+There will be three sections covering the following topics: 
 
 1. Working with time series data in R
 2. Statistical properties of time series data
 3. Fitting time series models
 
-Each lecture will be followed by a practical session where you will write your own R code to explore the concepts and methods we discuss.   
+Each section will be followed by a practical session where you will write your own R code to explore the concepts and methods we discuss.   
 
-The prereading for this chapter is "On Time Series Analysis of Public Health and Biomedical Data" by Scott L Zeger, Rafael Irizarry and Roger D Peng available [here](https://www.annualreviews.org/doi/10.1146/annurev.publhealth.26.021304.144517).
+The prereadings for this chapter are:
 
-For those wanting more detail, I suggest "Time series analysis and its applications: with R examples" (Chapters 1-3) by Robert H Shumway and David S Stoffer, which can be downloaded [here](https://www.stat.pitt.edu/stoffer/tsa4/) or through the UNSW library. The content goes beyond what is covered in this Chapter, but there are a lot of examples and R code for those who are interested.  David S Stoffer is also the author of the `astsa` R package (Applied Statistical Time Series Analysis).
+* "Time series regression studies in environmental epidemiology" by 
+Krishnan Bhaskaran, Antonio Gasparrini, Shakoor Hajat, Liam Smeeth, and Ben Armstrong available [here](https://academic.oup.com/ije/article/42/4/1187/657875) or on OpenLearning. This paper focusses on environmental epidemiology but many of the concepts apply to other types of time series data too.
+
+* "On Time Series Analysis of Public Health and Biomedical Data" by Scott L Zeger, Rafael Irizarry and Roger D Peng available [here](https://www.annualreviews.org/doi/10.1146/annurev.publhealth.26.021304.144517) or on OpenLearning.
+
 
 Some other useful resources:
 
 * Rob J Hyndman and George Athanasopoulos (Monash University) [Forecasting: Principles and Practice](https://otexts.com/fpp2/)
 
-* Penn State [Applied Time Series Analysis](https://newonlinecourses.science.psu.edu/stat510/) 
 
-While the following two papers are about intervention analysis, they also start by discussing properties of time series data which is relevant for this Chapter:
+While the following two papers are about intervention analysis (covered in the next Chapter), they also start by discussing properties of time series data which is relevant for this Chapter:
 
 * Lagarde. How to do (or not to do): Assessing the impact of a policy change with routine longitudinal data. *Health Policy Planning* 2012;27(1):76-83. [doi: 10.1093/heapol/czr004](https://doi.org/10.1093/heapol/czr004)
 
 * Schaffer et al. Interrupted time series analysis using autoregressive integrated moving average (ARIMA) models: a guide for evaluating large-scale health interventions. *BMC Medical Research Methodology* 2021;21(58). [doi: 10.1186/s12874-021-01235-8](https://bmcmedresmethodol.biomedcentral.com/articles/10.1186/s12874-021-01235-8)
-
+    
+For those wanting more detail, I suggest "Time series analysis and its applications: with R examples" (Chapters 1-3) by Robert H Shumway and David S Stoffer, which can be downloaded [here](https://www.stat.pitt.edu/stoffer/tsa4/) or through the UNSW library. The content goes beyond what is covered in this Chapter, but there are a lot of examples and R code for those who are interested.  David S Stoffer is also the author of the `astsa` R package (Applied Statistical Time Series Analysis).
 
 Let's get started!  
 
-## Lecture 1: Working with time series data
-
-### What are time series data?
+## What are time series data?
 
 Time series data are everywhere. Some examples include:
 
@@ -96,13 +93,13 @@ Time series data are everywhere. Some examples include:
 * Monthly cardiovascular mortality rate
 * Yearly cancer incidence per 100,000 population.
 
-To interpret time series data, it is important to understand the underlying structure, and how this affects its behaviour. For instance, a sudden drop in prescriptions for antibiotics in a given month may represent a true decline, or just be part of the normal variation of those data.
+To interpret time series data, it is important to understand the underlying structure, and how this affects its behaviour. For instance, if you observe a sudden drop in prescriptions for antibiotics in a given month, how do you know if it represents a true decline, or is just be part of the normal variation of those data?
 
 A time series is a chronological sequence of measurements equally spaced through time, with one observation for every time point. The time unit can be daily, weekly, monthly, etc.; however, it is always the same for a given series. Time series data can be raw measures, such as the daily maximum temperature, or hourly blood pressure readings, or it can be a summary (aggregate) statistic, such as counts, rates, ratios, averages, or percentages. 
 
-In the context of health data, one of the advantages of time series data is that they often involve aggregate data (such as counts of hospital separations), and thus they don't necessarily require access to identifiable person-level data. Thus, these data are often easier to access as aggregate data often do not require ethics approval, and there are currently a many freely available time series datasets available online. 
+In the context of health data, one of the advantages of time series data is that they often involve aggregate data (such as counts of hospital separations), and thus they don't necessarily require access to identifiable person-level data. Thus, these data are often easier to access as aggregate data often do not require ethics approval, and there are currently many freely available time series datasets available online. For instance, Pharmaceutical Benefits Scheme (PBS) dispensing claims can be downloaded here: https://www.pbs.gov.au/info/statistics/dos-and-dop/dos-and-dop. 
 
-Time series data have several unique properties. The chronological ordering is important. Time series data are also well suited to visualisation. Most importantly, observations made at neighbouring time points are often correlated and thus not independent, meaning that they do not meet the assumptions necessary for standard regression analysis. Therefore, specialised methods for analysing time series data are needed.
+Time series data have several unique properties. First, the chronological ordering is important. Time series data are also well suited to visualisation. Most importantly, observations made at neighbouring time points are often correlated and thus not independent, meaning that they do not meet the assumptions necessary for standard regression analysis. Therefore, specialised methods for analysing time series data are often needed.
 
 There are many potential uses for time series analysis in health. These include: 
 
@@ -119,7 +116,7 @@ Here are a couple of examples of time series:
 
 ![**Figure.** An example of a time series: all cause mortality during the 1918 influenza pandemic (Source: Public domain)](images/Influenza_Pandemic.png)
 
-![**Figure.** An example of time series: smallpox, polio and measles before and after introduction of vaccination (Source: Our World in Data https://ourworldindata.org/)](images/Vaccination.jpg)
+![**Figure.** An example of a time series: smallpox, polio and measles before and after introduction of vaccination (Source: Our World in Data https://ourworldindata.org/)](images/Vaccination.jpg)
 
 
 ***
@@ -133,7 +130,7 @@ Check out the short video about the definition and uses for time series data:
 ```{r quiz1_1, echo=FALSE}
 quiz(caption = "Quiz 1.1: Definition of time series data", 
      question("Which of these would not be considered a time series?",
-    answer("Number of illicit drug related ambulance calls per week over two years"),
+    answer("Number of illicit drug-related ambulance calls per week over two years"),
     answer("Proportion of people taking antidepressants who discontinue use per month over 5 years"),
     answer("Percent decrease in BMI measured over 1 year in 100 individuals", correct=TRUE),
     answer("Yearly rates of smoking in males and females over 20 years"),
@@ -142,11 +139,13 @@ quiz(caption = "Quiz 1.1: Definition of time series data",
 ```
 
 ***
-### Working with time series data in R
+## Working with time series data in R
 
 In this first section we will describe how to set up your time series data in R, explore the structure of the data, and conduct some basic visualisations. 
 
-#### Creating time series objects
+***
+
+### Creating time series objects
 
 To start off with, we will convert our data to the form of an R time series (*ts*) object, rather than a data frame. A *ts* object is a vector or matrix of data sampled chronologically at equispaced points in time. Information about the time points at which the data were sampled is held in an *index*, rather than as its own variable. 
 
@@ -183,22 +182,22 @@ Strictly speaking, there are 52.18 weeks in a year (365.25/7). However, many tim
 
 Let's try it out.
 ```{r tsobject, exercise=TRUE, exercise.eval=FALSE, fig.height=3.5, fig.width=5, tidy=TRUE}
-# Create a vector with 48 random observations taking values between 40 and 80
+# Create a vector with 48 random observations taking values between 40 and 80.
 set.seed(123)
 vector1 <- sample(40:80, 48, replace=TRUE)
 
-# Now transform it into a time series (ts) object
-# Let's assume the vector is monthly data from July 2005 to June 2009
+# Now transform it into a time series (ts) object.
+# Let's assume the vector represents monthly data from July 2005 to June 2009.
 x1 <- ts(vector1, start=c(2005,7), end=c(2009,6), frequency=12)
 
-# Now plot the time series
+# Now plot the time series. ts objects are automatically be plotted as line graphs.
 plot(x1)
+
 ```
 
 Good work, you've created your first time series!
 
 Note that with a ts object, the date or time information is stored in an index (not as a separate variable). We can access it by using `time()`. Try it:
-
 
 ```{r time, exercise=TRUE, exercise.eval=FALSE}
 # Extract time information
@@ -210,6 +209,7 @@ As you can see, the ts object index stores time as a fraction, not a date. To co
 ```{r time2, exercise=TRUE, exercise.eval=FALSE}
 # Extract time information
 as.yearmon(time(x1))
+as.Date(time(x1))
 ```
 
 ***
@@ -227,7 +227,7 @@ quiz(caption = "Quiz 1.2: Creating time series objects",
 
 ***
 
-#### Combining multiple time series objects
+### Combining multiple time series objects
 
 `ts.union()` and `ts.intersect()` can be used to combine two ts objects into one 
 mts object. `ts.union()` will perform an outer join, and will create *NAs* to fill in missing values. `ts.intersect()` will restrict to the time periods where the two series overlap (inner join).
@@ -269,9 +269,9 @@ quiz(caption = "Quiz 1.3: Combining time series objects",
 
 ***
 
-### Visualising time series data ###
+## Visualising time series data ##
 
-Time series data are well suited to visualisation. One of the first steps when working with time series data should be to plot it. The simplest approach is to use the base `plot()` function. For more customisation options, you can use a more sophisticated function like `autoplot()`, which is part of the `ggplot2` package and automatically converts the ts object to a data frame so that it can be plotted with `ggplot2`. 
+Time series data are well suited to visualisation. One of the first steps when working with time series data is to plot your series. The simplest approach is to use the base `plot()` function. For more customisation options, you can use a more sophisticated function like `autoplot()`, which is part of the `ggplot2` package and automatically converts the ts object to a data frame so that it can be plotted with `ggplot2`. 
 
 If you have multiple time series in one mts object, they can be plotted in one graph on separate facets using `plot()` and the argument `plot.type="m"` (*m* = multiple, the default), or on the same graph using `plot.type="s"` (*s* = single plot). 
 
@@ -284,9 +284,11 @@ data(lap, package="astsa")
 mort <- lap[,c(2:3)]
 
 # Plot 1: multiple facets with customisation
-plot(mort, plot.type="m", xlab="Week", col="blue", lty="solid", main="LA Respiratory and Cardiovascular Mortality, 1970-1979")
+par(cex.lab=.9,cex.axis=.9,cex.main=.9)
+plot(mort, plot.type="m", xlab="Week", col="blue", lty="solid", main="Fig 1: LA Respiratory and Cardiovascular Mortality, 1970-1979")
 
 # Plot 2: single plot with customisation
+par(cex.lab=.9,cex.axis=.9,cex.main=.9)
 plot(mort, plot.type="s", ylab="Deaths", xlab="Week", col=c("blue","red"), lty=c("solid","solid"), ylim=c(0, 150), main="Fig 1: LA Respiratory and Cardiovascular Mortality, 1970-1979")
 # Add a legend
 legend("topright", legend=c("Respiratory","Cardiovascular"), col=c("blue","red"), lty=c("solid","solid"), cex=.8)
@@ -305,9 +307,9 @@ A time series is made up of three principal components, which are:
 
 1. **Trend:** A trend is a long-term increase or decrease in the data. It can be linear, or non-linear (e.g. exponential growth). A cyclic trend occurs when there is a repeating cycle of increases and decreases of no fixed period, often lasting for several years. An example would be the boom and bust of the stock market, or the sunspot cycle; however, cyclic trends are uncommon in health services data.
 
-2. **Seasonality:** Seasonality occurs when the time series is affected by calendar time, such as time of year or day of the week. Seasonality is always of a fixed and known frequency. It can be due to natural causes, such as the variation in weather patterns between seasons, or business/administrative processes, such as weekend/weekday effects. Whether there is seasonality may depend on the time unit of your series (e.g. daily, weekly, etc.).
+2. **Seasonality:** Seasonality occurs when the time series is affected by calendar time, such as time of year or day of the week. Seasonality is always of a fixed and known frequency. It can be due to natural causes, such as the variation in weather patterns between seasons, or business/administrative processes, such as differences between weekends and weekdays. Whether there is seasonality will depend on the time unit of your series (e.g. daily, weekly, etc.).
 
-3. **Error:** The error is the remaining random variation unexplained by the trend or seasonality.
+3. **Error:** The error is the remaining random variation unexplained by the trend or seasonality. Extreme values that are much larger or smaller than expected are considered outliers.
 
 ***
 
@@ -318,7 +320,7 @@ This videos provides a brief overview of these components:
 
 Let's look at a few examples of time series with different properties.
 
-Load the `flu` dataset which is part of the `astsa` package. It contains data on pneumonia and influenza deaths per 10,000 population the United States. It is already a ts object and does not have to be converted.
+Load the `flu` dataset which is part of the `astsa` package. It contains data on pneumonia and influenza deaths per 10,000 population in the United States. It is already a ts object and does not have to be converted.
 
 Like any dataset, one of the first steps when working with time series data is to explore the data. Below, we'll use the functions `start()`, `end()`, `frequency()`, `length()`, and `summary()` to explore the time series. 
 ```{r sum, exercise=TRUE, exercise.eval=FALSE,tidy=TRUE}
@@ -344,9 +346,10 @@ Now we know that the series starts in January 1968 and ends in December 1978, an
 
 ***
 
-Now visualise the flu time series by plotting it. Think about the kind of pattern that you expect to see. Always remember when creating graphs to choose clear axis labels, and to set the y-axis limits to something reasonable, as axes that are too narrow or too wide can be misleading.
+Now visualise the flu time series by plotting it. Think about the kind of pattern that you expect to see. Always remember when creating graphs to choose clear axis labels, and to set the y-axis limits to something reasonable, as axes that are too narrow or too wide can be misleading or difficult to interpret.
 ```{r plotflu, exercise=TRUE, exercise.eval=FALSE, fig.height=4, fig.width=5, tidy=TRUE}
 # Plot flu data
+par(cex.lab=.9,cex.axis=.9,cex.main=.9)
 plot(flu, ylab="Deaths per 10,000 people", xlab="Month", main="Pneumonia and influenza deaths\nin the US (1968-1978)", ylim=c(0,1))
 ```
 
@@ -364,6 +367,7 @@ Now let's look at a different time series. Here is the yearly number of internat
 data(austa, package="fpp")
 
 # Plot austa data
+par(cex.lab=.9,cex.axis=.9,cex.main=.9)
 plot(austa, ylab="International visitors (millions)", xlab="Year", main="International visitors to Australia (1980-2010)", ylim=c(0,6))
 ```
 
@@ -380,6 +384,7 @@ Here is the quarterly Hawaiian hotel occupancy rates (%) from 1982 to 2015 (`hor
 data(hor, package="astsa")
 
 # Plot hor data
+par(cex.lab=.9,cex.axis=.9,cex.main=.9)
 plot(hor, ylab="Occupancy rates (%)", xlab="Quarter", main="Hawaiian hotel occupancy rates (1982-2015)", ylim=c(50,100))
 ```
 
@@ -421,7 +426,7 @@ quiz(caption = "Quiz 1.4: Seasonality",
 ```
 
 ***
-#### Visualising seasonal effects
+### Visualising seasonal effects
 
 Another way of plotting seasonal time series is to use the function `seasonplot()` or `ggseasonplot()` from the `forecast` package. This can also help identify outliers, by comparing values to the same time period in previous years, as it can sometimes be difficult to identify extreme values in the presence of seasonal effects. 
 
@@ -432,6 +437,7 @@ ggseasonplot(flu, ylab="Influenza deaths per 10,000")
 ```
 
 This confirms that influenza deaths were much higher in December 1968 than in other Decembers. Further, there is an unusual pattern in influenza deaths in 1976, with higher than expected values in March; this wasn't as evident in the non-seasonal plot. This was due to the 1976 swine flu outbreak in the US, which led to a mass vaccination campaign of 25% of the US population. You can also observe that deaths in earlier years tend to be higher than in later years.
+
 
 ***
 
@@ -449,7 +455,7 @@ And this confirms that the occupancy rates are highest in the 1st quarter (Jan-M
 
 ***
 
-#### Decomposition 
+### Decomposition 
 
 An easy way to visualise the components of a time series (trend, seasonality, error) is to use the `decompose()` function. This function separates out the trend component, seasonal component and random error from your time series. This function will give an error if there is no seasonality in the data (e.g. yearly data).
 
@@ -466,7 +472,6 @@ $$\text{Time series}=\text{Trend}\times\text{Seasonal} \times \text{Error}$$
 ***
 
 Let's use the data on monthly corticosteroid prescriptions (millions) in Australia (Jul 1991 to Jun 2008) (`h02` in the `fpp` package).
-
 ```{r, eval=TRUE, echo=FALSE, fig.height=4, fig.width=5,tidy=TRUE} 
 # Load time series
 data(h02, package="fpp")
@@ -521,8 +526,9 @@ deseason <- h02/dec$seasonal
 h02.d <- ts.union(h02, deseason)
 
 # Plot them both on the same graph
+par(cex.lab=.9,cex.axis=.9,cex.main=.9)
 plot(h02.d, plot.type="s", ylim=c(0,1.5), col=c("blue","red"), lty=c("solid","dashed"), ylab="Corticosteroid Rx (millions)", xlab="Month")
-legend("topleft", legend=c("Observed","Seasonally adjusted"), col=c("blue","red"), lty=c("solid","dashed"))
+legend("topleft", legend=c("Observed","Seasonally adjusted"), col=c("blue","red"), lty=c("solid","dashed"),cex=.8)
 ```
 
 ***
@@ -533,13 +539,14 @@ You can also plot the smoothed trend along with the raw data.
 h02.t <- ts.union(h02, dec$trend)
 
 # Plot them both on the same graph
+par(cex.lab=.9,cex.axis=.9,cex.main=.9)
 plot(h02.t, plot.type="s", ylim=c(0,1.5), col=c("blue","red"), lty=c("solid","dashed"), ylab="Corticosteroid Rx (millions)", xlab="Month")
-legend("topleft", legend=c("Observed","Trend"), col=c("blue","red"), lty=c("solid","dashed"))
+legend("topleft", legend=c("Observed","Trend"), col=c("blue","red"), lty=c("solid","dashed"),cex=.8)
 ```
 
 ***
 
-## Practical 1 ##
+## Practical 1: Visualising time series data ##
 
 In this practical session you will visualise and explore a time series. For these exercises you will use data on monthly deaths in the UK by sex obtained from the Office for National Statistics (https://www.ons.gov.uk/). The start date is January 2001.
 
@@ -555,7 +562,7 @@ You will learn the following functions:
 ***
 
 #### Exercise 1.1 Creating a ts object 
-```{r exercise1_1, exercise.cap="Exercise 1.1", exercise=TRUE, tidy=TRUE, exercise.eval=FALSE, exercise.lines=9}
+```{r exercise1_1,exercise=TRUE, tidy=TRUE, exercise.eval=FALSE, exercise.lines=9}
 # Check if the data "resp" is in the format of a ts object using class()
 
 
@@ -570,7 +577,7 @@ You will learn the following functions:
 ***
 
 #### Exercise 1.2 Checking structure of time series
-```{r exercise1_2, exercise.cap = "Exercise 1.2", exercise=TRUE, tidy=TRUE, exercise.eval=FALSE, exercise.lines=14}
+```{r exercise1_2,exercise=TRUE, tidy=TRUE, exercise.eval=FALSE, exercise.lines=14}
 # Check start and end dates of resp_ts
 
 
@@ -594,7 +601,7 @@ head(resp_ts)
 ***
 
 #### Exercise 1.3 Data exploration
-```{r exercise1_3, exercise.cap="Exercise 1.3", exercise=TRUE, tidy=TRUE, exercise.lines=7, exercise.eval=FALSE, exercise.lines=6}
+```{r exercise1_3,exercise=TRUE, tidy=TRUE, exercise.lines=7, exercise.eval=FALSE, exercise.lines=6}
 # What is the minimum value in males/females? maximum value in males/females? 
 
 
@@ -610,7 +617,7 @@ summary(resp_ts)
 ***
 
 #### Exercise 1.4 Data visualisation
-```{r exercise1_4, exercise=TRUE, exercise.cap="Exercise 1.4", tidy=TRUE, exercise.eval=FALSE, fig.height=4, fig.width=5, exercise.lines=10}
+```{r exercise1_4, exercise=TRUE,tidy=TRUE, exercise.eval=FALSE, fig.height=4, fig.width=5, exercise.lines=10}
 # Plot the male and female time series in different facets
 
 
@@ -620,42 +627,56 @@ summary(resp_ts)
 
 # Add a legend to the plot above
 
+
 ```
 ```{r exercise1_4-hint-1}
-# To plot on the same graph, use the argument "plot.type="s" "
+# To plot on the same facet, use the argument plot.type="s" 
+# To plot on the different facets, use the argument plot.type="m"
 ```
 ```{r exercise1_4-hint-2}
-# To change the plot colours or linetype, use the arguments "col=" or "lty="
+# To modify the plot, use the following code:
+plot(resp_ts, plot.type=, col= , lty= , ylab= , xlab= , ylim= )
 ```
-
+```{r exercise1_4-hint-3}
+# Too add a legend use:
+legend()
+```
 ***
 
 #### Exercise 1.5 Data decomposition
-```{r exercise1_5, exercise=TRUE, exercise.cap="Exercise 1.5", tidy=TRUE, exercise.eval=FALSE, fig.height=4.5, fig.width=5, exercise.lines=12}
-# When you plotted your series, did you observe any trend? any seasonality? any outliers?
-# Create a plot of the decomposed time series for males (call it "males"), and see if it confirms what you observed above
+```{r exercise1_5, exercise=TRUE,tidy=TRUE, exercise.eval=FALSE, fig.height=4.5, fig.width=5, exercise.lines=12}
+# Save the components of the decomposed series for males into a separate data frame (call it "males").
+
+
+# When you plotted your series in Exercise 1.4, did you observe any trend? any seasonality? any outliers?
+# Create a plot of the decomposed time series for males and see if it confirms what you observed above.
 
 
 
-
-# Plot the trend on the same plot as the raw data for males only
+# Plot the trend on the *same* plot as the raw data for males only. Remember to use colours and a legend to distinguish the series.
 
 
 
 ```
+
 ```{r exercise1_5-hint-1}
 # To decompose the males time series:
 males <- decompose(resp_ts[,1])
+head(males)
 ```
 ```{r exercise1_5-hint-2}
-# To combine the raw data with the trend data, use 
+# To plot the decomposed series:
+plot(males)
+```
+```{r exercise1_5-hint-3}
+# To combine the raw data with the trend data which can then be plotted, use: 
 ts.union(resp_ts[,1], males$trend)
 ```
 
 ***
 
 #### Exercise 1.6 Data manipulation 
-```{r exercise1_6, exercise.cap="Exercise 1.6", exercise.lines=6, tidy=TRUE, exercise=TRUE, exercise.eval=FALSE}
+```{r exercise1_6,exercise.lines=6, tidy=TRUE, exercise=TRUE, exercise.eval=FALSE}
 # Create a ts object with the male:female respiratory death ratio
 
 
@@ -670,7 +691,7 @@ ratio <- resp_ts[,1]/resp_ts[,2]
 ```
 ***
 
-## Lecture 2: Statistical properties of time series ##
+## Statistical properties: Stationarity
 
 Now let's talk about the statistical properties of time series data. Let's start with some basic notation. 
 
@@ -678,13 +699,13 @@ Let $Y_t$ represent the values of your time series ($Y$) at times $t$, from $t_1
 
 ***
 
-### Stationarity 
+### Stationarity
 
 To facilitate working with time series data, your time series should be **stationary**. 
 
 A time series is considered *strictly stationary* if the distribution of a sequence of *i* observations is unchanged by shifts in time. That means that the probability distribution of $Y_t$ at times $(t_1, t_2, t_3,... t_i)$ is the same as the distribution at times $(t_1+m,t_2+m,t_3+m,...t_i+m)$ (where $m$ is a constant by which times are shifted). 
 
-**Why is stationarity important?** A stationary series is easier to work with because it is stable over time and can thus be modelled with fewer parameters. While a stationarity series may fluctuate, it will always revert to a constant mean, meaning that it is easier to predict. It does not have any trend or seasonality. However, a strictly stationary series is rare, and it is often enough to assume *weak stationarity*. 
+**Why is stationarity important?** A stationary series is easier to work with because it is stable over time and can thus be modelled with fewer parameters. While a stationarity series may fluctuate, it will always revert to a constant mean, meaning that it is easier to predict. It does not have any trend or seasonality and variance is constant. However, a strictly stationary series is rare, and it is often enough to assume *weak stationarity*. 
 
 A weakly stationary series has three properties:
 
@@ -731,13 +752,13 @@ plot(wn4, ylim=c(0,250), ylab='Series 4', main=('Mean = 120, SD = 15'))
 
 ***
 
-#### How to deal with non-stationarity
+### How to deal with non-stationarity
 
 White noise series are rare, and it is unusual that a time series is stationary to begin with. There are two main causes of non-stationarity: the presence of a trend, or non-constant variance. 
 
-One way of dealing with non-stationarity is to apply a transformation to the data. If the variance is changing over time, this can be addressed by a log transformation ($\log(Y_t)$).
+One way of dealing with non-stationarity is to apply a transformation to the data. If the variance is changing over time, this can be addressed by a natural log transformation ($\log(Y_t)$).
 
-On the other hand, if there is a linear trend in the data, taking the first difference of the data ($Y_t-Y_{t-1}$) will usually result in a stationary series. If there is still a trend, then a second differencing will be required, but that is rare. 
+On the other hand, if there is a linear trend in the data, taking the first difference of the data ($Y_t-Y_{t-1}$) will usually result in a stationary series. If there is still a trend, then a second differencing will be required, but that is not common. 
 
 Let's try it with the corticosteroid data we saw earlier.
 
@@ -761,7 +782,7 @@ The variance looks better but there is still a slight trend, particularly in the
 plot(diff(log(h02)), ylab='Corticosteroid Rx (log, diff)', ylim=c(-1,0.5))
 ```
 
-Now the series is stationary. However, the seasonality is still a problem - we will deal with this later! 
+Now the series is almost stationary, but seasonality is still a problem - we will deal with this later! 
 
 Note that when you take the first difference, you will lost the first observation of your time series since you can't calculate a difference for this observation. 
 
@@ -809,7 +830,7 @@ quiz(caption= "Quiz 2_1: Stationarity",
     answer("Series 3 only"),
     answer("All of them"),
     random_answer_order = FALSE, allow_retry = TRUE),
-    question("Which is not a property of a stationary series?",
+    question("Which is not a property of a weakly stationary series?",
     answer("It doesn't fluctuate", correct=TRUE, message="A stationarity series can fluctuate, but always reverts to a constant mean"),
     answer("It has a constant mean"),
     answer("It has constant variance"),
@@ -820,9 +841,9 @@ quiz(caption= "Quiz 2_1: Stationarity",
 
 ***
 
-### Autocorrelation
+## Statistical properties: Autocorrelation
 
-As mentioned, time series data cannot usually be analysed using standard regression methods due to correlation between observations within the series, i.e. autocorrelation. 
+As mentioned, time series data cannot usually be analysed using standard regression methods due to correlation between observations within the series, i.e. autocorrelation. The presence of autocorrelation can lead to incorrect standard errors.
 
 To check for first order autocorrelation (correlation with the previous observation), use the `lag1.plot()` function in the `astsa` package to plot the correlation between $Y_t$ and its first order lag $Y_{t-1}$. Let's look at two examples below.
 ```{r lag, exercise=TRUE, exercise.eval=FALSE, fig.height=3, fig.width=3, tidy=TRUE}
@@ -860,13 +881,13 @@ A useful companion to the ACF plot is the partial ACF (PACF) plot. The partial a
 pacf(austa)
 ```
 
-Here there is no significant partial autocorrelation. Therefore, the higher order autocorrelation observed in the ACF plot above was entirely due to autocorrelation at lag 1. 
+Here there is no significant partial autocorrelation. Therefore, the higher order autocorrelation observed in the ACF plot above was entirely due to autocorrelation at lag 1. This suggests that adjusting for first-order autocorrelation (at lag 1) only should be sufficient.
 
 ***
 
-#### How to deal with autocorrelation
+### How to deal with autocorrelation
 
-Data that are autocorrelated are often not stationary. Therefore, sometimes differencing the data (or otherwise controlling for trend) will be enough to remove the autocorrelation, so always perform any necessary transformations before checking for autocorrelation. Otherwise, it may be necessary to include one or more lag terms as predictors in your regression analysis. We will cover other approaches for dealing with autocorrelation in more detail later.
+Data that are autocorrelated are typically not stationary. Therefore, sometimes differencing the data (or otherwise controlling for trend) will be enough to remove the autocorrelation, so always perform any necessary transformations before checking for autocorrelation. Otherwise, it may be necessary to include one or more lag terms as predictors in your regression analysis. We will cover other approaches for dealing with autocorrelation in more detail later.
 
 ```{r acfdiff, exercise.eval=FALSE, exercise=TRUE, fig.width=5, fig.height=4, tidy=TRUE}
 # Plot the lag-1 correlation and ACF for the differenced austa data
@@ -891,7 +912,7 @@ quiz(caption = "Quiz 2_2: Autocorrelation",
 
 ***
 
-### Seasonality 
+## Statistical properties: Seasonality 
 
 Lots of time series are seasonal - we have seen some examples already. Seasonality refers to variations that occur at regular time intervals. For instance, hospitalisations for respiratory infections are more common in the winter months, but emergency department visits for accidents and injuries are more common in the summer, when people are outside and more active. If you have daily data, you may have both weekly and yearly seasonality - people are less likely to see a doctor on the weekends, but also on yearly holidays like Christmas and New Year's Eve.
 
@@ -907,7 +928,7 @@ plot(h02,ylab='Corticosteroid Rx (millions)')
 
 ***
 
-ACF plots can also help identify seasonality. If you have monthly seasonality, then you would expect to see significant autocorrelation at lag 12. If you don't, then the seasonality may not be strong enough to need adjustment.
+We already saw how to check for seasonality using visualisation. However, ACF plots can also help identify seasonality. If you have monthly seasonality, then you would expect to see significant autocorrelation at lag 12. If you don't, then the seasonality may not be strong enough to need adjustment.
 
 You can plot both the ACF and the PACF simultaneously using the function `acf2()` in the `astsa` package. Let's try it with the corticosteroid data. Since we know our data are seasonal, we'll specify `max.lag=24` to make sure to observe the seasonal effects. Confusingly, note that for seasonal data, the x-axis ("Lag") is labelled as fractions of the unit of time (year). Thus, in the following plot "Lag 1" is actually "Lag 12" (one year). Also, `acf2()` *doesn't* plot the autocorrelation at lag 0 (like `acf()`) so don't ignore the first bar!
 
@@ -920,13 +941,11 @@ Here you see that the autocorrelation is greatest between $Y_t$ and $Y_{t-1}$ as
 
 ***
 
-#### How to deal with seasonality
+### How to deal with seasonality
 
 Sometimes, you aren't interested in estimating the seasonal effects. In this case, the simplest way to get rid of them is to aggregate the data to yearly. However, aggregating data to larger time units will reduce the number of observations. 
 
 To aggregate data, we use the function `aggregate()`; however, we also need to specify *how* we will aggregate the data. This could be by calculating the sum, the mean, the median, etc. specified using the `FUN=` argument. Be careful when aggregating data, and think about whether it is meaningful to combine your data. For instance, it doesn't make sense to sum rates, percentages or ratios.
-
-***
 
 The syntax to go from monthly to quarterly and monthly to yearly is below. Let's use the data on monthly corticosteroid prescriptions again. Since these data are in millions of prescriptions, we can add them up using `FUN=sum`.
 
@@ -985,7 +1004,7 @@ In this video, I review the statistical properties of time series (stationarity,
 
 ***
 
-## Practical 2
+## Practical 2: Statistical properties of time series
 
 In this practical session you will identify stationarity, autocorrelation and seasonality. For these exercises you will use data on monthly international airline passengers (in thousands) from Jan 1948 to Dec 1960.
 
@@ -998,7 +1017,7 @@ You will learn the functions:
 ***
 
 #### Exercise 2.1 Stationarity
-```{r exercise2_1, exercise.cap = "Exercise 2.1", tidy=TRUE, exercise=TRUE, exercise.eval=FALSE, exercise.lines=18}
+```{r exercise2_1,tidy=TRUE, exercise=TRUE, exercise.eval=FALSE, exercise.lines=23}
 # "Air" is the ts object containing the airline passengers time series
 head(air)
 
@@ -1008,7 +1027,11 @@ head(air)
 # Is there non-constant variance? If so, apply an appropriate transformation and plot the data again
 
 
-# Is there a trend? If so, apply an appropriate transformation and plot the data again
+# Is there a trend? If so, take a first order difference and plot the data again
+
+
+
+# Is there seasonality? If so, take a seasonal difference and plot the data again
 
 
 
@@ -1017,28 +1040,34 @@ head(air)
 ```
 ```{r exercise2_1-hint-1}
 # If there is non-constant variance transform the data using log()
-
-# If there is a trend transform the data using diff()
-
+plot(log(air))
 ```
 ```{r exercise2_1-hint-2}
-# To plot the log-transformed and differenced series, use:
+# If there is a trend transform the data using diff()
 plot(diff(log(air)))
-
+```
+```{r exercise2_1-hint-3}
+# If there is seasonality transform the data using diff(, lag=12)
+plot(diff(diff(log(air)),12))
+```
+```{r exercise2_1-hint-4}
 # If you plot "plot(log(diff(air)))" this will give an error as you cannot take the log of a negative number
-
 ```
 
 
 ***
 
 #### Exercise 2.2 Autocorrelation
-```{r exercise2_2, exercise.cap = "Exercise 2.2", exercise=TRUE, tidy=TRUE, exercise.eval=FALSE, exercise.lines=6}
+```{r exercise2_2,exercise=TRUE, tidy=TRUE, exercise.eval=FALSE, exercise.lines=12}
 # Plot the ACF/PACF plots on the raw data - what does this tell you about autocorrelation and seasonality?
 
 
 
-# Plot the ACF/PACF plots on the transformed data 
+# Plot the ACF/PACF plots on the transformed data from above
+
+
+
+# What do these tell you about your data?
 
 
 
@@ -1047,7 +1076,7 @@ plot(diff(log(air)))
 ***
 
 #### Exercise 2.3 Seasonality
-```{r exercise2_3, exercise.cap = "Exercise 2.3", exercise=TRUE, tidy=TRUE, exercise.eval=FALSE, exercise.lines=7}
+```{r exercise2_3,exercise=TRUE, tidy=TRUE, exercise.eval=FALSE, exercise.lines=7}
 # Aggregate the data to yearly and call the new series air_yr
 
   
@@ -1059,27 +1088,28 @@ plot(diff(log(air)))
 ```{r exercise2_3-hint-1}
 # To aggregate, use:
 air_yr <- aggregate(air, nfrequency=1)
+head(air_yr)
 ```
 
 ***
 
-## Lecture 3: Time series models
+## Time series models
 
 Now it's time to bring it all together and estimate a time series model. 
 
-The most basic type is **ordinary regression models** that use time as a predictor variable. 
+The most basic type is **ordinary least squares (OLS) regression models** (often linear regression) that use time as a predictor variable. 
 
 This type of modelling is appropriate if your time series has a linear or easily modelled trend and limited autocorrelation and seasonality. 
 
 Including a time variable and dummy variables representing seasonal units (e.g. month or quarter) as predictors in your model can control for linear trends and seasonality, and allow you to estimate the trend and the seasonal variation if desired. If your model has autocorrelation, sometimes controlling for trend and seasonality is enough to eliminate it.
 
-In real-life research and practice the patterns of the data can be complex, with considerable error, and it can be difficult to determine the patterns in the data. After creating your model, it is also important to check for autocorrelation of residuals - if present, even after controlling for trend and seasonality, an ordinary regression model may not be appropriate.
+In real-life research and practice the patterns of the data can be complex, with considerable error, and it can be difficult to determine the patterns in the data. After creating your model, it is also important to check for autocorrelation of residuals - if present, even after controlling for trend and seasonality, an OLS regression model may not be appropriate.
 
-There are various approaches for modelling data with substantial autocorrelation and/or complex seasonality. We will cover one such approach, **ARIMA models**, which relate the present value of a series to past values and past errors. 
+There are various approaches for modelling data with autocorrelation and/or complex seasonality. We will cover one such approach, **ARIMA models**, which relate the present value of a series to past values and past errors. 
 
 ***
 
-### ARIMA models
+## Autoregressive, moving average and seasonal models
 
 Simply put, **A**utoregressive **I**ntegrated **M**oving **A**verage (ARIMA) models are models of a single dependent variable  ($Y_t$) as a function of past values of $Y$ and past values of the error terms ($\epsilon_t$).
 
@@ -1087,7 +1117,7 @@ Before getting into full ARIMA models, let's introduce a few basic model types f
 
 ***
 
-#### Autoregressive (AR) Model
+### Autoregressive (AR) Model
 
 In an autoregressive (AR) model, the value of $Y_t$ is predicted by one or multiple lagged values of $Y_t$. 
 
@@ -1138,7 +1168,7 @@ acf(ar4,main=paste('\U03D5 = -0.75'),ylab="ACF 4")
 
 ***
 
-#### Moving Average (MA) Model
+### Moving Average (MA) Model
 
 A moving average model is when $Y_t$ depends on past values of the error $\epsilon_t$. This is not to be confused with moving average smoothing. 
 
@@ -1189,7 +1219,7 @@ acf(ma4,main=paste('\U03B8 = -0.75'), ylab="ACF 4")
 
 ***
 
-#### Seasonal models
+### Seasonal models
 
 A seasonal model is when $Y_t$ depends on past values of $Y_t$ at a regular interval (the season) and is a type of autocorrelation.
 
@@ -1203,7 +1233,7 @@ Here $c$ is a constant, $\Phi$ is the value of the autocorrelation, and $s$ is t
 ```{r quiz3_1, echo=FALSE}
 quiz(caption = "Quiz 3.1: Basic models", 
      question("Which of these statements is incorrect?",
-    answer("White noise processes can have seasonality", correct=TRUE, message="White noise processes have no autocorrelation"),
+    answer("White noise processes can have seasonality", correct=TRUE, message="White noise processes have no trend, seasonality or autocorrelation"),
     answer("Seasonality can be identified from ACF plots", correct=FALSE),
     answer("Significant autocorrelation can result in oscillatory series", correct=FALSE, message="If autocorrelation is negative, then that results in an oscillatory series"),
     answer("Autocorrelation must be accounted for in regression models", correct=FALSE, message="The presence of autocorrelation can lead to invalid inference"),
@@ -1212,7 +1242,7 @@ quiz(caption = "Quiz 3.1: Basic models",
 
 ***
 
-### Autoregressive integrated moving average (ARIMA) model
+## Autoregressive integrated moving average (ARIMA) model
 
 An ARIMA model is a combination of an **AR** model, **MA** model, and differencing (**I**ntegration) to induce stationarity. A model without differencing is sometimes called an ARMA model.
 
@@ -1231,13 +1261,13 @@ If there is seasonality, the ARIMA model is expressed as: $(p,d,q)\times (P,D,Q)
 ***
 ### Fitting the model
 
+*** 
+
 #### Step 1: Determine if your time series is non-stationary
 
-The first step in fitting your ARIMA model is to plot your time series to check for non-stationarity, i.e. changing variance or trends, as well as seasonality. 
+The first step in fitting your ARIMA model is to plot your time series to check for non-stationarity, i.e. changing variance or trends, as well as seasonality. This may include a plot of the time series, a plot of the decomposed series, seasonal plots, and/or ACF plots.
 
-To deal with non-constant variance, apply a log transformation. Take note if a first difference or seasonal difference may be required - you do not have the apply the differencing yourself as this will be taken care of within the ARIMA model. Generally, if a first difference (*d*=1) is required and the data are seasonal, a seasonal difference (*D*=1) will also be required. It is unusual to require more than one first/seasonal difference.
-
-The ACF plot can also be used to check for seasonality.
+To deal with non-constant variance, apply a log transformation. Take note if a first difference (to adjust for trends) or seasonal difference (to adjust for seasonality) may be required - you do not have the apply the differencing yourself as this will be taken care of within the ARIMA model. Generally, if your series has a trend and a first difference (*d*=1) is required, if the data are seasonal, a seasonal difference (*D*=1) will also be required. It is unusual to require more than one first/seasonal difference.
 
 ***
 
@@ -1267,9 +1297,9 @@ kable(text_tbl) %>%
 
 #### Step 3: Estimate the model and check model fit
 
-Next estimate your model, and check the model fit using residuals. If your model has a poor fit, then you will have to choose a different AR or MA order. Sometimes, determining the AR and MA terms is an iterative process, involving a lot of trial and error. 
+Next estimate your model, and check the model fit by plotting the residuals. Recall that there are three assumptions your residuals must meet: normally distributed, constant variance, and independence (no autocorrelation). If your model has a poor fit, then you will have to choose a different AR or MA order. Sometimes, determining the AR and MA terms is an iterative process, involving trial and error. 
 
-Aim for the simplest model (i.e. lowest AR and MA orders), that has a good fit (no remaining autocorrelation, normally distributed residuals). Information criteria (AIC and BIC) can be useful in determining the best fitting model.
+Aim for the simplest model (i.e. lowest AR and MA orders), that has a good fit. Information criteria (AIC and BIC) can be useful in determining the best fitting model.
 
 ***
 
@@ -1293,8 +1323,9 @@ In this video, I talk about ARIMA models, including how to interpret the residua
 
 
 ***
+## ARIMA model worked examples
 
-#### Worked example 1
+### Worked example 1
 
 Let's work through an example.
 
@@ -1342,7 +1373,7 @@ We see that the AIC is lower for ARIMA(3,0,1), while the BIC is lower for ARIMA(
 auto.arima(z, d=0, seasonal=FALSE, ic='bic')
 ```
 
-Now it gives us ARIMA(2,0,0). We also see that AR1 = 1.44, and AR2 = -0.67, not that different from the true parameters (1.5 and -0.75). 
+Now it gives us ARIMA(2,0,0). We also see that AR1 = 1.44, and AR2 = -0.67, not that different from the true parameters (1.5 and -0.75). Since ARIMA(2,0,0) is a simpler model (fewer parameters) than ARIMA(3,0,1), it is preferable.
 
 The last step is to check the model fitting by visualising the residuals.
 ```{r resid, exercise=TRUE, exercise.eval=FALSE}
@@ -1381,6 +1412,8 @@ The most important thing to remember is there is no perfect model - there are ju
 #### Worked example 2
 
 Let's use data on the thousands of international airline passengers (1949-1960).
+
+*** 
 
 **Step 1:** Check for non-stationarity
 
@@ -1447,7 +1480,7 @@ ARIMA modelling is useful for forecasting, identifying outliers, and interventio
 
 ***
 
-## Practical 3
+## Practical 3: ARIMA models
 
 In this practical session you will estimate and fit an ARIMA model. For these exercises you will use simulated data "*p*". 
 
@@ -1461,7 +1494,7 @@ You will learn the functions:
 ***
 
 #### Exercise 3.1 Step 1 - Stationarity
-```{r exercise3_1, exercise.cap="Exercise 3.1", tidy=TRUE, exercise=TRUE, exercise.eval=FALSE,  exercise.lines=6}
+```{r exercise3_1,tidy=TRUE, exercise=TRUE, exercise.eval=FALSE,  exercise.lines=6}
 # Check the data "p" for stationarity - will a transformation be needed?
 
 
@@ -1476,7 +1509,7 @@ You will learn the functions:
 ***
 
 #### Exercise 3.2 Step 2 - AR and MA orders
-```{r exercise3_2, exercise.cap="Exercise 3.2", tidy=TRUE, exercise=TRUE, exercise.lines=7, exercise.eval=FALSE }
+```{r exercise3_2,tidy=TRUE, exercise=TRUE, exercise.lines=7, exercise.eval=FALSE }
 # Plot the ACF/PACF plots - what are the potential AR/MA terms?
 
 
@@ -1498,7 +1531,7 @@ auto.arima(p, d=1)
 ***
 
 #### Exercise 3.3 Step 3 - Estimating model and checking fit
-```{r exercise3_3, exercise.cap="Exercise 3.3", tidy=TRUE, exercise=TRUE, exercise.eval=FALSE , fig.height=7, fig.width=5, exercise.lines=9}
+```{r exercise3_3,tidy=TRUE, exercise=TRUE, exercise.eval=FALSE , fig.height=7, fig.width=5, exercise.lines=9}
 # Run the ARIMA model using sarima()
 
 
