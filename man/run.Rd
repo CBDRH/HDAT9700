@@ -7,7 +7,7 @@
 run(app)
 }
 \arguments{
-\item{app}{A Shiny app}
+\item{app}{A Shiny app. Valid apps are: "dags-1", "backdoor-paths", "collider-bias", "matching-1", "matching-2", "mlm-1", "missing-data-1"}
 }
 \description{
 Launch an interactive Shiny app

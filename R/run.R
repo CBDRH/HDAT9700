@@ -1,6 +1,6 @@
 #' Launch an interactive Shiny app
 #'
-#' @param app A Shiny app
+#' @param app A Shiny app. Valid apps are: "dags-1", "backdoor-paths", "collider-bias", "matching-1", "matching-2", "mlm-1", "missing-data-1"
 #' @examples
 #' run("missing-data-1")
 #' @export
