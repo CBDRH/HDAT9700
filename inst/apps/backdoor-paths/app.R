@@ -21,7 +21,7 @@ ui <- fluidPage(
     # Sidebar with a slider input for number of bins
     sidebarLayout(
         sidebarPanel(
-            sliderInput("nodes", "Choose the number of nodes", value = 5, min = 3, max = 7, step = 1),
+            sliderInput("nodes", "Choose the number of nodes", value = 5, min = 3, max = 9, step = 1),
             sliderInput("connectivity", "Set the degree of connectivity", value = 0.5, min = 0.2, max = 0.8, step = 0.1),
             helpText("Choosing a low number of nodes with low connectivity will produce a trivial or boring DAG. On the other hand,
                      choosing a high number of nodes with high connectivity will result in a very complex DAG"),

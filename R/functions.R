@@ -1,105 +1,15 @@
 # Functions for HDAT9700 Statistical Modelling II
 
-# The blocks below can be used to map chapters to tutorials
-# e.g. The chapter1() function is mapped to the tutorial "research-design-and-methods"
-# If mapping a chapter to a new tutorial make sure to update all the information for
-# that chapter in the relevant block below
 
-
-#' Chapter 1. Research Design and Methods
+#' Show an index of available tutorials
 #'
-#' Launch the tutorial for chapter 1
-#'
+#' @return
 #' @export
-chapter1 <- function() {
-  learnr::run_tutorial("rdx", utils::packageName())
-}
+#'
+#' @examples
+#' index()
+index <- function(){
 
+  learnr::available_tutorials(package = 'hdat9700tutorials')
 
-#' Chapter 2. Directed Acyclic Graphs (DAGs)
-#'
-#' Launch the tutorial for chapter 2
-#'
-#' @export
-chapter2 <- function() {
-  learnr::run_tutorial("dags", utils::packageName())
-}
-
-
-#' Chapter 3. Propensity score matching
-#'
-#' Launch the tutorial for chapter 3
-#'
-#' @export
-chapter3 <- function() {
-  learnr::run_tutorial("psm", utils::packageName())
-}
-
-
-#' Chapter 4. Growth Curve Modelling
-#'
-#' Launch the tutorial for chapter 4
-#'
-#' @export
-chapter4 <- function() {
-  learnr::run_tutorial("tsa", utils::packageName())
-}
-
-
-#' Chapter 5. Interrupted Time Series Analysis
-#'
-#' Launch the tutorial for chapter 5
-#'
-#' @export
-chapter5 <- function() {
-  learnr::run_tutorial("its", utils::packageName())
-}
-
-
-#' Chapter 6. Multilevel Modelling (Part I)
-#'
-#' Launch the tutorial for chapter 6
-#'
-#' @export
-chapter6 <- function() {
-  learnr::run_tutorial("mlm1", utils::packageName())
-}
-
-
-#' Chapter 7. Multilevel Modelling (Part II)
-#'
-#' Launch the tutorial for chapter 7
-#'
-#' @export
-chapter7 <- function() {
-  learnr::run_tutorial("mlm2", utils::packageName())
-}
-
-
-#' Chapter 8. Multilevel Modelling (Part III)
-#'
-#' Launch the tutorial for chapter 8
-#'
-#' @export
-chapter8 <- function() {
-  learnr::run_tutorial("mlm3", utils::packageName())
-}
-
-
-#' Chapter 9. Missing data and multiple imputation
-#'
-#' Launch the tutorial for chapter 9
-#'
-#' @export
-chapter9 <- function() {
-  learnr::run_tutorial("mi", utils::packageName())
-}
-
-#' Chapter 10. Presenting and summarising model results
-#'
-#' Launch the tutorial for chapter 10
-#'
-#' @export
-chapter10 <- function() {
-  learnr::run_tutorial("pres", utils::packageName())
 }
