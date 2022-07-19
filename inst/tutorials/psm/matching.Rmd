@@ -23,12 +23,21 @@ library("cem")
 library("optmatch")
 library("knitr")
 library("kableExtra")
+library("ggplot2")
 library("ggdag")
+library("cobalt")
+
+# Define colors for DAGs
+exposureCol <- "#CDDC55"
+outcomeCol <- "#4FBAE4"
+adjustedCol <- "seagreen"
+unadjustedCol <- "pink"
+naCol <- 'grey80'
 ```
 
 
 ## Overview  
-Welcome to HDAT9700 Statistical Modelling II Chapter 3! 
+Welcome to HDAT9700 Statistical Modelling II! 
 
 ![](https://youtu.be/cvb17LGNKQ4)
 
@@ -367,7 +376,7 @@ Can you think of an example where (i) the ATE and (ii) the ATT would be more rel
 
 
 ## Randomisation 
-Randomised experiments were discussed in Chapter 1. Classical random experiments have three core characteristics:  
+Classical random experiments have three core characteristics:  
 1. Large $N$  
 2. Random selection of individuals from a population  
 3. Random assignment of individuals to a treatment  
@@ -402,12 +411,36 @@ Think back on last week's lecture!
 Because the Helping Hands program is targeted towards 'vulnerable' families there are likely to be confounding background characteristics (L variables, in our notation) that increase the chances of taking part in the program and decrease the chances of on-track development. For vulnerable families, this might include things like education, employment, physical & mental health, access to health services and other supports, parenting skills, and drug & alcohol issues. In the DAG below these confounding factors have been grouped together into a single node: 'pre-existing family vulnerabilities'.
  
 ``` {r}
-ggdag_confounder_triangle(x="Helping hands participation", y="Development at age five", z="Pre-existing family issues", 
-                          use_labels = "label",
-                          label_col = "black",
-                          text = FALSE,
-                          x_y_associated = TRUE) +
-  theme_dag()
+g <- 'dag {
+    A [exposure,pos="0.000,0.000"]
+    Y [outcome,pos="2.000,0.000"]
+    L [pos="1.000,1.000"]
+    L -> A
+    L -> A
+    X -> Y
+}'
+
+g %>%
+  dagitty::dagitty() %>%
+  dag_label(labels = c(A="Helping hands participation", Y="Development at age five", L="Pre-existing family issues")) %>%
+  adjust_for(NULL) %>% 
+  node_status() %>% 
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
+  geom_dag_point(aes(color = adjusted)) +
+  geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
+  geom_dag_text() +
+  geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
+  theme_dag(legend.position = 'bottom') +
+  scale_adjusted() +
+  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
+  scale_fill_manual(NULL,
+                    values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
+                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
+                    na.value = naCol) +
+  scale_color_manual(NULL, guide = 'none',
+                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
+  scale_shape_manual(NULL, guide = 'none',
+                     values = c(unadjusted = 21, adjusted = 22))
 ```
 
 
@@ -888,7 +921,7 @@ Adapt the above code to implement exact matching based on the variable **age**. 
 
 ```
 
-## Assessing balance {data-progressive=TRUE}
+## Assessing balance
 
 Because exact matching is rarely possible in practice, it is expected that there will be some imbalance in the $L$ covariates comparing the matched treated and untreated groups. The analyst must assess the degree of balance achieved by different matching approaches, and attempt to optimise the balance. 
 
@@ -927,98 +960,83 @@ As with many statistical techniques, there is a trade-off between bias and varia
 * Reduces sample size  
 * Bias $\downarrow$ Variance $\uparrow$ 
 
-## Practical 3 {data-progressive=TRUE}
+### Assessing balance with the Cobalt package
+
+The purpose of matching data prior to analysis is to balance the $L$ covariates between treated and control groups. Greater balance makes the assumption of exchangeability more plausible, which strengthens any causal inferences made from observational data. An important part of the process is therefore assessing how well the matching approach has done at balancing the covariates.
+
+Although `matchit` does provide functionality to compare balance, there are much nice options available through the `cobalt` package. `cobalt` stands for **Co**variate **Bal**ance **T**ables (and Plots) and was developed specifically to help compare balance on matched data. You can read more about `cobalt` on it's GitHub page [here](https://ngreifer.github.io/cobalt/) and check out this article on [comparing balance](https://cran.r-project.org/web/packages/MatchIt/vignettes/assessing-balance.html#introduction). 
+
+The key functions in the `cobalt` package are: 
+
+* `bal.tab()` for tables of balance statistics 
+
+* `bal.plot()` for plots comparing the distribution of a variable before and after matching
+* `love.plot()` for a single plot comparing balance before and after matching for all variables `r emo::ji('heart')`
+
+Each of these functions take a `matchit` object as the main argument (`cobalt` also works with other packages that undertake matching). Let's check out some examples:
+
+
+#### `bal.tab()`
+
+The `bal.tab()` function produces a table that summarises the balance before and after matching for all variables included in matching. Different balance metrics are available with the default being the mean difference. 
+
+Setting `un = TRUE` includes the unstandardised data and setting `binary` and `continuous` to `raw` shows the raw mean differences. Standardised mean differences can be presented by setting `binary` and `continuous` to `std`.
+
+```{r ex7, exercise = TRUE, exercise.lines = 8}
+match4 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "nearest")
+
+bal.tab(match4, un = TRUE, binary = "raw", continuous = 'raw')
+
+```
+
+In the default code above we can see, for example, the mean age difference between treated and untreated individuals was -2.2 years whereas in the mathced data the mean difference in age was reduced to 0.5 years. 
+
+Try changing the the `binary` and `continuous` arguments to `std`. What changes and why would this be useful?
+
+*** 
+
+#### `bal.plot()`
+
+THe `bal.plot()` function compares the distribution of a covariate before and after matching. You could use this to assess the degree of common support. Let's look at an example.
+
+```{r ex8, exercise = TRUE}
+match4 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "nearest")
+
+bal.plot(match4, var.name = 'age')
+```
+
+Here we can see that treated individuals have a narrow age range compared to untreated individuals. But at least we know there should be suitable matches in terms of age for our treated individuals. Try editing the code above to examine some of the other variables. 
+
+
+#### `love.plot()` `r emo::ji('heart')`
+
+A love plot is a popular plot that compares the balance before and after matching for all covariates included in the matching procedure. 
+
+```{r ex9, exercise = TRUE}
+match4 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "nearest")
+
+love.plot(match4)
+```
+
+There are many options that will allow you to refine this plot, enter `?love.plot` at the console for more details. 
+
+## Practical 3
+
 ### Assessing balance
 
-The purpose of matching data prior to analysis is to balance the $L$ covariates between treated and control groups. Greater balance makes the assumption of exchangeability more plausible, which strengthens any causal inferences made from observational data. An important part of the process is therefore assessing how well the matching approach has done at balancing the covariates. `MatchIt` includes several diagnostics to help assess balance, including numerical summaries and visualisations. 
-
-#### Remember
-* It is ok to try multiple matching techniques to achieve balance  
-* The outcome $Y$ should never be used when matching
-
-
-### Numerical summaries
-Calling the `summary()` function on the output of `matchit` returns a comparison of the means of the matched variables in treated and untreated gorups, for the raw data and for the matched data. An example is shown below:
-
-
-``` {r ex7, exercise=FALSE, eval=TRUE, echo=TRUE}
-match4 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "nearest")
-
-summary(match4)
-```
-
-Examining the above output we can see that the matching step has improved the balance of $L$ variables in the treated and untreated groups. For example: 
-
-* In the raw data, treated individuals were younger on average compared to untreated individuals (25.8 years versus 28.0 years)  
-* In the matched data, the treated and untreated individuals had a similar age on average (25.8 years versus 25.3 years)
-
-The data still aren't perfectly matched however. For example, in the matched data the proportion of Black individuals is still notably higher in the treated group (84%) than the untreated group (47%).
-
-### Graphical summaries
-`MatchIt` provides three main graphical summaries:
-
-1. **Jitter plot** plots the distribution of the propensity scores in the treated and untreated groups  
-2. **Histogram** plots histograms of the propensity score for the treated and untreated groups  
-2. **Q-Q plot** plots quantile-quantile plots for the individual $L$ variables 
-
-These diagnostic graphs are accessed by calling the `plot()` on the output of `matchit`, and specifying the appropriate type argument:
-
-``` {r ex8, exercise=FALSE, eval=FALSE, echo=TRUE}
-plot(match4, type="jitter")
-plot(match4, type="hist")
-plot(match4, type="QQ")
-```
-
-### Jitter plot
-Example code and output for the jitter plot graphical diagnostic are shown below.
-
-``` {r ex9, exercise=FALSE, eval=TRUE, echo=TRUE, warning=FALSE, message=FALSE}
-match4 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "nearest")
-
-plot(match4, type="jitter")
-```
-
-* There is common support for the propensity score for the matched treated and control units between 0 and 0.8 (approx) 
-
-### Histogram
-Example code and output for the histogram graphical diagnostic are shown below.
-
-``` {r ex10, exercise=FALSE, eval=TRUE, echo=TRUE}
-match4 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "nearest")
-
-plot(match4, type="hist")
-```
-
-* The propensity score is more balanced in the matched data than in the raw data
-
-### Quantile-Quantile (Q-Q) plot
-Example code and output for the Q-Q graphical diagnostic are shown below.
-
-``` {r ex11, exercise=FALSE, eval=TRUE, echo=TRUE}
-match4 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "nearest")
-
-plot(match4, type="QQ")
-```
-
-* Q-Q plots plot the quantiles of the treated and untreated units in the raw data and the matched data    
-* When variables are balanced the data points will lie on the 45 degree line ($y=x$)  
-
-
-### Try it yourself
 Use the code blocks below to match the lalonde data on all available variables according to the following specifications:
 
 1. Nearest neighbour propensity score matching (2:1 ratio)   
 2. Optimal matching based on the Mahalanobis distance (2:1 ratio)  
 3. Coarsened exact matching
 
-Examine the balance diagnostics. Which approach achieves the best balance? 
+Examine the balance diagnostics using the `cobalt` functions. Which approach achieves the best balance? 
 
 ``` {r ex12, exercise=TRUE, exercise.lines=8}
 # Nearest neighbour propensity score matching (2:1 ratio) 
 
 match5 <- matchit( )
 
-summary(match5)
 ```
 
 ``` {r ex12-hint}
@@ -1026,7 +1044,6 @@ summary(match5)
 
 match5 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "nearest", distance = "logit", ratio = 2)
 
-summary(match5)
 ```
 
 
@@ -1037,7 +1054,6 @@ summary(match5)
 
 match6 <- matchit( )
 
-summary(match6)
 ```
 
 ``` {r ex13-hint}
@@ -1045,7 +1061,6 @@ summary(match6)
 
 match6 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "optimal", distance = "mahalanobis", ratio = 2)
 
-summary(match6)
 ```
 
 ***
@@ -1056,7 +1071,6 @@ summary(match6)
 
 match7 <- matchit( )
 
-summary(match7)
 ```
 
 ``` {r ex14-hint}
@@ -1064,7 +1078,6 @@ summary(match7)
 
 match7 <- matchit(treat ~ age + educ + race + married + nodegree + re74 + re75, data=lalonde, method = "cem")
 
-summary(match7)
 ```
 
 ## Practical 4 {data-progressive=TRUE}

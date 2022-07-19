@@ -5,7 +5,7 @@
                                  "'I am the walrus' - Lennon-McCartney",
                                  "'A trend is a trend is a trend. But the question is, will it bend? Will it alter its course through some unforeseen force and come to a premature end?' - Alexander Cairncross, British Economist",
                                  "'The Analytical Engine has no pretensions whatever to originate anything. It can do whatever we know how to order it to perform.' - Ada Lovelace, English mathematician and writer",
-                                 "'Draw your assumptions before your conclusions' - Miguel Hernan, Spanish-American physician and epidemiologist",
+                                 "'Draw your assumptions before your conclusions' - Miguel Hernán, Spanish-American physician and epidemiologist",
                                  "'Statistics is the grammer of Science' - Karl Pearson, English statistician",
                                  "'Science and everyday life cannot and should not be seperated' - Rosalind Franklin, English chemist ",
                                  "'There are three kinds of lies - lies, damned lies and statistics' - Mark Twain, American writer",
