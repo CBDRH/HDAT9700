@@ -118,12 +118,18 @@ $(document).ready(function () {
 
 <div class="topics">
 
-<p><img src="images/UNSW_2017_Big_Data_landscape.jpg" style="width:75.0%" /></p>
+<p><img src="images/UNSW_2017_Big_Data_landscape.jpg"
+style="width:75.0%" /></p>
 <div id="section-overview" class="section level2">
 <h2>Overview</h2>
-<p>Welcome to HDAT9700 Statistical Modelling II - Directed Acyclic Graphs (DAGs)!</p>
+<p>Welcome to HDAT9700 Statistical Modelling II - Directed Acyclic
+Graphs (DAGs)!</p>
 <p><img src="https://youtu.be/lhkmc-dXC7M" /></p>
-<p>In this chapter you will learn how to represent assumptions about casual mechanisms using a special type of graph: a Directed Acyclic Graph, or DAG. DAGs are useful because they allow us to formalise our assumptions and can help inform variable selection for causal models.</p>
+<p>In this chapter you will learn how to represent assumptions about
+casual mechanisms using a special type of graph: a Directed Acyclic
+Graph, or DAG. DAGs are useful because they allow us to formalise our
+assumptions and can help inform variable selection for causal
+models.</p>
 <p>In this chapter you will learn how to:</p>
 <ul>
 <li>Represent common causal structures using a DAG</li>
@@ -132,44 +138,88 @@ $(document).ready(function () {
 <hr />
 <div id="section-prereadings" class="section level3">
 <h3>Prereadings</h3>
-<p>The pre-reading for this chapter is a <em>tweetorial</em> by epidemiologist <a href="https://twitter.com/EpiEllie">Ellie Murray</a> from Boston University School of Public Health.</p>
-<p>The tweetorial focuses on <strong>“the importance of being clear about your question &amp; using that to drive your methods”</strong>. Find it <a href="https://twitter.com/EpiEllie/status/1214641734900224003">here</a>.</p>
-<p>Ellie’s tweetorial was prompted by a disparaging tweet about <a href="https://www.nature.com/articles/bjc2017146.pdf">this</a> study, which explores the relationship between frozen shoulder and the risk of cancer. The disparaging tweet criticised the study for failing to adjust for confounding. In her tweetorial, Ellie explains that this was a descriptive study, not one addressing a causal question and that in fact adjusting for confounding may well have led to the wrong answer to the question at hand.</p>
-<p>This pre-reading should help you understand that we always need to be clear about the purpose of our models, as our purpose dictates how we specify the model and what variables we should control for.</p>
+<p>The pre-reading for this chapter is a <em>tweetorial</em> by
+epidemiologist <a href="https://twitter.com/EpiEllie">Ellie Murray</a>
+from Boston University School of Public Health.</p>
+<p>The tweetorial focuses on <strong>“the importance of being clear
+about your question &amp; using that to drive your methods”</strong>.
+Find it <a
+href="https://twitter.com/EpiEllie/status/1214641734900224003">here</a>.</p>
+<p>Ellie’s tweetorial was prompted by a disparaging tweet about <a
+href="https://www.nature.com/articles/bjc2017146.pdf">this</a> study,
+which explores the relationship between frozen shoulder and the risk of
+cancer. The disparaging tweet criticised the study for failing to adjust
+for confounding. In her tweetorial, Ellie explains that this was a
+descriptive study, not one addressing a causal question and that in fact
+adjusting for confounding may well have led to the wrong answer to the
+question at hand.</p>
+<p>This pre-reading should help you understand that we always need to be
+clear about the purpose of our models, as our purpose dictates how we
+specify the model and what variables we should control for.</p>
 </div>
 <div id="section-core-readings" class="section level3">
 <h3>Core readings:</h3>
 <ul>
-<li><p><a href="https://doi.org/10.1080/09332480.2019.1579578">Miguel A. Hernán, John Hsu &amp; Brian Healy (2019) A Second Chance to Get Causal Inference Right: A Classification of Data Science Tasks, <em>Chance</em>, 32(1), 42-49</a></p></li>
-<li><p><a href="https://doi.org/10.1016/j.chiabu.2019.02.011">“Austin, Anna E., Tania A. Desrosiers, and Meghan E. Shanahan. Directed Acyclic Graphs: An under-utilized tool for child maltreatment research. Child Abuse &amp; Neglect 91 (2019): 78-87”</a></p></li>
+<li><p><a href="https://doi.org/10.1080/09332480.2019.1579578">Miguel A.
+Hernán, John Hsu &amp; Brian Healy (2019) A Second Chance to Get Causal
+Inference Right: A Classification of Data Science Tasks,
+<em>Chance</em>, 32(1), 42-49</a></p></li>
+<li><p><a href="https://doi.org/10.1016/j.chiabu.2019.02.011">“Austin,
+Anna E., Tania A. Desrosiers, and Meghan E. Shanahan. Directed Acyclic
+Graphs: An under-utilized tool for child maltreatment research. Child
+Abuse &amp; Neglect 91 (2019): 78-87”</a></p></li>
 </ul>
 </div>
 <div id="section-additional-resources" class="section level3">
 <h3>Additional resources:</h3>
 <ul>
-<li><p><a href="http://www.dagitty.net/learn/">dagitty.net</a>: A great website explaining DAGs and related topics, with built-in applets to test your knowledge</p></li>
-<li><p>An excellent <a href="https://www.youtube.com/playlist?list=PLcTBLulJV_AKmUTH-nUsxxFyRQoWnUzxU">YouTube video series on Causality and DAGs</a> presented by Assistant Professor Nick Huntington-Klein from Seattle University. This is a series of 14 videos that starts from the very basics of causal thinking with DAGs.</p></li>
-<li><p>The Causal Inference Podcast, hosted by Ellie Murray and Lucy D’Agostino McGowan. Check out the first episode: <a href="https://casualinfer.libsyn.com/casual-inference-talking-target-trials-with-miguel-hernan-episode-01">Talking target trials with Miguel Hernán</a></p></li>
+<li><p><a href="http://www.dagitty.net/learn/">dagitty.net</a>: A great
+website explaining DAGs and related topics, with built-in applets to
+test your knowledge</p></li>
+<li><p>An excellent <a
+href="https://www.youtube.com/playlist?list=PLcTBLulJV_AKmUTH-nUsxxFyRQoWnUzxU">YouTube
+video series on Causality and DAGs</a> presented by Assistant Professor
+Nick Huntington-Klein from Seattle University. This is a series of 14
+videos that starts from the very basics of causal thinking with
+DAGs.</p></li>
+<li><p>The Causal Inference Podcast, hosted by Ellie Murray and Lucy
+D’Agostino McGowan. Check out the first episode: <a
+href="https://casualinfer.libsyn.com/casual-inference-talking-target-trials-with-miguel-hernan-episode-01">Talking
+target trials with Miguel Hernán</a></p></li>
 </ul>
 </div>
 </div>
 <div id="section-three-tasks-of-data-science" class="section level2">
 <h2>Three tasks of data science</h2>
-<p>The statistical analyses you will perform as Health Data Scientists can be categorised according to three broad tasks of data science.</p>
+<p>The statistical analyses you will perform as Health Data Scientists
+can be categorised according to three broad tasks of data science.</p>
 <ol style="list-style-type: decimal">
 <li>Description</li>
 <li>Prediction</li>
 <li>Causal inference</li>
 </ol>
-<p><strong>Description</strong> involves using statistical models to summarise the relationship between variables. There is no reliance on any underlying causal theory.</p>
-<p><strong>Prediction</strong> involves using statistical models to predict new or future outcomes (Y) given a set of input values or variables (X).</p>
-<p><strong>Causal inference</strong> involves estimating the causal effect of an exposure, treatment or intervention. Answering causal questions boils down to comparing outcomes under two or more scenarios, for example, “Would this patient have better chances of survival given treatment A or Treatment B”?</p>
-<p>The table below (from <a href="https://doi.org/10.1080/09332480.2019.1579578">Hernán et al 2019</a>) provides examples of the types of questions, data and analysis methods associated with the tasks of description, prediction and causal inference.</p>
+<p><strong>Description</strong> involves using statistical models to
+summarise the relationship between variables. There is no reliance on
+any underlying causal theory.</p>
+<p><strong>Prediction</strong> involves using statistical models to
+predict new or future outcomes (Y) given a set of input values or
+variables (X).</p>
+<p><strong>Causal inference</strong> involves estimating the causal
+effect of an exposure, treatment or intervention. Answering causal
+questions boils down to comparing outcomes under two or more scenarios,
+for example, “Would this patient have better chances of survival given
+treatment A or Treatment B”?</p>
+<p>The table below (from <a
+href="https://doi.org/10.1080/09332480.2019.1579578">Hernán et al
+2019</a>) provides examples of the types of questions, data and analysis
+methods associated with the tasks of description, prediction and causal
+inference.</p>
 <div class="figure">
 <img src="images/hernan-table1.png" style="width:100.0%" alt="" />
-<p class="caption">Three tasks of data science (from Hernán et al 2019)</p>
+<p class="caption">Three tasks of data science (from Hernán et al
+2019)</p>
 </div>
-<p><div class="panel-heading tutorial-quiz-title">Quiz</div></p>
+<div class="panel-heading tutorial-quiz-title">Quiz</div>
 <div class="panel panel-default">
 <div data-label="quiz1-1" class="tutorial-question panel-body">
 <div id="quiz1-1-answer_container" class="shiny-html-output"></div>
@@ -178,23 +228,67 @@ $(document).ready(function () {
 <script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
 </div>
 </div>
-<div class="aside">
-<h3 id="section-explanation-or-causal-inference">“Explanation” or “Causal Inference”?</h3>
-<p>Causal inference tasks are often referred to as “Explanation” (see the video <a href="https://www.youtube.com/watch?v=vWH_HNfQVRI&amp;t=1s">To Explain or to Predict?</a> for example). However, Hernán et al (2019) emphasise that <strong>quantifying causal effects doesn’t necessarily equate to explaining causal mechanisms</strong>. This is a fair point: knowing that smoking causes cancer is different to knowing which chemicals are carcinogenic, for example.</p>
+<div id="section-explanation-or-causal-inference"
+class="section level3 aside">
+<h3>“Explanation” or “Causal Inference”?</h3>
+<p>Causal inference tasks are often referred to as “Explanation” (see
+the video <a
+href="https://www.youtube.com/watch?v=vWH_HNfQVRI&amp;t=1s">To Explain
+or to Predict?</a> for example). However, Hernán et al (2019) emphasise
+that <strong>quantifying causal effects doesn’t necessarily equate to
+explaining causal mechanisms</strong>. This is a fair point: knowing
+that smoking causes cancer is different to knowing which chemicals are
+carcinogenic, for example.</p>
 </div>
 </div>
 <div id="section-variable-selection" class="section level2">
 <h2>Variable selection</h2>
-<p>As you learned from this chapter’s pre-reading, how we go about choosing the variables to include in the model depend crucially on what we are trying to achieve.</p>
-<p>For <strong>predictive</strong> models, the goal is to build a model that accurately predicts the outcome of interest with high sensitivity and specificity, and performs well on new data. In terms of variable selection, the primary consideration is choosing variables that help to achieve this goal (although you would also consider practical things like what variables will be available at the time of prediction). Variable selection could be based on univariate analysis, selecting variables that show a strong association with the outcome, or a selection algorithm like forward, backward or stepwise selection. Many machine learning algorithms will will automatically select (or appropriately weight) the most predictive variables from the available set of covariates. The covariates in a predictive model all play the same role so we can refer to them collectively as <strong>predictors</strong>.</p>
-<p>For <strong>causal</strong> models, the goal is to estimate the effect of a given intervention or treatment on a predefined outcome of interest. Really, the only parameter of interest from our causal model is the estimate for that intervention or treatment. In this context, other variables (that may or may not be available in your dataset) have different roles and different names which you might already have come across: <strong>confounders</strong>, <strong>mediators</strong> and <strong>colliders</strong>. Importantly, this means that <strong>just because a variable is correlated with the outcome of interest, that doesn’t necessarily mean it is a good candidate to include in the model</strong>. In order to understand what variables to include in a causal model, we need to recognise these different types of variables, and understand the role they play in the causal relationship of interest.</p>
-<p>Distinguishing between confounders, mediators, colliders and other types of variables relies on expert knowledge about the subject matter in question. There is no algorithm or automated selection procedure that can replace this knowledge. Directed Acyclic Graphs, the main topic of this chapter, are an important tool that help us to formalise and graphically represent expert knowledge, and in doing so can help us to select the variables that should be included in a causal model.</p>
+<p>As you learned from this chapter’s pre-reading, how we go about
+choosing the variables to include in the model depend crucially on what
+we are trying to achieve.</p>
+<p>For <strong>predictive</strong> models, the goal is to build a model
+that accurately predicts the outcome of interest with high sensitivity
+and specificity, and performs well on new data. In terms of variable
+selection, the primary consideration is choosing variables that help to
+achieve this goal (although you would also consider practical things
+like what variables will be available at the time of prediction).
+Variable selection could be based on univariate analysis, selecting
+variables that show a strong association with the outcome, or a
+selection algorithm like forward, backward or stepwise selection. Many
+machine learning algorithms will will automatically select (or
+appropriately weight) the most predictive variables from the available
+set of covariates. The covariates in a predictive model all play the
+same role so we can refer to them collectively as
+<strong>predictors</strong>.</p>
+<p>For <strong>causal</strong> models, the goal is to estimate the
+effect of a given intervention or treatment on a predefined outcome of
+interest. Really, the only parameter of interest from our causal model
+is the estimate for that intervention or treatment. In this context,
+other variables (that may or may not be available in your dataset) have
+different roles and different names which you might already have come
+across: <strong>confounders</strong>, <strong>mediators</strong> and
+<strong>colliders</strong>. Importantly, this means that <strong>just
+because a variable is correlated with the outcome of interest, that
+doesn’t necessarily mean it is a good candidate to include in the
+model</strong>. In order to understand what variables to include in a
+causal model, we need to recognise these different types of variables,
+and understand the role they play in the causal relationship of
+interest.</p>
+<p>Distinguishing between confounders, mediators, colliders and other
+types of variables relies on expert knowledge about the subject matter
+in question. There is no algorithm or automated selection procedure that
+can replace this knowledge. Directed Acyclic Graphs, the main topic of
+this chapter, are an important tool that help us to formalise and
+graphically represent expert knowledge, and in doing so can help us to
+select the variables that should be included in a causal model.</p>
 </div>
 <div id="section-dags" class="section level2">
 <h2>DAGs</h2>
 <div id="section-directed-acyclic-graphs-dags" class="section level3">
 <h3>Directed Acyclic Graphs (DAGs)</h3>
-<p>DAGs are graphical tools used to represent the assumptions about causal relationships for a given problem. Representing these assumptions using a graph is an important approach because it allows you to</p>
+<p>DAGs are graphical tools used to represent the assumptions about
+causal relationships for a given problem. Representing these assumptions
+using a graph is an important approach because it allows you to</p>
 <ul>
 <li>Express expert knowledge explicitly</li>
 <li>Facilitate discussions about variable selection with co-authors</li>
@@ -203,91 +297,184 @@ $(document).ready(function () {
 </div>
 <div id="section-what-is-a-dag" class="section level3">
 <h3>What is a DAG</h3>
-<p>DAGs are diagrams comprising nodes (circles or squares) connected by edges (arrows). These diagrams represent assumptions about the causal relationships of interest. The nodes in a DAG represent observed or unobserved variables or constructs while the arrows indicate the direction of the causal relationship between variables.</p>
-<p>In this simple DAG, the arrow points from X to Y, representing the asumption that <strong>X</strong> causes <strong>Y</strong>.</p>
+<p>DAGs are diagrams comprising nodes (circles or squares) connected by
+edges (arrows). These diagrams represent assumptions about the causal
+relationships of interest. The nodes in a DAG represent observed or
+unobserved variables or constructs while the arrows indicate the
+direction of the causal relationship between variables.</p>
+<p>In this simple DAG, the arrow points from X to Y, representing the
+asumption that <strong>X</strong> causes <strong>Y</strong>.</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-1-1.png" width="624" /></p>
-<p>The absense of an arrow between two variables represents the assumption that neither neither variable is causing or caused by the other. In the next DAG, <strong>Z</strong> causes <strong>X</strong> and <strong>Z</strong> causes <strong>Y</strong>, but <strong>X</strong> and <strong>Y</strong> are <em>causally</em> unrelated (there is no arrow pointing from <strong>X</strong> to <strong>Y</strong> or from <strong>Y</strong> to X).</p>
+<p>The absense of an arrow between two variables represents the
+assumption that neither neither variable is causing or caused by the
+other. In the next DAG, <strong>Z</strong> causes <strong>X</strong> and
+<strong>Z</strong> causes <strong>Y</strong>, but <strong>X</strong> and
+<strong>Y</strong> are <em>causally</em> unrelated (there is no arrow
+pointing from <strong>X</strong> to <strong>Y</strong> or from
+<strong>Y</strong> to X).</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-2-1.png" width="624" /></p>
-<p>As we will discuss at length, the absence of an arrow between two nodes on a DAG, doesn’t mean that the variables are uncorrelated in an observational dataset. What if our DAG above represented <strong>sunshine</strong>, <strong>icecream sales</strong> and <strong>sunburn</strong>?</p>
+<p>As we will discuss at length, the absence of an arrow between two
+nodes on a DAG, doesn’t mean that the variables are uncorrelated in an
+observational dataset. What if our DAG above represented
+<strong>sunshine</strong>, <strong>icecream sales</strong> and
+<strong>sunburn</strong>?</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-3-1.png" width="624" /></p>
-<p>We know that icecream sales definitely don’t cause sunburn, but you wouldn’t be surprised to find an association between ice-cream sales and incidence of sunburn (a case of correlation not implying causation!). This is a classic example of <strong>confounding bias</strong>. The relationship between ice-cream sales and sunburn is <strong>confounded</strong> by sunshine, inducing an association between the two variables, even though there is no causal relationship.</p>
-<p>By using expert knowledge to express our qualitative understanding of causal relationships of interest, DAGs help us to distinguish between association and causation.</p>
+<p>We know that icecream sales definitely don’t cause sunburn, but you
+wouldn’t be surprised to find an association between ice-cream sales and
+incidence of sunburn (a case of correlation not implying causation!).
+This is a classic example of <strong>confounding bias</strong>. The
+relationship between ice-cream sales and sunburn is
+<strong>confounded</strong> by sunshine, inducing an association between
+the two variables, even though there is no causal relationship.</p>
+<p>By using expert knowledge to express our qualitative understanding of
+causal relationships of interest, DAGs help us to distinguish between
+association and causation.</p>
 </div>
 <div id="section-properties-of-dags" class="section level3">
 <h3>Properties of DAGS</h3>
-<p>There are some formal requirements for a causal DAG. As indicated by the name, DAGs should be <strong>directed</strong> and <strong>acyclic</strong>.</p>
+<p>There are some formal requirements for a causal DAG. As indicated by
+the name, DAGs should be <strong>directed</strong> and
+<strong>acyclic</strong>.</p>
 <ul>
-<li><p><strong>Directed</strong> The relationship between nodes are <em>directional</em>. The arrows indicate the direction of causality.</p></li>
-<li><p><strong>Acyclic</strong> DAGs must not have <em>cycles</em> between the nodes, i.e. a variable should not “cause” itself, either directly or through other variables. You can spot a cyclic relationship if it is possible to start at one node and follow the directional arrows to arrive back at the same node.</p></li>
+<li><p><strong>Directed</strong> The relationship between nodes are
+<em>directional</em>. The arrows indicate the direction of
+causality.</p></li>
+<li><p><strong>Acyclic</strong> DAGs must not have <em>cycles</em>
+between the nodes, i.e. a variable should not “cause” itself, either
+directly or through other variables. You can spot a cyclic relationship
+if it is possible to start at one node and follow the directional arrows
+to arrive back at the same node.</p></li>
 </ul>
-<p>Below is an example of a <strong>cyclic</strong> graph. The logic here is tempting: good health will improve educational outcomes, high levels of education will increase income and higher income can improve health. However this results in a cyclic graph: it is posible to start at any node and follow the directional arrows to return to that node, for example the path <strong>health</strong> <span class="math inline">\(\rightarrow\)</span> <strong>education</strong> <span class="math inline">\(\rightarrow\)</span> <strong>income</strong> <span class="math inline">\(\rightarrow\)</span> <strong>health</strong>.</p>
+<p>Below is an example of a <strong>cyclic</strong> graph. The logic
+here is tempting: good health will improve educational outcomes, high
+levels of education will increase income and higher income can improve
+health. However this results in a cyclic graph: it is posible to start
+at any node and follow the directional arrows to return to that node,
+for example the path <strong>health</strong> <span
+class="math inline">\(\rightarrow\)</span> <strong>education</strong>
+<span class="math inline">\(\rightarrow\)</span> <strong>income</strong>
+<span class="math inline">\(\rightarrow\)</span>
+<strong>health</strong>.</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-4-1.png" width="624" /></p>
-<p>This would suggest that health status causes health status. Because this graph is cyclic and not acyclic, it does not meet the formal requirements for a DAG. Often, we can untangle cyclic relationships by considering the timing of causes and effects. For example, the relationship between health, education and income could be re-expressed more meaningfully by considering health status at different points in time, as represented below.</p>
+<p>This would suggest that health status causes health status. Because
+this graph is cyclic and not acyclic, it does not meet the formal
+requirements for a DAG. Often, we can untangle cyclic relationships by
+considering the timing of causes and effects. For example, the
+relationship between health, education and income could be re-expressed
+more meaningfully by considering health status at different points in
+time, as represented below.</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-5-1.png" width="624" /></p>
-<p>This is a now valid DAG because it is <strong>directional</strong> and <strong>acyclic</strong>. Note the DAG above follows the convention that time moves from left to right.</p>
+<p>This is a now valid DAG because it is <strong>directional</strong>
+and <strong>acyclic</strong>. Note the DAG above follows the convention
+that time moves from left to right.</p>
 </div>
 <div id="section-the-causal-markov-assumption" class="section level3">
 <h3>The causal Markov assumption</h3>
-<p>A further property of a causal DAG is the <strong>causal Markov assumption</strong>. Although this sounds a bit scary, it is quite simple (cf Hernán and Robins 2020 Chapter 6 Technical Point 6.1 for a formal definition). It means that a common cause of any pair of variables on a DAG should also be included in the DAG.</p>
-<p>As an example, let’s say we are interested in the causal relationship between between aspirin and pulmonary embolism, in a setting where aspirin is more often prescribed to patients with high blood pressure. In this case, high blood pressure is a <strong>common cause</strong> of both aspirin usage and pulmonary embolism: patients with high blood pressure are more likely to be taking aspirin and high blood pressure increases the risk of a pulmonary embolism. To satisfy the causal Markov assumption, blood pressure should be included in the DAG (and controlled for in any corresponding analysis).</p>
+<p>A further property of a causal DAG is the <strong>causal Markov
+assumption</strong>. Although this sounds a bit scary, it is quite
+simple (cf Hernán and Robins 2020 Chapter 6 Technical Point 6.1 for a
+formal definition). It means that a common cause of any pair of
+variables on a DAG should also be included in the DAG.</p>
+<p>As an example, let’s say we are interested in the causal relationship
+between between aspirin and pulmonary embolism, in a setting where
+aspirin is more often prescribed to patients with high blood pressure.
+In this case, high blood pressure is a <strong>common cause</strong> of
+both aspirin usage and pulmonary embolism: patients with high blood
+pressure are more likely to be taking aspirin and high blood pressure
+increases the risk of a pulmonary embolism. To satisfy the causal Markov
+assumption, blood pressure should be included in the DAG (and controlled
+for in any corresponding analysis).</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-6-1.png" width="624" /></p>
-<p>Now, imagine a different setting where aspirin has been administered as the intervention in a randomised control trial. In this case, patients are randomly assigned, so there is no causal relationship between blood pressure and taking aspirin. Blood pressure still increases the risk of having a pulmonary embolism, but it is no longer a <strong>common cause</strong> of taking aspirin and having a pulmonary embolism so it is not necessary to include on the DAG.</p>
+<p>Now, imagine a different setting where aspirin has been administered
+as the intervention in a randomised control trial. In this case,
+patients are randomly assigned, so there is no causal relationship
+between blood pressure and taking aspirin. Blood pressure still
+increases the risk of having a pulmonary embolism, but it is no longer a
+<strong>common cause</strong> of taking aspirin and having a pulmonary
+embolism so it is not necessary to include on the DAG.</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-7-1.png" width="624" /></p>
 <hr />
 </div>
 <div id="section-other-terminology" class="section level3">
 <h3>Other terminology</h3>
-<p>Consider the DAG below which an investigator might use when postulating the causal relationship between exercise and melanoma. We will use this DAG to explain some additional useful terminology.</p>
+<p>Consider the DAG below which an investigator might use when
+postulating the causal relationship between exercise and melanoma. We
+will use this DAG to explain some additional useful terminology.</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-8-1.png" width="90%" /></p>
 <div id="section-path" class="section level4">
 <h4>Path</h4>
-<p>A path between two nodes in a DAG is a route that connects the two nodes, visiting no node more than once. The arrows don’t have to point in the same direction, but if they do the path is considered a <em>causal path</em>.</p>
+<p>A path between two nodes in a DAG is a route that connects the two
+nodes, visiting no node more than once. The arrows don’t have to point
+in the same direction, but if they do the path is considered a
+<em>causal path</em>.</p>
 <p>Below are examples of paths:</p>
 <ul>
-<li>exercise <span class="math inline">\(\leftarrow\)</span> health consciousness <span class="math inline">\(\rightarrow\)</span> screening (Not a causal path)</li>
-<li>health consciousness <span class="math inline">\(\rightarrow\)</span> screening <span class="math inline">\(\leftarrow\)</span> melanoma (Not a causal path)</li>
+<li>exercise <span class="math inline">\(\leftarrow\)</span> health
+consciousness <span class="math inline">\(\rightarrow\)</span> screening
+(Not a causal path)</li>
+<li>health consciousness <span
+class="math inline">\(\rightarrow\)</span> screening <span
+class="math inline">\(\leftarrow\)</span> melanoma (Not a causal
+path)</li>
 </ul>
 <p>Below are examples of <strong>causal</strong> paths</p>
 <ul>
-<li>exercise <span class="math inline">\(\rightarrow\)</span> sun exposure <span class="math inline">\(\rightarrow\)</span> melanoma</li>
-<li>sunexposure <span class="math inline">\(\rightarrow\)</span> melanoma</li>
+<li>exercise <span class="math inline">\(\rightarrow\)</span> sun
+exposure <span class="math inline">\(\rightarrow\)</span> melanoma</li>
+<li>sunexposure <span class="math inline">\(\rightarrow\)</span>
+melanoma</li>
 </ul>
 </div>
 <div id="section-parent" class="section level4">
 <h4>Parent</h4>
-<p>The parents for a given node in a DAG are the set of variables with an arrow pointing directly into that node. For example, a parent of <strong>melanoma</strong> is <strong>sun exposure</strong>.</p>
+<p>The parents for a given node in a DAG are the set of variables with
+an arrow pointing directly into that node. For example, a parent of
+<strong>melanoma</strong> is <strong>sun exposure</strong>.</p>
 </div>
 <div id="section-child" class="section level4">
 <h4>Child</h4>
-<p>A child of a given node X is any variable with an arrow pointing directly from X. For example, <strong>exercise</strong> and <strong>screening</strong> are child nodes of <strong>health consciousness</strong>.</p>
+<p>A child of a given node X is any variable with an arrow pointing
+directly from X. For example, <strong>exercise</strong> and
+<strong>screening</strong> are child nodes of <strong>health
+consciousness</strong>.</p>
 </div>
 <div id="section-descendants-and-ancestors" class="section level4">
 <h4>Descendants and Ancestors</h4>
-<p>The ancestors of a node are any nodes on the causal path leading to that node. The descendants of a node are any nodes that can be reached by following causal paths.</p>
+<p>The ancestors of a node are any nodes on the causal path leading to
+that node. The descendants of a node are any nodes that can be reached
+by following causal paths.</p>
 <ul>
-<li>The <strong>ancestors</strong> of sun exposure are exercise and health consciousness</li>
-<li>The <strong>descendants</strong> of health consciousness are exercise, sun exposure, melanoma and screening</li>
+<li>The <strong>ancestors</strong> of sun exposure are exercise and
+health consciousness</li>
+<li>The <strong>descendants</strong> of health consciousness are
+exercise, sun exposure, melanoma and screening</li>
 </ul>
 </div>
 <div id="section-confounder" class="section level4">
 <h4>Confounder</h4>
-<p>A confounder is a <strong>common cause</strong> of two nodes (usually the common cause of an exposure and an outcome)</p>
+<p>A confounder is a <strong>common cause</strong> of two nodes (usually
+the common cause of an exposure and an outcome)</p>
 <ul>
 <li>Health consciousness is a confounder of exercise and screening</li>
 </ul>
 </div>
 <div id="section-mediator" class="section level4">
 <h4>Mediator</h4>
-<p>A mediator is a node that lies on the causal path between two other nodes.</p>
+<p>A mediator is a node that lies on the causal path between two other
+nodes.</p>
 <ul>
-<li>Sun exposure is a mediator on the path between exercise and melanoma</li>
+<li>Sun exposure is a mediator on the path between exercise and
+melanoma</li>
 </ul>
 </div>
 <div id="section-collider" class="section level4">
 <h4>Collider</h4>
-<p>A collider is a node with two directional arrows pointing towards it.</p>
+<p>A collider is a node with two directional arrows pointing towards
+it.</p>
 <ul>
-<li>Screening is a collider on the path health consciousness <span class="math inline">\(\rightarrow\)</span> screening <span class="math inline">\(\leftarrow\)</span> melanoma</li>
+<li>Screening is a collider on the path health consciousness <span
+class="math inline">\(\rightarrow\)</span> screening <span
+class="math inline">\(\leftarrow\)</span> melanoma</li>
 </ul>
 </div>
 </div>
@@ -295,7 +482,7 @@ $(document).ready(function () {
 <div id="section-quiz" class="section level2">
 <h2>Quiz</h2>
 <p><img src="dags_files/figure-html/unnamed-chunk-9-1.png" width="100%" /></p>
-<p><div class="panel-heading tutorial-quiz-title">Quiz: DAGS</div></p>
+<div class="panel-heading tutorial-quiz-title">Quiz: DAGS</div>
 <div class="panel panel-default">
 <div data-label="quiz2-1" class="tutorial-question panel-body">
 <div id="quiz2-1-answer_container" class="shiny-html-output"></div>
@@ -306,7 +493,7 @@ $(document).ready(function () {
 </div>
 <hr />
 <p><img src="dags_files/figure-html/unnamed-chunk-10-1.png" width="100%" /></p>
-<p><div class="panel-heading tutorial-quiz-title">Quiz: DAGS</div></p>
+<div class="panel-heading tutorial-quiz-title">Quiz: DAGS</div>
 <div class="panel panel-default">
 <div data-label="quiz3-1" class="tutorial-question panel-body">
 <div id="quiz3-1-answer_container" class="shiny-html-output"></div>
@@ -317,24 +504,33 @@ $(document).ready(function () {
 </div>
 <div id="section-want-more" class="section level4">
 <h4>Want more?</h4>
-<p>Try testing yourself on DAG terminology using this applet on <a href="http://www.dagitty.net/learn/graphs/index.html">dagitty.net</a>.</p>
+<p>Try testing yourself on DAG terminology using this applet on <a
+href="http://www.dagitty.net/learn/graphs/index.html">dagitty.net</a>.</p>
 </div>
 </div>
 <div id="section-video-common-causal-structures" class="section level2">
 <h2>Video: Common causal structures</h2>
 <p><img src="https://youtu.be/DhHBMvpYeec" /></p>
-<p>Learn how to represent confounding variables, mediating variables and collider variables on a DAG.</p>
+<p>Learn how to represent confounding variables, mediating variables and
+collider variables on a DAG.</p>
 </div>
 <div id="section-confounding-variables" class="section level2">
 <h2>Confounding variables</h2>
 <div id="section-definition" class="section level3">
 <h3>Definition</h3>
-<p>Confounding arises when there is a variable <strong>Z</strong> that influences the exposure of interest <strong>X</strong> <em>and</em> the outcome of interest <strong>Y</strong>. We say that the relationship between <strong>X</strong> and <strong>Y</strong> is <em>confounded</em> and that <strong>Z</strong> is the <em>confounder</em>.</p>
-<p>Depending on the discipline, a confounder is also referred to as a third variable or a lurking variable.</p>
+<p>Confounding arises when there is a variable <strong>Z</strong> that
+influences the exposure of interest <strong>X</strong> <em>and</em> the
+outcome of interest <strong>Y</strong>. We say that the relationship
+between <strong>X</strong> and <strong>Y</strong> is <em>confounded</em>
+and that <strong>Z</strong> is the <em>confounder</em>.</p>
+<p>Depending on the discipline, a confounder is also referred to as a
+third variable or a lurking variable.</p>
 </div>
 <div id="section-example" class="section level3">
 <h3>Example</h3>
-<p>The relationship between mother’s age at birth (exposure) and child’s birth weight (outcome) may be confounded by mother’s socioeconomic status.</p>
+<p>The relationship between mother’s age at birth (exposure) and child’s
+birth weight (outcome) may be confounded by mother’s socioeconomic
+status.</p>
 </div>
 <div id="section-how-does-this-look-in-a-dag" class="section level3">
 <h3>How does this look in a DAG?</h3>
@@ -345,23 +541,44 @@ $(document).ready(function () {
 <h2>Mediating variables</h2>
 <div id="section-definition-1" class="section level3">
 <h3>Definition</h3>
-<p>A mediating variable is a variable that lies on the causal pathway between an exposure <strong>X</strong> and outcome <strong>Y</strong>.</p>
+<p>A mediating variable is a variable that lies on the causal pathway
+between an exposure <strong>X</strong> and outcome
+<strong>Y</strong>.</p>
 </div>
 <div id="section-example-1" class="section level3">
 <h3>Example</h3>
-<p>A researcher might hypothesise that quality of sleep is a mediating variable between exercise (exposure) and mood (outcome). We might assume that exercise will improve sleep quality, and a good night’s sleep will in turn improve mood.</p>
+<p>A researcher might hypothesise that quality of sleep is a mediating
+variable between exercise (exposure) and mood (outcome). We might assume
+that exercise will improve sleep quality, and a good night’s sleep will
+in turn improve mood.</p>
 </div>
 <div id="section-how-does-this-look-in-a-dag-1" class="section level3">
 <h3>How does this look in a DAG?</h3>
 <p><img src="dags_files/figure-html/unnamed-chunk-12-1.png" width="624" /></p>
-<p>Here there is no connecting arrow going from exercise to mood. Our DAG reflects the assumption that <em>all</em> of the effect of exercise is mediated through quality of sleep. This would be an indirect effect of exercise on mood.</p>
-<p>However, we might also hypothesis a direct effect, perhaps caused by the release of endorphins. In that case we would have both an indirect path Exercise → Sleep quality → Mood and a direct path Exercise → Mood.</p>
+<p>Here there is no connecting arrow going from exercise to mood. Our
+DAG reflects the assumption that <em>all</em> of the effect of exercise
+is mediated through quality of sleep. This would be an indirect effect
+of exercise on mood.</p>
+<p>However, we might also hypothesis a direct effect, perhaps caused by
+the release of endorphins. In that case we would have both an indirect
+path Exercise → Sleep quality → Mood and a direct path Exercise →
+Mood.</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-13-1.png" width="624" /></p>
 <hr />
-<div class="aside">
-<h3 id="section-muddling-mediation">Muddling mediation</h3>
-<p>Mediation often gets confused with two closely related epidemiological concepts, <em>interaction</em> and <em>effect modification</em>. Below is a quick summary distinguishing these three terms, adapted from the paper <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5476432/">Corraini, Priscila, et al. “Effect modification, interaction and mediation: an overview of theoretical insights for clinical investigators.” Clinical epidemiology 9 (2017): 331</a></p>
-<p>The table below provides a quick summary of these three concepts. If you come across these terms and need a reminder please check out the paper!</p>
+</div>
+<div id="section-muddling-mediation" class="section level3 aside">
+<h3>Muddling mediation</h3>
+<p>Mediation often gets confused with two closely related
+epidemiological concepts, <em>interaction</em> and <em>effect
+modification</em>. Below is a quick summary distinguishing these three
+terms, adapted from the paper <a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5476432/">Corraini,
+Priscila, et al. “Effect modification, interaction and mediation: an
+overview of theoretical insights for clinical investigators.” Clinical
+epidemiology 9 (2017): 331</a></p>
+<p>The table below provides a quick summary of these three concepts. If
+you come across these terms and need a reminder please check out the
+paper!</p>
 </div>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
@@ -408,12 +625,12 @@ Mediation
 Evaluate direct and indirect effects of exposures
 </td>
 <td style="text-align:left;">
-Does exercise improve mood directly, or does exercise improve sleep and then better sleep results in improved mood?
+Does exercise improve mood directly, or does exercise improve sleep and
+then better sleep results in improved mood?
 </td>
 </tr>
 </tbody>
 </table>
-</div>
 </div>
 <div id="section-collider-variables" class="section level2">
 <h2>Collider variables</h2>
@@ -423,33 +640,67 @@ Does exercise improve mood directly, or does exercise improve sleep and then bet
 </div>
 <div id="section-example-2" class="section level3">
 <h3>Example</h3>
-<p>Suppose a researcher is interested in whether respiratory syncytial virus (RSV) infection during infancy (exposure) causes asthma in early childhood (outcome). In this case, admissions to the Emergency Department (ED) during early childhood would be a potential collider, because both RSV and asthma will increase the probability of ED admission during early childhood.</p>
+<p>Suppose a researcher is interested in whether respiratory syncytial
+virus (RSV) infection during infancy (exposure) causes asthma in early
+childhood (outcome). In this case, admissions to the Emergency
+Department (ED) during early childhood would be a potential collider,
+because both RSV and asthma will increase the probability of ED
+admission during early childhood.</p>
 </div>
 <div id="section-how-does-this-look-in-a-dag-2" class="section level3">
 <h3>How does this look in a DAG?</h3>
 <p><img src="dags_files/figure-html/unnamed-chunk-15-1.png" width="624" /></p>
-<p>As we will see, identifying colliders is important because controlling for a collider can inadvertently introduce bias. To continue the above example, even though the number of ED admissions during early childhood may be associated with the exposure and outcome but controlling for this variable would actually <em><strong>bias</strong></em> estimates of the relationship between RSV infection and asthma.</p>
-<div class="shiny">
-<h3 id="section-explore-this-further">Explore this further</h3>
-<p>You can explore this example and the concept of collider bias further using this <a href="https://cbdrh.shinyapps.io/collider-bias/">interactive Shiny app</a>. The app can also be launched by entering <code>hdat9700tutorials::run('collider-bias')</code> at the console.</p>
+<p>As we will see, identifying colliders is important because
+controlling for a collider can inadvertently introduce bias. To continue
+the above example, even though the number of ED admissions during early
+childhood may be associated with the exposure and outcome but
+controlling for this variable would actually
+<em><strong>bias</strong></em> estimates of the relationship between RSV
+infection and asthma.</p>
 </div>
+<div id="section-explore-this-further" class="section level3 shiny">
+<h3>Explore this further</h3>
+<p>You can explore this example and the concept of collider bias further
+using this <a
+href="https://cbdrh.shinyapps.io/collider-bias/">interactive Shiny
+app</a>. The app can also be launched by entering
+<code>hdat9700tutorials::run('collider-bias')</code> at the console.</p>
 </div>
 </div>
 <div id="section-d-separation" class="section level2">
 <h2>D-separation</h2>
-<p>Now that you know how to represent and recognise different types of relationships in a DAG, how can a DAG help us to choose what variables to include in a causal model? The answer lies in the concept of <strong>d-separation</strong>.</p>
-<p><strong>Definition:</strong> Two variables in a DAG are said to be d-separated if there are no open backdoor paths between them.</p>
-<p>This definition introduces two new concepts that we also have to define: <em>backdoor</em> paths, and what makes an <em>open</em> or <em>closed</em> path.</p>
+<p>Now that you know how to represent and recognise different types of
+relationships in a DAG, how can a DAG help us to choose what variables
+to include in a causal model? The answer lies in the concept of
+<strong>d-separation</strong>.</p>
+<p><strong>Definition:</strong> Two variables in a DAG are said to be
+d-separated if there are no open backdoor paths between them.</p>
+<p>This definition introduces two new concepts that we also have to
+define: <em>backdoor</em> paths, and what makes an <em>open</em> or
+<em>closed</em> path.</p>
 <div id="section-backdoor-paths" class="section level4">
 <h4>1. Backdoor paths</h4>
-<p><strong>Definition:</strong> A backdoor path between X and Y is a path between X and Y that contains an arrow pointing towards Y.</p>
-<p>For example, the path ice-cream sales ← sunshine → sunburn is a backdoor path between ice-cream sales and sunburn.</p>
+<p><strong>Definition:</strong> A backdoor path between X and Y is a
+path between X and Y that contains an arrow pointing towards Y.</p>
+<p>For example, the path ice-cream sales ← sunshine → sunburn is a
+backdoor path between ice-cream sales and sunburn.</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-16-1.png" width="624" /></p>
-<p>You will recognise this as an example of confounding. In this case, the presence of sunshine induces a correlation or <em>dependence</em> between ice-cream sales and sunburn. The “d” in d-connected stands for <strong>dependence</strong>!</p>
+<p>You will recognise this as an example of confounding. In this case,
+the presence of sunshine induces a correlation or <em>dependence</em>
+between ice-cream sales and sunburn. The “d” in d-connected stands for
+<strong>dependence</strong>!</p>
 </div>
 <div id="section-b.-frontdoor-paths" class="section level4">
 <h4>1b. Frontdoor paths</h4>
-<p>While we are at it, lets also define frontdoor paths. These are any paths that start with an arrow <strong>pointing from the exposure</strong> and ending at the outcome. The causal effect of interest <span class="math inline">\(\text{X} \rightarrow \text{Y}\)</span> is one frontdoor path, but if mediators are present there will be more than one front door path. In the mediation example you saw earlier, both pathways are frontdoor paths because they start with an arrow pointing from the exposure (Exercise) and end up at the outcome (Mood).</p>
+<p>While we are at it, lets also define frontdoor paths. These are any
+paths that start with an arrow <strong>pointing from the
+exposure</strong> and ending at the outcome. The causal effect of
+interest <span class="math inline">\(\text{X} \rightarrow
+\text{Y}\)</span> is one frontdoor path, but if mediators are present
+there will be more than one front door path. In the mediation example
+you saw earlier, both pathways are frontdoor paths because they start
+with an arrow pointing from the exposure (Exercise) and end up at the
+outcome (Mood).</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-17-1.png" width="624" /></p>
 <p>Both paths are front door paths:</p>
 <ul>
@@ -460,8 +711,15 @@ Does exercise improve mood directly, or does exercise improve sleep and then bet
 </div>
 <div id="section-open-paths" class="section level4">
 <h4>2. Open paths</h4>
-<p>A path between two nodes X and Y is open if the path carries information or dependence between X and Y. We can open or close a path between two nodes by controlling for intermediate variables. In most contexts, conditioning will mean stratifying by a variable or adding the variable to a regression model.</p>
-<p>Importantly, however, whether or not controlling for an intermediate variable Z opens the the pathway or closes the pathway depends on the role of Z. The table below outlines what happens in three different scenarios.</p>
+<p>A path between two nodes X and Y is open if the path carries
+information or dependence between X and Y. We can open or close a path
+between two nodes by controlling for intermediate variables. In most
+contexts, conditioning will mean stratifying by a variable or adding the
+variable to a regression model.</p>
+<p>Importantly, however, whether or not controlling for an intermediate
+variable Z opens the the pathway or closes the pathway depends on the
+role of Z. The table below outlines what happens in three different
+scenarios.</p>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -524,17 +782,26 @@ OPENS path between X and Y
 </tr>
 </tbody>
 </table>
-<p>Note that conditioning on a mediator or a confounder will CLOSE the path between X and Y. In the case of colliders, the path is closed unless we condition on Z in which case we OPEN the path between X and Y.</p>
+<p>Note that conditioning on a mediator or a confounder will CLOSE the
+path between X and Y. In the case of colliders, the path is closed
+unless we condition on Z in which case we OPEN the path between X and
+Y.</p>
 </div>
 <div id="section-how-does-this-all-help" class="section level3">
 <h3>How does this all help?</h3>
-<p>Having read through the section above, you should be comfortable with the idea of:</p>
+<p>Having read through the section above, you should be comfortable with
+the idea of:</p>
 <ol style="list-style-type: decimal">
 <li>A backdoor path (and a front door path)</li>
 <li>An open or closed path</li>
 </ol>
-<p>To estimate the TOTAL effect of X on Y you need to control for a set of variables that can close any backdoor paths, but do not close the frontdoor paths.</p>
-<p>To estimate the DIRECT effect of X on Y you need to control for a set of variables that close any backdoor paths and close any frontdoor paths (except the path <span class="math inline">\(\text{X} \rightarrow \text{Y}\)</span>).</p>
+<p>To estimate the TOTAL effect of X on Y you need to control for a set
+of variables that can close any backdoor paths, but do not close the
+frontdoor paths.</p>
+<p>To estimate the DIRECT effect of X on Y you need to control for a set
+of variables that close any backdoor paths and close any frontdoor paths
+(except the path <span class="math inline">\(\text{X} \rightarrow
+\text{Y}\)</span>).</p>
 </div>
 <div id="section-recap" class="section level3">
 <h3>Recap</h3>
@@ -543,34 +810,51 @@ OPENS path between X and Y
 </div>
 <div id="section-worked-example" class="section level2">
 <h2>Worked example</h2>
-<p>In this section we will use the principle of d-separation and backdoor paths to identify a minimal set of adjustment variables that will allow us to estimate the effect of Exercise on Mood based on the following DAG.</p>
+<p>In this section we will use the principle of d-separation and
+backdoor paths to identify a minimal set of adjustment variables that
+will allow us to estimate the effect of Exercise on Mood based on the
+following DAG.</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-19-1.png" width="90%" /></p>
 <p>This DAG represents several plausible assumptions:</p>
 <ul>
-<li>Exercise has a direct effect on mood but also an indirect effect via sleep quality</li>
+<li>Exercise has a direct effect on mood but also an indirect effect via
+sleep quality</li>
 <li>Exercise also has an effect on blood pressure</li>
 <li>Being a club member has an effect on exercise</li>
-<li>The season also has an effect on exercise (perhaps people exercise less during cold weather)</li>
+<li>The season also has an effect on exercise (perhaps people exercise
+less during cold weather)</li>
 <li>Being a club member has an effect on social interactions</li>
-<li>Social interactions have an effect on mood (hopefully a positive one!)</li>
-<li>Season has an effect on mood (sunlight can have a positive effect on mood)</li>
-<li>Mood has an effect on blood pressure (perhaps being calmer and happier decreases stress-induced high blood pressure)</li>
+<li>Social interactions have an effect on mood (hopefully a positive
+one!)</li>
+<li>Season has an effect on mood (sunlight can have a positive effect on
+mood)</li>
+<li>Mood has an effect on blood pressure (perhaps being calmer and
+happier decreases stress-induced high blood pressure)</li>
 </ul>
 <div id="section-identifying-backdoor-paths" class="section level3">
 <h3>Identifying backdoor paths</h3>
-<p>In order to estimate the <strong>total</strong> effect of exercise on mood we need to close all the available backdoor paths. If we are interested in the <strong>direct</strong> effect of mood on exercise we additionally need to close any frontdoor paths, other than the main causal pathway Exercise → Mood. So let’s start by identifying all of the backdoor and frontdoor paths between Exercise and Mood.</p>
+<p>In order to estimate the <strong>total</strong> effect of exercise on
+mood we need to close all the available backdoor paths. If we are
+interested in the <strong>direct</strong> effect of mood on exercise we
+additionally need to close any frontdoor paths, other than the main
+causal pathway Exercise → Mood. So let’s start by identifying all of the
+backdoor and frontdoor paths between Exercise and Mood.</p>
 <div id="section-backdoor-paths-1" class="section level4">
 <h4>Backdoor paths</h4>
-<p>To identify backdoor paths, look for paths between the exposure and outcome that have one or more arrows pointing toward the exposure. In total there are three backdoor paths</p>
+<p>To identify backdoor paths, look for paths between the exposure and
+outcome that have one or more arrows pointing toward the exposure. In
+total there are three backdoor paths</p>
 <ul>
 <li>Exercise ← Club member → Social interactions → Mood</li>
 <li>Exercise ← Season → Mood</li>
-<li>Exercise → Sleep quality ← Mood</li>
+<li>Exercise → Blood pressure ← Mood</li>
 </ul>
 </div>
 <div id="section-frontdoor-paths" class="section level4">
 <h4>Frontdoor paths</h4>
-<p>To identify frontdoor paths, look for paths between the exposure and outcome where all arrows point towards the outcome. There are two frontdoor paths are:</p>
+<p>To identify frontdoor paths, look for paths between the exposure and
+outcome where all arrows point towards the outcome. There are two
+frontdoor paths are:</p>
 <ul>
 <li>Exercise → Mood</li>
 <li>Exercise → Sleep quality → Mood</li>
@@ -581,13 +865,24 @@ OPENS path between X and Y
 <h3>Identifying adjustment sets</h3>
 <div id="section-total-effect" class="section level4">
 <h4>Total effect</h4>
-<p>To estimate the total effect of Exercise on Mood we must close all of the backdoor paths. To close a path it is sufficient to control for any single variable along that path.</p>
+<p>To estimate the total effect of Exercise on Mood we must close all of
+the backdoor paths. To close a path it is sufficient to control for any
+single variable along that path.</p>
 <ul>
-<li><p>To close the path Exercise ← Club member → Social interactions → Mood we could control for Club membership OR we could control for number of social interactions. Note that controlling for either variable is sufficient to close the path. We could also control for both variables; this isn’t necessary to close the path, but it won’t do any harm.</p></li>
-<li><p>To close the path Exercise ← Season → Mood we would need to control for Season.</p></li>
-<li><p>The path Exercise → Sleep quality ← Mood is already closed (because Sleep quality is a collider on this path) so we don’t have to worry about this.</p></li>
+<li><p>To close the path Exercise ← Club member → Social interactions →
+Mood we could control for Club membership OR we could control for number
+of social interactions. Note that controlling for either variable is
+sufficient to close the path. We could also control for both variables;
+this isn’t necessary to close the path, but it won’t do any
+harm.</p></li>
+<li><p>To close the path Exercise ← Season → Mood we would need to
+control for Season.</p></li>
+<li><p>The path Exercise → Sleep quality ← Mood is already closed
+(because Sleep quality is a collider on this path) so we don’t have to
+worry about this.</p></li>
 </ul>
-<p>Thus, there are two possible minimal adjustment sets to identify the total effect of Exercise on Mood:</p>
+<p>Thus, there are two possible minimal adjustment sets to identify the
+total effect of Exercise on Mood:</p>
 <ol style="list-style-type: decimal">
 <li>Club membership and Season</li>
 </ol>
@@ -599,10 +894,20 @@ OPENS path between X and Y
 </div>
 <div id="section-direct-effect" class="section level4">
 <h4>Direct effect</h4>
-<p>To estimate the direct effect of Exercise on Food we must also consider alternative frontdoor paths other than the path of interest.</p>
-<p>We identified two front door paths. The first was the path Exercise → Mood. This is the causal path of interest so we don’t have to do anything here (obviously we will include our exposure and outcome in the model).</p>
-<p>The second frontdoor path was Exercise → Sleep quality → Mood. This path implies that part of the effect of exercise is mediated through sleep quality. In order to estimate the direct effect of exercise we must close this pathway, i.e. control for sleep quality in our analysis.</p>
-<p>Thus, there are two possible minimal adjustment sets to identify the <strong>direct</strong> effect of Exercise on Mood:</p>
+<p>To estimate the direct effect of Exercise on Food we must also
+consider alternative frontdoor paths other than the path of
+interest.</p>
+<p>We identified two front door paths. The first was the path Exercise →
+Mood. This is the causal path of interest so we don’t have to do
+anything here (obviously we will include our exposure and outcome in the
+model).</p>
+<p>The second frontdoor path was Exercise → Sleep quality → Mood. This
+path implies that part of the effect of exercise is mediated through
+sleep quality. In order to estimate the direct effect of exercise we
+must close this pathway, i.e. control for sleep quality in our
+analysis.</p>
+<p>Thus, there are two possible minimal adjustment sets to identify the
+<strong>direct</strong> effect of Exercise on Mood:</p>
 <ol style="list-style-type: decimal">
 <li>Club membership, Season and Sleep quality</li>
 </ol>
@@ -618,54 +923,149 @@ OPENS path between X and Y
 </div>
 <div id="section-activities" class="section level2">
 <h2>Activities</h2>
-<div class="shiny">
-<h3 id="section-activity-1.-test-your-understanding-of-d-separation-and-closing-backdoor-paths">Activity 1. Test your understanding of d-separation and closing backdoor paths</h3>
-<p>Explore the concept of d-separation and backdoor paths adjustment further using this <a href="https://cbdrh.shinyapps.io/daggle/">interactive Shiny app</a>. The app can also be launched by entering <code>hdat9700tutorials::run('backdoor-paths')</code> at the console.</p>
-<p>This app will generate a random DAG and you must identify which variables to control for in order to estimate causal effect of the exposure on the outcome. You can vary the DAG complexity, and choose to focus on the total effect or the direct effect (you should have a go using both modes).</p>
+<div
+id="section-activity-1.-test-your-understanding-of-d-separation-and-closing-backdoor-paths"
+class="section level3 shiny">
+<h3>Activity 1. Test your understanding of d-separation and closing
+backdoor paths</h3>
+<p>Explore the concept of d-separation and backdoor paths adjustment
+further using this <a
+href="https://cbdrh.shinyapps.io/daggle/">interactive Shiny app</a>. The
+app can also be launched by entering
+<code>hdat9700tutorials::run('backdoor-paths')</code> at the
+console.</p>
+<p>This app will generate a random DAG and you must identify which
+variables to control for in order to estimate causal effect of the
+exposure on the outcome. You can vary the DAG complexity, and choose to
+focus on the total effect or the direct effect (you should have a go
+using both modes).</p>
 </div>
-<div class="shiny">
-<h3 id="section-activity-2.-explore-how-understanding-causal-structures-is-key-to-madel-specification">Activity 2. Explore how understanding causal structures is key to madel specification</h3>
-<p>Explore how the assumptions about causal structures can guide our model specification using this <a href="https://cbdrh.shinyapps.io/dags-1/">interactive Shiny app</a>. The app can also be launched by entering <code>hdat9700tutorials::run('dags-1')</code> at the console.</p>
-<p>This app generates data for three variables: aspirin use (the exposure), pulmonary embolism (the outcome) and high-blood pressure ( a covariate) under two data generation mechanisms. Scenario A emulates having collected these three variables from a randomised control trial; Scenario emulates having collected these three variables from observational data. You will see that although the available variables are the same in these two scenarios, the correct DAGs and model specifications are different.</p>
+<div
+id="section-activity-2.-explore-how-understanding-causal-structures-is-key-to-madel-specification"
+class="section level3 shiny">
+<h3>Activity 2. Explore how understanding causal structures is key to
+madel specification</h3>
+<p>Explore how the assumptions about causal structures can guide our
+model specification using this <a
+href="https://cbdrh.shinyapps.io/dags-1/">interactive Shiny app</a>. The
+app can also be launched by entering
+<code>hdat9700tutorials::run('dags-1')</code> at the console.</p>
+<p>This app generates data for three variables: aspirin use (the
+exposure), pulmonary embolism (the outcome) and high-blood pressure ( a
+covariate) under two data generation mechanisms. Scenario A emulates
+having collected these three variables from a randomised control trial;
+Scenario emulates having collected these three variables from
+observational data. You will see that although the available variables
+are the same in these two scenarios, the correct DAGs and model
+specifications are different.</p>
 </div>
 </div>
 <div id="section-selection-biases" class="section level2">
 <h2>Selection Biases</h2>
-<p>Many different types of biases arise from mechanisms that result in some individuals being recorded in our data and available for analysis, while data other individuals is unavailable. These biases are referred to as Selection Biases.</p>
-<p>In this section we will take a closer look at one type of selection bias - nonresponse bias - and see how this can be represented as a type of collider bias.</p>
+<p>Many different types of biases arise from mechanisms that result in
+some individuals being recorded in our data and available for analysis,
+while data other individuals is unavailable. These biases are referred
+to as Selection Biases.</p>
+<p>In this section we will take a closer look at one type of selection
+bias - nonresponse bias - and see how this can be represented as a type
+of collider bias.</p>
 <div id="section-survey-nonresponse-bias" class="section level3">
 <h3>Survey nonresponse bias</h3>
-<p>Suppose a researcher was interested in estimating the effect of wearing a face mask (X) on the risk on contracting COVID-19 (Y) during the pandemic using data from a random-digit-dialling telephone survey. Survey respondents were asked whether they had been wearing a face mask in public during the last month and if they had tested positive for the coronavirus. Of course, there are numerous factors that we would need to include in our DAG to address this research question, including the number and type of contacts, individual characteristics like age, sex and smoking status, and the quality and correct use of masks. For the this example, we will zoom in on one aspect: survey participation.</p>
-<p>There is a large literature documenting the many ways that survey respondents (those who agreed to participate in a survey) differ from survey nonrespondents (those who decline to participate or can’t even be contacted). Like any survey we can assume this telephone survey suffered from a degree of nonresponse - not every sampled phone number provided a response. In this context, we could imagine that survey respondents are more likely to wear masks, a correlation arising as a result of a latent variable: compliant personality type. Compliant people may be more likely to wear masks and more likely to agree to a survey request, resulting in an association (although not a causal relationship) between mask wearing and survey participation.</p>
-<p>We can also imagine that individuals with a recent coronavirus diagnosis may be more likely to participated in a telephone COVID-19 survey, perhaps because they have a personal interest in the topic, or they are easier to contact because they are self-isolating at home.</p>
-<p>These assumptions about the key exposure, outcome and participation status could be represented with the DAG below.</p>
+<p>Suppose a researcher was interested in estimating the effect of
+wearing a face mask (X) on the risk on contracting COVID-19 (Y) during
+the pandemic using data from a random-digit-dialling telephone survey.
+Survey respondents were asked whether they had been wearing a face mask
+in public during the last month and if they had tested positive for the
+coronavirus. Of course, there are numerous factors that we would need to
+include in our DAG to address this research question, including the
+number and type of contacts, individual characteristics like age, sex
+and smoking status, and the quality and correct use of masks. For the
+this example, we will zoom in on one aspect: survey participation.</p>
+<p>There is a large literature documenting the many ways that survey
+respondents (those who agreed to participate in a survey) differ from
+survey nonrespondents (those who decline to participate or can’t even be
+contacted). Like any survey we can assume this telephone survey suffered
+from a degree of nonresponse - not every sampled phone number provided a
+response. In this context, we could imagine that survey respondents are
+more likely to wear masks, a correlation arising as a result of a latent
+variable: compliant personality type. Compliant people may be more
+likely to wear masks and more likely to agree to a survey request,
+resulting in an association (although not a causal relationship) between
+mask wearing and survey participation.</p>
+<p>We can also imagine that individuals with a recent coronavirus
+diagnosis may be more likely to participated in a telephone COVID-19
+survey, perhaps because they have a personal interest in the topic, or
+they are easier to contact because they are self-isolating at home.</p>
+<p>These assumptions about the key exposure, outcome and participation
+status could be represented with the DAG below.</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-24-1.png" width="624" /></p>
-<p>When we estimated the effect of mask wearing on COVID-19 using data from participants only, we are effectively controlling for participation status. To see this, consider the hypothetical scenario where data is available for participants and non-participants alike. In this case, stratifying on participation status and performing the analysis among survey respondents only is the same as only having data for survey respondents in the first place.</p>
-<p>Looking at the DAG above, it should be clear that survey participation is a collider on the path Mask → Compliant → Participation ← COVID-19. And what happens when we condition on a collider? As you have learned in the section on Collider Variables, controlling for response status will <strong>open</strong> the triplet Compliant → Participation ← COVID-19. In addition, assuming compliant personality type is a latent, unobserved variable, we will be unable to control for this variable. Thus there will be an open backdoor pathway between the exposure and outcome.</p>
-<p>Under this set of assumptions, our exposure and outcome would not be d-separated and our estimated causal effect of mask-wearing on the risk of contracting COVID-19 would likely be biased.</p>
+<p>When we estimated the effect of mask wearing on COVID-19 using data
+from participants only, we are effectively controlling for participation
+status. To see this, consider the hypothetical scenario where data is
+available for participants and non-participants alike. In this case,
+stratifying on participation status and performing the analysis among
+survey respondents only is the same as only having data for survey
+respondents in the first place.</p>
+<p>Looking at the DAG above, it should be clear that survey
+participation is a collider on the path Mask → Compliant → Participation
+← COVID-19. And what happens when we condition on a collider? As you
+have learned in the section on Collider Variables, controlling for
+response status will <strong>open</strong> the triplet Compliant →
+Participation ← COVID-19. In addition, assuming compliant personality
+type is a latent, unobserved variable, we will be unable to control for
+this variable. Thus there will be an open backdoor pathway between the
+exposure and outcome.</p>
+<p>Under this set of assumptions, our exposure and outcome would not be
+d-separated and our estimated causal effect of mask-wearing on the risk
+of contracting COVID-19 would likely be biased.</p>
 </div>
 </div>
 <div id="section-m-bias" class="section level2">
 <h2>M-Bias</h2>
-<p>M-bias is a common structure of bias that arises when collider bias is transmitted between ancestors of the exposure and outcome. When presented as a DAG, this structure results in an M shape as shown:</p>
+<p>M-bias is a common structure of bias that arises when collider bias
+is transmitted between ancestors of the exposure and outcome. When
+presented as a DAG, this structure results in an M shape as shown:</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-25-1.png" width="624" /></p>
-<p>It should be clear by now that adjusting for m would open a backdoor path between a and y in this DAG, as below:</p>
+<p>It should be clear by now that adjusting for m would open a backdoor
+path between a and y in this DAG, as below:</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-26-1.png" width="624" /></p>
-<p>M-bias emphasises a key point of this lecture: just because a variable is available and correlated with the exposure and outcome, doesn’t necessarily mean we should adjust for that variable in a causal model. This is still true <strong>even for variables that are “pre-treatment” variables</strong>, as is the case in M-bias.</p>
+<p>M-bias emphasises a key point of this lecture: just because a
+variable is available and correlated with the exposure and outcome,
+doesn’t necessarily mean we should adjust for that variable in a causal
+model. This is still true <strong>even for variables that are
+“pre-treatment” variables</strong>, as is the case in M-bias.</p>
 <div id="section-example-3" class="section level3">
 <h3>Example</h3>
-<p>Below is a plausible example of M-bias presented by (Liu et al, 2020)[<a href="https://doi.org/10.1093/aje/kws165" class="uri">https://doi.org/10.1093/aje/kws165</a>] where the exposure us SSRI use (SSRI = selective serotonin reuptake inhibitor, a common antidepressant).</p>
+<p>Below is a plausible example of M-bias presented by (Liu et al,
+2020)[<a href="https://doi.org/10.1093/aje/kws165"
+class="uri">https://doi.org/10.1093/aje/kws165</a>] where the exposure
+us SSRI use (SSRI = selective serotonin reuptake inhibitor, a common
+antidepressant).</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-27-1.png" width="624" /></p>
-<p>If this DAG were a reasonable representation of the data generation mechanism, coronary artery disease would be associated with SSRI Use and Lung cancer in an observational dataset. However, adjusting for coronary artery disease would suggest an apparent effect of SSRI use on Lung cancer, even if one didn’t exist.</p>
+<p>If this DAG were a reasonable representation of the data generation
+mechanism, coronary artery disease would be associated with SSRI Use and
+Lung cancer in an observational dataset. However, adjusting for coronary
+artery disease would suggest an apparent effect of SSRI use on Lung
+cancer, even if one didn’t exist.</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-28-1.png" width="624" /></p>
 </div>
 </div>
 <div id="section-exercise" class="section level2">
 <h2>Exercise</h2>
-<p>For this exercise, you need to read through a second tweetorial from <a href="twitter.com/EpiEllie">Dr Ellie Murray</a>) (<span class="citation">@EpiEllie</span>), then answer the question below. This tweetorial focuses on <strong>“applying conclusions about causation to results obtained via methods designed only for finding correlations”</strong> and illustrates a real-world scenario where M-bias was potentially contributing to counter-intuitive (or misunderstood) results in a study of COVID-19 hospital deaths. Find it <a href="https://twitter.com/EpiEllie/status/1258607277357006849">here</a>.</p>
-<p>Once you have read through the tweetorial, consider the following question.</p>
+<p>For this exercise, you need to read through a second tweetorial from
+<a href="twitter.com/EpiEllie">Dr Ellie Murray</a>) (<span
+class="citation">@EpiEllie</span>), then answer the question below. This
+tweetorial focuses on <strong>“applying conclusions about causation to
+results obtained via methods designed only for finding
+correlations”</strong> and illustrates a real-world scenario where
+M-bias was potentially contributing to counter-intuitive (or
+misunderstood) results in a study of COVID-19 hospital deaths. Find it
+<a
+href="https://twitter.com/EpiEllie/status/1258607277357006849">here</a>.</p>
+<p>Once you have read through the tweetorial, consider the following
+question.</p>
 <p><img src="dags_files/figure-html/unnamed-chunk-29-1.png" width="288" /></p>
-<p><div class="panel-heading tutorial-quiz-title">Quiz: M-Bias</div></p>
+<div class="panel-heading tutorial-quiz-title">Quiz: M-Bias</div>
 <div class="panel panel-default">
 <div data-label="quiz4-1" class="tutorial-question panel-body">
 <div id="quiz4-1-answer_container" class="shiny-html-output"></div>
@@ -674,8 +1074,12 @@ OPENS path between X and Y
 <script>if (Tutorial.triggerMathJax) Tutorial.triggerMathJax()</script>
 </div>
 </div>
-<p>You can use the code below to help visualise different possible answers, or to just take a sneak peek at the syntax for coding DAGs in R.</p>
-<div class="tutorial-exercise" data-label="m-bias" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="12">
+<p>You can use the code below to help visualise different possible
+answers, or to just take a sneak peek at the syntax for coding DAGs in
+R.</p>
+<div class="tutorial-exercise" data-label="m-bias" data-caption="Code"
+data-completion="1" data-diagnostics="1" data-startover="1"
+data-lines="12">
 <pre class="text"><code># Choices: COVID-19 death, Social determinants of health; Smoking history; Heart disease; Current smoking
 ggdag_m_bias(x=&quot;Hmm&quot;, 
              y = &quot;Not sure&quot;,
@@ -692,11 +1096,28 @@ ggdag_m_bias(x=&quot;Hmm&quot;,
 <h2>Extra: Coding DAGs in R</h2>
 <div id="section-dagitty" class="section level3">
 <h3>DAGitty</h3>
-<p><a href="http://dagitty.net/dags.html">DAGitty</a> is an online tool that allows you to easily create DAGs in a point-and-click fashion, without any coding required. Conveniently, DAGitty also automatically creates R code that will allow you to recreate the DAG you draw in DAGitty within R. In this section, you will see an example of how to copy the model code from DAGitty into an R environment for further manipulation with the <code>dagitty</code> and <code>ggdag</code> R packages.</p>
-<p>Below is a mirror to the DAGitty interface . Note that if you are reading this tutorial in the RStudio viewer pane you will need to show it in a browser window to view it properly. Alternatively, you can just go to <a href="http://www.dagitty.net/dags.html">dagitty.net/dags.html</a>.</p>
-<p><iframe style="height:800px; width:100%; scrolling=yes" src="http://www.dagitty.net/dags.html"></iframe></p>
-<p>You can read the <strong>How to…</strong> section if you would like to learn how to creat your own DAG. In order to reproduce the DAG you create in R, scroll down to the box titled <strong>Model code</strong>. Copy this syntax to your clipboard and paste it between the single quotes as indicated in the interactive chunk below.</p>
-<div class="tutorial-exercise" data-label="dagitty1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="30">
+<p><a href="http://dagitty.net/dags.html">DAGitty</a> is an online tool
+that allows you to easily create DAGs in a point-and-click fashion,
+without any coding required. Conveniently, DAGitty also automatically
+creates R code that will allow you to recreate the DAG you draw in
+DAGitty within R. In this section, you will see an example of how to
+copy the model code from DAGitty into an R environment for further
+manipulation with the <code>dagitty</code> and <code>ggdag</code> R
+packages.</p>
+<p>Below is a mirror to the DAGitty interface . Note that if you are
+reading this tutorial in the RStudio viewer pane you will need to show
+it in a browser window to view it properly. Alternatively, you can just
+go to <a
+href="http://www.dagitty.net/dags.html">dagitty.net/dags.html</a>.</p>
+<iframe style="height:800px; width:100%; scrolling=yes" src="http://www.dagitty.net/dags.html"></iframe>
+<p>You can read the <strong>How to…</strong> section if you would like
+to learn how to creat your own DAG. In order to reproduce the DAG you
+create in R, scroll down to the box titled <strong>Model code</strong>.
+Copy this syntax to your clipboard and paste it between the single
+quotes as indicated in the interactive chunk below.</p>
+<div class="tutorial-exercise" data-label="dagitty1" data-caption="Code"
+data-completion="1" data-diagnostics="1" data-startover="1"
+data-lines="30">
 <pre class="text"><code># Load libraries
 library(dagitty)
 library(ggdag)
@@ -719,14 +1140,21 @@ ggdag(dagittyObject)
 </div>
 <div id="section-coding-dags-in-r" class="section level3">
 <h3>Coding DAGS in R</h3>
-<p>The DAGs in this tutorial are created using the <code>ggdag</code> package. If you are interested in learning more about how to draw DAGs in this way, check out the vignette on the package <a href="https://cran.r-project.org/web/packages/ggdag/vignettes/intro-to-ggdag.html">here</a>.</p>
+<p>The DAGs in this tutorial are created using the <code>ggdag</code>
+package. If you are interested in learning more about how to draw DAGs
+in this way, check out the vignette on the package <a
+href="https://cran.r-project.org/web/packages/ggdag/vignettes/intro-to-ggdag.html">here</a>.</p>
 </div>
 <div id="section-dags-for-common-structures" class="section level3">
 <h3>DAGs for common structures</h3>
-<p>The <code>ggdag</code> package includes a set of convenience functions to quickly create DAGs with common bias structures. You can explore these below.</p>
+<p>The <code>ggdag</code> package includes a set of convenience
+functions to quickly create DAGs with common bias structures. You can
+explore these below.</p>
 <div id="section-confounding" class="section level4">
 <h4>Confounding</h4>
-<div class="tutorial-exercise" data-label="ggdag2" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="8">
+<div class="tutorial-exercise" data-label="ggdag2" data-caption="Code"
+data-completion="1" data-diagnostics="1" data-startover="1"
+data-lines="8">
 <pre class="text"><code>ggdag_confounder_triangle(x=&quot;icecream sales&quot;, y=&quot;sunburn&quot;, z=&quot;sunshine&quot;, 
                           use_labels = &quot;label&quot;,
                           label_col = &quot;black&quot;) +
@@ -736,7 +1164,9 @@ ggdag(dagittyObject)
 </div>
 <div id="section-mediation" class="section level4">
 <h4>Mediation</h4>
-<div class="tutorial-exercise" data-label="ggdag3" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="8">
+<div class="tutorial-exercise" data-label="ggdag3" data-caption="Code"
+data-completion="1" data-diagnostics="1" data-startover="1"
+data-lines="8">
 <pre class="text"><code>ggdag_mediation_triangle(x=&quot;Exercise&quot;, y=&quot;Mood&quot;, m=&quot;Sleep quality&quot;, 
                           use_labels = &quot;label&quot;,
                           label_col = &quot;black&quot;) +
@@ -746,7 +1176,9 @@ ggdag(dagittyObject)
 </div>
 <div id="section-collider-1" class="section level4">
 <h4>Collider</h4>
-<div class="tutorial-exercise" data-label="ggdag4" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="8">
+<div class="tutorial-exercise" data-label="ggdag4" data-caption="Code"
+data-completion="1" data-diagnostics="1" data-startover="1"
+data-lines="8">
 <pre class="text"><code>ggdag_collider_triangle(x=&quot;RSV infection&quot;, y=&quot;Asthma&quot;, m=&quot;ED admission&quot;, 
                           use_labels = &quot;label&quot;,
                           label_col = &quot;black&quot;) +
@@ -755,25 +1187,38 @@ ggdag(dagittyObject)
 </div>
 </div>
 </div>
-<div id="section-building-up-the-elements-of-a-dag" class="section level3">
+<div id="section-building-up-the-elements-of-a-dag"
+class="section level3">
 <h3>Building up the elements of a DAG</h3>
-<p>For more complex DAGs, or mode control over colour and placement, it might be necessary to use the bespoke <code>geom_dag_*</code> functions that come with <code>ggdag</code> to tailor the elements of your desired DAG. Click through the slides below to see an example of this in action.</p>
+<p>For more complex DAGs, or mode control over colour and placement, it
+might be necessary to use the bespoke <code>geom_dag_*</code> functions
+that come with <code>ggdag</code> to tailor the elements of your desired
+DAG. Click through the slides below to see an example of this in
+action.</p>
 <iframe src="images/fb-ggdag.html" width="100%" height="400px" data-external="1">
 </iframe>
 <p>Note that:</p>
 <ul>
-<li>By default, the position of nodes is random. You can specify fixed node positions using <code>coords =</code>.</li>
-<li>The function <code>dagify()</code> is used to define the relationships between nodes. E.g. <code>y ~ x</code> indicates that an arrow will point from <strong>x</strong> to <strong>y</strong>.<br />
+<li>By default, the position of nodes is random. You can specify fixed
+node positions using <code>coords =</code>.</li>
+<li>The function <code>dagify()</code> is used to define the
+relationships between nodes. E.g. <code>y ~ x</code> indicates that an
+arrow will point from <strong>x</strong> to <strong>y</strong>.<br />
 </li>
-<li>Passing the output of <code>dagify()</code> to <code>node_parents(x)</code> creates a dataframe distinguishing between child and parent nodes of <strong>x</strong>.</li>
-<li><code>geom_dag_point()</code> and <code>geom_dag_edges()</code> plot the results.</li>
+<li>Passing the output of <code>dagify()</code> to
+<code>node_parents(x)</code> creates a dataframe distinguishing between
+child and parent nodes of <strong>x</strong>.</li>
+<li><code>geom_dag_point()</code> and <code>geom_dag_edges()</code> plot
+the results.</li>
 <li>Applying <code>theme_dag()</code> provides a nice clean plot.</li>
 </ul>
 </div>
 <div id="section-try-it-yourself" class="section level3">
 <h3>Try it yourself</h3>
 <p>Try experimenting with the code below to create your own DAG.</p>
-<div class="tutorial-exercise" data-label="ggdag1" data-caption="Code" data-completion="1" data-diagnostics="1" data-startover="1" data-lines="25">
+<div class="tutorial-exercise" data-label="ggdag1" data-caption="Code"
+data-completion="1" data-diagnostics="1" data-startover="1"
+data-lines="25">
 <pre class="text"><code># specifying fixed coordinates means that the nodes of the DAG will 
 # always be in the same in the same place. If we don&#39;t include this, 
 # the nodes will be randomly arranged each time the DAG is drawn
@@ -800,12 +1245,24 @@ dagify(y ~ x + a + b,
     ) </code></pre>
 <script type="application/json" data-opts-chunk="1">{"fig.width":6.5,"fig.height":4,"fig.retina":2,"fig.align":"default","fig.keep":"high","fig.show":"asis","out.width":624,"warning":false,"error":false,"message":true,"exercise.df_print":"paged","exercise.checker":"NULL"}</script>
 </div>
-<p>You might notice that this code differs slightly from the code in the flipbook slides above. The flipbook code uses <em>slow ggplot</em> as described by the <code>flipbookr</code> package developer Evangeline Reynolds in her <a href="https://evangelinereynolds.netlify.app/post/slow-ggplot/">blog</a>. Slow ggplot is an approach to writing ggplot code that focuses on incremental changes, for example, instead of specifying <code>aes(x=xy, y=y, xend=xend, yend=yend, color=parent)</code> in a single line, slow ggplot separates out each aesthetic element to a separate line, to emphasise how that element affects the graph. The editable code above dispenses with the slow ggplot syntax, and is more typical of how you will write R code in the wild.</p>
+<p>You might notice that this code differs slightly from the code in the
+flipbook slides above. The flipbook code uses <em>slow ggplot</em> as
+described by the <code>flipbookr</code> package developer Evangeline
+Reynolds in her <a
+href="https://evangelinereynolds.netlify.app/post/slow-ggplot/">blog</a>.
+Slow ggplot is an approach to writing ggplot code that focuses on
+incremental changes, for example, instead of specifying
+<code>aes(x=xy, y=y, xend=xend, yend=yend, color=parent)</code> in a
+single line, slow ggplot separates out each aesthetic element to a
+separate line, to emphasise how that element affects the graph. The
+editable code above dispenses with the slow ggplot syntax, and is more
+typical of how you will write R code in the wild.</p>
 </div>
 </div>
 <div id="section-summary" class="section level2">
 <h2>Summary</h2>
-<p>DAGs are a useful tool that allow us to formalise our assumptions about causal mechanisms under study. Dong so has many advantages:</p>
+<p>DAGs are a useful tool that allow us to formalise our assumptions
+about causal mechanisms under study. Dong so has many advantages:</p>
 <ul>
 <li>Express expert knowledge explicitly</li>
 <li>Facilitate discussions about variable selection with co-authors</li>
@@ -813,27 +1270,54 @@ dagify(y ~ x + a + b,
 </ul>
 <div id="section-d-separation-1" class="section level3">
 <h3>D-separation</h3>
-<p>In order to estimated the causal path between an exposure X and an outcome Y, the nodes X and Y should be <strong>d-separated</strong>. This means that there should be <strong>no open backdoor paths</strong> between X and Y.</p>
+<p>In order to estimated the causal path between an exposure X and an
+outcome Y, the nodes X and Y should be <strong>d-separated</strong>.
+This means that there should be <strong>no open backdoor paths</strong>
+between X and Y.</p>
 <ul>
-<li>To close a confounding path (<span class="math inline">\(X \leftarrow C \rightarrow Y\)</span>) or a mediating path (<span class="math inline">\(X \rightarrow M \rightarrow Y\)</span>) we can condition on the confounder C or mediator M.</li>
-<li>Conversely, conditioning on a collider (<span class="math inline">\(X \rightarrow C \leftarrow Y\)</span>) will open the pathway</li>
+<li>To close a confounding path (<span class="math inline">\(X
+\leftarrow C \rightarrow Y\)</span>) or a mediating path (<span
+class="math inline">\(X \rightarrow M \rightarrow Y\)</span>) we can
+condition on the confounder C or mediator M.</li>
+<li>Conversely, conditioning on a collider (<span
+class="math inline">\(X \rightarrow C \leftarrow Y\)</span>) will open
+the pathway</li>
 </ul>
 </div>
 <div id="section-limitations" class="section level3">
 <h3>Limitations</h3>
-<p>Causal inference is hard. DAGs can help, but they are no silver bullet. First of all, DAGs that truly represent causal mechanisms of interest are likely to be much more complicated that the simple scenarios presented in this chapter. Check out the posited DAG below, presented in the study <em>Risk factors for unsuccessful dog ownership: An epidemiologic study in Taiwan</em> by <a href="doi:10.1016/j.prevetmed.2006.06.004">Weng et al 2006</a>. Woof.</p>
+<p>Causal inference is hard. DAGs can help, but they are no silver
+bullet. First of all, DAGs that truly represent causal mechanisms of
+interest are likely to be much more complicated that the simple
+scenarios presented in this chapter. Check out the posited DAG below,
+presented in the study <em>Risk factors for unsuccessful dog ownership:
+An epidemiologic study in Taiwan</em> by <a
+href="doi:10.1016/j.prevetmed.2006.06.004">Weng et al 2006</a>.
+Woof.</p>
 <p><img src="images/dog-ownership-dag.png" style="width:75.0%" /></p>
-<p>It should be clear that any useful DAG needs to be informed by knowledge and understanding about the mechanism at hand. Consulting with experts is essential when developing a DAG…</p>
+<p>It should be clear that any useful DAG needs to be informed by
+knowledge and understanding about the mechanism at hand. Consulting with
+experts is essential when developing a DAG…</p>
 <p><img src="images/prof-frankie.png" style="width:75.0%" /></p>
 <hr />
-<p>DAGs are also limited in terms of what they can represent. For example:</p>
+<p>DAGs are also limited in terms of what they can represent. For
+example:</p>
 <ul>
-<li><p>DAGs don’t contain information about the magnitude or direction of association between nodes. If an arrow points from X to Y we don’t know if this is a strong negative effect or a weak positive one. In some contexts, the edges of a DAG are annotated with a number to indicate the magnitude and direction of the implied effect.</p></li>
-<li><p>It is not simple to represent statistical interaction or effect modification in a DAG.</p></li>
-<li><p>A DAG does not show if a cause only applies to some individuals</p></li>
+<li><p>DAGs don’t contain information about the magnitude or direction
+of association between nodes. If an arrow points from X to Y we don’t
+know if this is a strong negative effect or a weak positive one. In some
+contexts, the edges of a DAG are annotated with a number to indicate the
+magnitude and direction of the implied effect.</p></li>
+<li><p>It is not simple to represent statistical interaction or effect
+modification in a DAG.</p></li>
+<li><p>A DAG does not show if a cause only applies to some
+individuals</p></li>
 </ul>
 <hr />
-<p>Despite some limitations, DAGs are a powerful tool. Next time you are faced with a research question ask yourself, is this a casual question? If the answer is yes, before looking at any data see if you can draw the main elements of a DAG. To quote Miguel Hernán:</p>
+<p>Despite some limitations, DAGs are a powerful tool. Next time you are
+faced with a research question ask yourself, is this a casual question?
+If the answer is yes, before looking at any data see if you can draw the
+main elements of a DAG. To quote Miguel Hernán:</p>
 <blockquote>
 <p>Draw your assumptions before your conclusions</p>
 </blockquote>
@@ -860,7 +1344,8 @@ naCol <- 'grey80'
 <script type="application/shiny-prerendered" data-context="server">
 learnr:::register_http_handlers(session, metadata = list(id = "au.edu.unsw.cbdrh.hdat9700.directed.acyclic.graphs"))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 session$onSessionEnded(function() {
         learnr:::session_stop_event(session)
@@ -868,19 +1353,21 @@ session$onSessionEnded(function() {
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_checkbox", label = "quiz1-1", question = structure("Which modeling tasks are relevant to Health Data Science (Select all that apply)", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_91ed179",     option = "Description", value = "Description", label = structure("Description", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_68210d9",     option = "Prediction", value = "Prediction", label = structure("Prediction", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_9e14e97",     option = "Causal inference", value = "Causal inference",     label = structure("Causal inference", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("All three tasks are relevant to a career in Health Data Science. Machine Learning I (HDAT9500) is primarily concerned with prediction. Topics in Statistical Modelling II (HDAT9700) touch on description, prediction and causal inference. The important thing is choosing the most relevant approach for the research question.", html = TRUE, class = c("html", "character")), incorrect = structure("All three tasks are relevant to a career in Health Data Science. Machine Learning I (HDAT9500) is primarily concerned with prediction. Topics in Statistical Modelling II (HDAT9700) touch on description, prediction and causal inference. The important thing is choosing the most relevant approach for the research question.", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1-1-answer", question = "quiz1-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich modeling tasks are relevant to Health Data Science (Select all that apply)\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 715212248.166953, options = list()), class = c("learnr_checkbox", "tutorial_question")))
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_checkbox", label = "quiz1-1", question = structure("Which modeling tasks are relevant to Health Data Science (Select all that apply)", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_6ad88f4",     option = "Description", value = "Description", label = structure("Description", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_189fe3",     option = "Prediction", value = "Prediction", label = structure("Prediction", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_2e5b6f2",     option = "Causal inference", value = "Causal inference",     label = structure("Causal inference", html = TRUE, class = c("html",     "character")), correct = TRUE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("All three tasks are relevant to a career in Health Data Science. Machine Learning I (HDAT9500) is primarily concerned with prediction. Topics in Statistical Modelling II (HDAT9700) touch on description, prediction and causal inference. The important thing is choosing the most relevant approach for the research question.", html = TRUE, class = c("html", "character")), incorrect = structure("All three tasks are relevant to a career in Health Data Science. Machine Learning I (HDAT9500) is primarily concerned with prediction. Topics in Statistical Modelling II (HDAT9700) touch on description, prediction and causal inference. The important thing is choosing the most relevant approach for the research question.", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz1-1-answer", question = "quiz1-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich modeling tasks are relevant to Health Data Science (Select all that apply)\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = FALSE,     seed = 1988281668.57413, options = list()), class = c("learnr_checkbox", "tutorial_question")))
+</script>
+
+
+<script type="application/shiny-prerendered" data-context="server">
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz2-1", question = structure("Which of the diagrams above is not a valid DAG?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_59a839a",     option = "A", value = "A", label = structure("A", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_ef37342",     option = "B", value = "B", label = structure("B", html = TRUE, class = c("html",     "character")), correct = TRUE, message = structure("Correct, (B) is not a valid DAG because it is not <em>directional<\u002fem>. This DAG would suggest that <strong>X<\u002fstrong> causes <strong>Y<\u002fstrong> and <strong>Y<\u002fstrong> causes <strong>X<\u002fstrong>.", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_2aafce6", option = "C", value = "C",     label = structure("C", html = TRUE, class = c("html", "character"    )), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("This is a valid DAG, try again!", html = TRUE, class = c("html", "character")), incorrect = structure("This is a valid DAG, try again!", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz2-1-answer", question = "quiz2-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich of the diagrams above is not a valid DAG?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 886687500.587104, options = list()), class = c("learnr_radio", "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz2-1", question = structure("Which of the diagrams above is not a valid DAG?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_312b505",     option = "A", value = "A", label = structure("A", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_cdc37dc",     option = "B", value = "B", label = structure("B", html = TRUE, class = c("html",     "character")), correct = TRUE, message = structure("Correct, (B) is not a valid DAG because it is not <em>directional<\u002fem>. This DAG would suggest that <strong>X<\u002fstrong> causes <strong>Y<\u002fstrong> and <strong>Y<\u002fstrong> causes <strong>X<\u002fstrong>.", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_c08afa", option = "C", value = "C",     label = structure("C", html = TRUE, class = c("html", "character"    )), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("This is a valid DAG, try again!", html = TRUE, class = c("html", "character")), incorrect = structure("This is a valid DAG, try again!", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz2-1-answer", question = "quiz2-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich of the diagrams above is not a valid DAG?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 737725832.15647, options = list()), class = c("learnr_radio", "tutorial_question")))
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz3-1", question = structure("Which of the following statements matches the DAG above?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_931fbe3",     option = "Maternal age confounds the relationship between social deprivation and low birth weight.",     value = "Maternal age confounds the relationship between social deprivation and low birth weight.",     label = structure("Maternal age confounds the relationship between social deprivation and low birth weight.", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_2f5ba1c",     option = "Low birthweight confounds the relationship between social deprivation and maternal age.",     value = "Low birthweight confounds the relationship between social deprivation and maternal age.",     label = structure("Low birthweight confounds the relationship between social deprivation and maternal age.", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_3497ab1",     option = "Social deprivation confounds the relationship between maternal age and low birthweight",     value = "Social deprivation confounds the relationship between maternal age and low birthweight",     label = structure("Social deprivation confounds the relationship between maternal age and low birthweight", html = TRUE, class = c("html",     "character")), correct = TRUE, message = structure("Correct. This DAG suggests that social deprivation is a common cause of maternal age and low birthweight", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Not quite right, try again!", html = TRUE, class = c("html", "character")), incorrect = structure("Not quite right, try again!", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz3-1-answer", question = "quiz3-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich of the following statements matches the DAG above?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 663785909.190901, options = list()), class = c("learnr_radio", "tutorial_question")))
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz3-1", question = structure("Which of the following statements matches the DAG above?", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_fa267cb",     option = "Maternal age confounds the relationship between social deprivation and low birth weight.",     value = "Maternal age confounds the relationship between social deprivation and low birth weight.",     label = structure("Maternal age confounds the relationship between social deprivation and low birth weight.", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_567072c",     option = "Low birthweight confounds the relationship between social deprivation and maternal age.",     value = "Low birthweight confounds the relationship between social deprivation and maternal age.",     label = structure("Low birthweight confounds the relationship between social deprivation and maternal age.", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_6cbe2f2",     option = "Social deprivation confounds the relationship between maternal age and low birthweight",     value = "Social deprivation confounds the relationship between maternal age and low birthweight",     label = structure("Social deprivation confounds the relationship between maternal age and low birthweight", html = TRUE, class = c("html",     "character")), correct = TRUE, message = structure("Correct. This DAG suggests that social deprivation is a common cause of maternal age and low birthweight", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Not quite right, try again!", html = TRUE, class = c("html", "character")), incorrect = structure("Not quite right, try again!", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz3-1-answer", question = "quiz3-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhich of the following statements matches the DAG above?\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = FALSE, allow_retry = TRUE,     seed = 708844784.169918, options = list()), class = c("learnr_radio", "tutorial_question")))
-</script>
- 
-<script type="application/shiny-prerendered" data-context="server">
-learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz4-1", question = structure("What are the correct labels for the nodes in the DAG above to best reflect the example discussed in @EpiEllie&#39;s tweetorial", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_8da7e26",     option = "x = 'COVID-19 death', a = 'Social determinants of health', m = 'Smoking history', b = 'Heart disease', y = 'Current smoking'",     value = "x = 'COVID-19 death', a = 'Social determinants of health', m = 'Smoking history', b = 'Heart disease', y = 'Current smoking'",     label = structure("x = &#39;COVID-19 death&#39;, a = &#39;Social determinants of health&#39;, m = &#39;Smoking history&#39;, b = &#39;Heart disease&#39;, y = &#39;Current smoking&#39;", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_7e00b07",     option = "x = 'COVID-19 death', a = 'Social determinants of health', m = 'Heart disease', b = 'Smoking history', y = 'Current smoking'",     value = "x = 'COVID-19 death', a = 'Social determinants of health', m = 'Heart disease', b = 'Smoking history', y = 'Current smoking'",     label = structure("x = &#39;COVID-19 death&#39;, a = &#39;Social determinants of health&#39;, m = &#39;Heart disease&#39;, b = &#39;Smoking history&#39;, y = &#39;Current smoking&#39;", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_f421cf1",     option = "x = 'Current smoking', a = 'Social determinants of health', m = 'Smoking history', b = 'Heart disease', y = 'COVID-19 death'",     value = "x = 'Current smoking', a = 'Social determinants of health', m = 'Smoking history', b = 'Heart disease', y = 'COVID-19 death'",     label = structure("x = &#39;Current smoking&#39;, a = &#39;Social determinants of health&#39;, m = &#39;Smoking history&#39;, b = &#39;Heart disease&#39;, y = &#39;COVID-19 death&#39;", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_776c088",     option = "x = 'Current smoking', a = 'Social determinants of health', m = 'Heart disease', b = 'Smoking history', y = 'COVID-19 death'",     value = "x = 'Current smoking', a = 'Social determinants of health', m = 'Heart disease', b = 'Smoking history', y = 'COVID-19 death'",     label = structure("x = &#39;Current smoking&#39;, a = &#39;Social determinants of health&#39;, m = &#39;Heart disease&#39;, b = &#39;Smoking history&#39;, y = &#39;COVID-19 death&#39;", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_9ab7dff",     option = "x = 'Current smoking', a = 'Smoking history', m = 'Heart disease', b = 'Social determinants of health', y = 'COVID-19 death'",     value = "x = 'Current smoking', a = 'Smoking history', m = 'Heart disease', b = 'Social determinants of health', y = 'COVID-19 death'",     label = structure("x = &#39;Current smoking&#39;, a = &#39;Smoking history&#39;, m = &#39;Heart disease&#39;, b = &#39;Social determinants of health&#39;, y = &#39;COVID-19 death&#39;", html = TRUE, class = c("html",     "character")), correct = TRUE, message = structure("Although the complete DAG is likely much more complicated.", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Not quite right, try again!", html = TRUE, class = c("html", "character")), incorrect = structure("Not quite right, try again!", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz4-1-answer", question = "quiz4-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhat are the correct labels for the nodes in the DAG above to best reflect the example discussed in @EpiEllie&#39;s tweetorial\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = TRUE, allow_retry = TRUE,     seed = 944578353.060146, options = list()), class = c("learnr_radio", "tutorial_question")))
+learnr:::question_prerendered_chunk(structure(list(type = "learnr_radio", label = "quiz4-1", question = structure("What are the correct labels for the nodes in the DAG above to best reflect the example discussed in @EpiEllie&#39;s tweetorial", html = TRUE, class = c("html", "character")), answers = list(structure(list(id = "lnr_ans_40c771",     option = "x = 'COVID-19 death', a = 'Social determinants of health', m = 'Smoking history', b = 'Heart disease', y = 'Current smoking'",     value = "x = 'COVID-19 death', a = 'Social determinants of health', m = 'Smoking history', b = 'Heart disease', y = 'Current smoking'",     label = structure("x = &#39;COVID-19 death&#39;, a = &#39;Social determinants of health&#39;, m = &#39;Smoking history&#39;, b = &#39;Heart disease&#39;, y = &#39;Current smoking&#39;", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_ecb71d7",     option = "x = 'COVID-19 death', a = 'Social determinants of health', m = 'Heart disease', b = 'Smoking history', y = 'Current smoking'",     value = "x = 'COVID-19 death', a = 'Social determinants of health', m = 'Heart disease', b = 'Smoking history', y = 'Current smoking'",     label = structure("x = &#39;COVID-19 death&#39;, a = &#39;Social determinants of health&#39;, m = &#39;Heart disease&#39;, b = &#39;Smoking history&#39;, y = &#39;Current smoking&#39;", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_214f3e2",     option = "x = 'Current smoking', a = 'Social determinants of health', m = 'Smoking history', b = 'Heart disease', y = 'COVID-19 death'",     value = "x = 'Current smoking', a = 'Social determinants of health', m = 'Smoking history', b = 'Heart disease', y = 'COVID-19 death'",     label = structure("x = &#39;Current smoking&#39;, a = &#39;Social determinants of health&#39;, m = &#39;Smoking history&#39;, b = &#39;Heart disease&#39;, y = &#39;COVID-19 death&#39;", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_c6406ee",     option = "x = 'Current smoking', a = 'Social determinants of health', m = 'Heart disease', b = 'Smoking history', y = 'COVID-19 death'",     value = "x = 'Current smoking', a = 'Social determinants of health', m = 'Heart disease', b = 'Smoking history', y = 'COVID-19 death'",     label = structure("x = &#39;Current smoking&#39;, a = &#39;Social determinants of health&#39;, m = &#39;Heart disease&#39;, b = &#39;Smoking history&#39;, y = &#39;COVID-19 death&#39;", html = TRUE, class = c("html",     "character")), correct = FALSE, message = NULL), class = c("tutorial_question_answer", "tutorial_quiz_answer")), structure(list(id = "lnr_ans_d017d07",     option = "x = 'Current smoking', a = 'Smoking history', m = 'Heart disease', b = 'Social determinants of health', y = 'COVID-19 death'",     value = "x = 'Current smoking', a = 'Smoking history', m = 'Heart disease', b = 'Social determinants of health', y = 'COVID-19 death'",     label = structure("x = &#39;Current smoking&#39;, a = &#39;Smoking history&#39;, m = &#39;Heart disease&#39;, b = &#39;Social determinants of health&#39;, y = &#39;COVID-19 death&#39;", html = TRUE, class = c("html",     "character")), correct = TRUE, message = structure("Although the complete DAG is likely much more complicated.", html = TRUE, class = c("html",     "character"))), class = c("tutorial_question_answer", "tutorial_quiz_answer"))), button_labels = list(submit = structure("Submit Answer", html = TRUE, class = c("html", "character")), try_again = structure("Try Again", html = TRUE, class = c("html", "character"))), messages = list(correct = structure("Correct!", html = TRUE, class = c("html", "character")), try_again = structure("Not quite right, try again!", html = TRUE, class = c("html", "character")), incorrect = structure("Not quite right, try again!", html = TRUE, class = c("html", "character")), message = NULL, post_message = NULL), ids = list(    answer = "quiz4-1-answer", question = "quiz4-1"), loading = structure("<strong>Loading:<\u002fstrong> \nWhat are the correct labels for the nodes in the DAG above to best reflect the example discussed in @EpiEllie&#39;s tweetorial\n<br/><br/><br/>", html = TRUE, class = c("html", "character")), random_answer_order = TRUE, allow_retry = TRUE,     seed = 819528903.618377, options = list()), class = c("learnr_radio", "tutorial_question")))
 </script>
  
 <script type="application/shiny-prerendered" data-context="server">
@@ -889,7 +1376,8 @@ output$`tutorial-exercise-m-bias-output` <- renderUI({
   `tutorial-exercise-m-bias-result`()
 })
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-dagitty1-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-dagitty1-code-editor`)), session)
 output$`tutorial-exercise-dagitty1-output` <- renderUI({
@@ -903,7 +1391,8 @@ output$`tutorial-exercise-ggdag2-output` <- renderUI({
   `tutorial-exercise-ggdag2-result`()
 })
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-ggdag3-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ggdag3-code-editor`)), session)
 output$`tutorial-exercise-ggdag3-output` <- renderUI({
@@ -917,7 +1406,8 @@ output$`tutorial-exercise-ggdag4-output` <- renderUI({
   `tutorial-exercise-ggdag4-result`()
 })
 </script>
- 
+
+
 <script type="application/shiny-prerendered" data-context="server">
 `tutorial-exercise-ggdag1-result` <- learnr:::setup_exercise_handler(reactive(req(input$`tutorial-exercise-ggdag1-code-editor`)), session)
 output$`tutorial-exercise-ggdag1-output` <- renderUI({
@@ -927,12 +1417,12 @@ output$`tutorial-exercise-ggdag1-output` <- renderUI({
 </p>
 <!--html_preserve-->
 <script type="application/shiny-prerendered" data-context="dependencies">
-{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["3.6.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/3.6.0"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery-3.6.0.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquerylib"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.1.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootstrap"]},{"type":"character","attributes":{},"value":["3.3.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/bootstrap"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["viewport"]}},"value":[{"type":"character","attributes":{},"value":["width=device-width, initial-scale=1"]}]},{"type":"character","attributes":{},"value":["js/bootstrap.min.js","shim/html5shiv.min.js","shim/respond.min.js"]},{"type":"character","attributes":{},"value":["css/cerulean.min.css"]},{"type":"character","attributes":{},"value":["<style>h1 {font-size: 34px;}\n       h1.title {font-size: 38px;}\n       h2 {font-size: 30px;}\n       h3 {font-size: 24px;}\n       h4 {font-size: 18px;}\n       h5 {font-size: 16px;}\n       h6 {font-size: 12px;}\n       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}\n       pre:not([class]) { background-color: white }<\/style>"]},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.14"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["pagedtable"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/pagedtable-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/pagedtable.js"]},{"type":"character","attributes":{},"value":["css/pagedtable.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.14"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["textmate.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.14"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-format"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmarkdown/templates/tutorial/resources"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-format.js"]},{"type":"character","attributes":{},"value":["tutorial-format.css","rstudio-theme.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["3.6.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/3.6.0"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery-3.6.0.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquerylib"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.1.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["navigation"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/navigation-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tabsets.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.14"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["default.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.14"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["3.6.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/3.6.0"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery-3.6.0.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquerylib"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.1.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["font-awesome"]},{"type":"character","attributes":{},"value":["5.1.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/fontawesome"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/all.css","css/v4-shims.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.14"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootbox"]},{"type":"character","attributes":{},"value":["4.4.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/bootbox"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["bootbox.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["idb-keyvalue"]},{"type":"character","attributes":{},"value":["3.2.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/idb-keyval"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["idb-keyval-iife-compat.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["kePrint"]},{"type":"character","attributes":{},"value":["0.0.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["kePrint-0.0.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["kePrint.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["kableExtra"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["1.3.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["lightable"]},{"type":"character","attributes":{},"value":["0.0.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lightable-0.0.1"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["lightable.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["kableExtra"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["1.3.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["kePrint"]},{"type":"character","attributes":{},"value":["0.0.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["kePrint-0.0.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["kePrint.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["kableExtra"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["1.3.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["lightable"]},{"type":"character","attributes":{},"value":["0.0.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lightable-0.0.1"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["lightable.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["kableExtra"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["1.3.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]}]}
+{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["header-attrs"]},{"type":"character","attributes":{},"value":["2.14"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/pandoc"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["header-attrs.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.14"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["3.6.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/3.6.0"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery-3.6.0.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquerylib"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.1.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootstrap"]},{"type":"character","attributes":{},"value":["3.3.5"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/bootstrap"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["viewport"]}},"value":[{"type":"character","attributes":{},"value":["width=device-width, initial-scale=1"]}]},{"type":"character","attributes":{},"value":["js/bootstrap.min.js","shim/html5shiv.min.js","shim/respond.min.js"]},{"type":"character","attributes":{},"value":["css/cerulean.min.css"]},{"type":"character","attributes":{},"value":["<style>h1 {font-size: 34px;}\n       h1.title {font-size: 38px;}\n       h2 {font-size: 30px;}\n       h3 {font-size: 24px;}\n       h4 {font-size: 18px;}\n       h5 {font-size: 16px;}\n       h6 {font-size: 12px;}\n       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}\n       pre:not([class]) { background-color: white }<\/style>"]},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.14"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["pagedtable"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/pagedtable-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["js/pagedtable.js"]},{"type":"character","attributes":{},"value":["css/pagedtable.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.14"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["textmate.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.14"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-format"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmarkdown/templates/tutorial/resources"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-format.js"]},{"type":"character","attributes":{},"value":["tutorial-format.css","rstudio-theme.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["3.6.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/3.6.0"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery-3.6.0.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquerylib"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.1.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["navigation"]},{"type":"character","attributes":{},"value":["1.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/navigation-1.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tabsets.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.14"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["highlightjs"]},{"type":"character","attributes":{},"value":["9.12.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/highlightjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["highlight.js"]},{"type":"character","attributes":{},"value":["default.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.14"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["jquery"]},{"type":"character","attributes":{},"value":["3.6.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/3.6.0"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquery-3.6.0.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["jquerylib"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.1.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["font-awesome"]},{"type":"character","attributes":{},"value":["5.1.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["rmd/h/fontawesome"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["css/all.css","css/v4-shims.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["rmarkdown"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["2.14"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["bootbox"]},{"type":"character","attributes":{},"value":["4.4.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/bootbox"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["bootbox.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["idb-keyvalue"]},{"type":"character","attributes":{},"value":["3.2.0"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/idb-keyval"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["idb-keyval-iife-compat.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[false]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial.js"]},{"type":"character","attributes":{},"value":["tutorial.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-autocompletion"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-autocompletion.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["tutorial-diagnostics"]},{"type":"character","attributes":{},"value":["0.10.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/tutorial"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["tutorial-diagnostics.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["kePrint"]},{"type":"character","attributes":{},"value":["0.0.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["kePrint-0.0.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["kePrint.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["kableExtra"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["1.3.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["lightable"]},{"type":"character","attributes":{},"value":["0.0.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lightable-0.0.1"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["lightable.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["kableExtra"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["1.3.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["kePrint"]},{"type":"character","attributes":{},"value":["0.0.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["kePrint-0.0.1"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["kePrint.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["kableExtra"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["1.3.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["lightable"]},{"type":"character","attributes":{},"value":["0.0.1"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lightable-0.0.1"]}]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["lightable.css"]},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["kableExtra"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["1.3.4"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["ace"]},{"type":"character","attributes":{},"value":["1.2.6"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/ace"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["ace.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","version","src","meta","script","stylesheet","head","attachment","package","all_files","pkgVersion"]},"class":{"type":"character","attributes":{},"value":["html_dependency"]}},"value":[{"type":"character","attributes":{},"value":["clipboardjs"]},{"type":"character","attributes":{},"value":["1.5.15"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["file"]}},"value":[{"type":"character","attributes":{},"value":["lib/clipboardjs"]}]},{"type":"NULL"},{"type":"character","attributes":{},"value":["clipboard.min.js"]},{"type":"NULL"},{"type":"NULL"},{"type":"NULL"},{"type":"character","attributes":{},"value":["learnr"]},{"type":"logical","attributes":{},"value":[true]},{"type":"character","attributes":{},"value":["0.10.1"]}]}]}
 </script>
 <!--/html_preserve-->
 <!--html_preserve-->
 <script type="application/shiny-prerendered" data-context="execution_dependencies">
-{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113]}},"value":[{"type":"character","attributes":{},"value":["abind","assertthat","backports","base","boot","broom","bslib","car","carData","cellranger","checkmate","cli","colorspace","compiler","cowplot","crayon","curl","dagitty","datasets","DBI","dbplyr","digest","dplyr","ellipsis","evaluate","fansi","farver","fastmap","forcats","fs","generics","ggdag","ggforce","ggplot2","ggpubr","ggraph","ggrepel","ggsignif","glue","graphics","graphlayouts","grDevices","grid","gridExtra","gtable","haven","highr","hms","htmltools","htmlwidgets","httpuv","httr","igraph","jquerylib","jsonlite","kableExtra","knitr","labeling","later","learnr","lifecycle","lubridate","magrittr","markdown","MASS","methods","mime","modelr","munsell","pillar","pkgconfig","polyclip","promises","purrr","R6","Rcpp","readr","readxl","reprex","rlang","rmarkdown","rprojroot","rstatix","rstudioapi","rvest","sass","scales","shiny","stats","stringi","stringr","svglite","systemfonts","tibble","tidygraph","tidyr","tidyselect","tidyverse","tools","tweenr","tzdb","utf8","utils","V8","vctrs","viridis","viridisLite","webshot","withr","xfun","xml2","xtable","yaml"]},{"type":"character","attributes":{},"value":["1.4-5","0.2.1","1.4.1","4.0.3","1.3-28","0.8.0","0.3.1","3.0-13","3.0-5","1.1.0","2.1.0","3.3.0","2.0-3","4.0.3","1.1.1","1.5.1","4.3.2","0.3-1","4.0.3","1.1.2","2.1.1","0.6.29","1.0.9","0.3.2","0.15","1.0.3","2.1.0","1.1.0","0.5.1","1.5.2","0.1.2","0.2.4","0.3.3","3.3.6","0.4.0","2.0.5","0.9.1","0.6.3","1.6.2","4.0.3","0.8.0","4.0.3","4.0.3","2.3","0.3.0","2.5.0","0.9","1.1.1","0.5.2","1.5.4","1.6.5","1.4.3","1.2.6","0.1.4","1.8.0","1.3.4","1.39","0.4.2","1.3.0","0.10.1","1.0.1","1.8.0","2.0.3","1.1","7.3-55","4.0.3","0.12","0.1.8","0.5.0","1.7.0","2.0.3","1.10-0","1.2.0.1","0.3.4","2.5.1","1.0.8.3","2.1.2","1.4.0","2.0.1","1.0.2","2.14","2.0.3","0.7.0","0.13","1.0.2","0.4.1","1.2.0","1.7.1","4.0.3","1.7.6","1.4.0","2.1.0","1.0.4","3.1.7","1.2.1","1.2.0","1.1.2","1.3.1","4.0.3","1.0.2","0.3.0","1.2.2","4.0.3","4.2.0","0.4.1","0.6.2","0.4.0","0.5.3","2.5.0","0.31","1.3.3","1.8-4","2.3.5"]}]}]}
+{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["packages","version"]},"class":{"type":"character","attributes":{},"value":["data.frame"]},"row.names":{"type":"integer","attributes":{},"value":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114]}},"value":[{"type":"character","attributes":{},"value":["abind","assertthat","backports","base","boot","broom","bslib","cachem","car","carData","cellranger","checkmate","cli","colorspace","compiler","cowplot","crayon","curl","dagitty","datasets","DBI","dbplyr","digest","dplyr","ellipsis","evaluate","fansi","farver","fastmap","forcats","fs","generics","ggdag","ggforce","ggplot2","ggpubr","ggraph","ggrepel","ggsignif","glue","graphics","graphlayouts","grDevices","grid","gridExtra","gtable","haven","highr","hms","htmltools","htmlwidgets","httpuv","httr","igraph","jquerylib","jsonlite","kableExtra","knitr","labeling","later","learnr","lifecycle","lubridate","magrittr","markdown","MASS","methods","mime","modelr","munsell","pillar","pkgconfig","polyclip","promises","purrr","R6","Rcpp","readr","readxl","reprex","rlang","rmarkdown","rprojroot","rstatix","rstudioapi","rvest","sass","scales","shiny","stats","stringi","stringr","svglite","systemfonts","tibble","tidygraph","tidyr","tidyselect","tidyverse","tools","tweenr","tzdb","utf8","utils","V8","vctrs","viridis","viridisLite","webshot","withr","xfun","xml2","xtable","yaml"]},{"type":"character","attributes":{},"value":["1.4-5","0.2.1","1.4.1","4.0.3","1.3-28","0.8.0","0.4.0","1.0.6","3.0-13","3.0-5","1.1.0","2.1.0","3.3.0","2.0-3","4.0.3","1.1.1","1.5.1","4.3.2","0.3-1","4.0.3","1.1.2","2.1.1","0.6.29","1.0.9","0.3.2","0.15","1.0.3","2.1.0","1.1.0","0.5.1","1.5.2","0.1.2","0.2.4","0.3.3","3.3.6","0.4.0","2.0.5","0.9.1","0.6.3","1.6.2","4.0.3","0.8.0","4.0.3","4.0.3","2.3","0.3.0","2.5.0","0.9","1.1.1","0.5.3","1.5.4","1.6.5","1.4.3","1.2.6","0.1.4","1.8.0","1.3.4","1.40","0.4.2","1.3.0","0.10.1","1.0.1","1.8.0","2.0.3","1.1","7.3-55","4.0.3","0.12","0.1.8","0.5.0","1.7.0","2.0.3","1.10-0","1.2.0.1","0.3.4","2.5.1","1.0.9","2.1.2","1.4.0","2.0.1","1.0.4","2.14","2.0.3","0.7.0","0.13","1.0.2","0.4.2","1.2.0","1.7.2","4.0.3","1.7.6","1.4.0","2.1.0","1.0.4","3.1.7","1.2.1","1.2.0","1.1.2","1.3.1","4.0.3","1.0.2","0.3.0","1.2.2","4.0.3","4.2.0","0.4.1","0.6.2","0.4.0","0.5.3","2.5.0","0.31","1.3.3","1.8-4","2.3.5"]}]}]}
 </script>
 <!--/html_preserve-->
 </div>
@@ -947,7 +1437,8 @@ output$`tutorial-exercise-ggdag1-output` <- renderUI({
 
 <!-- begin doc-metadata -->
 <div id="doc-metadata">
-<h2 class="title toc-ignore" style="display:none;">HDAT9700: Directed Acyclic Graphs (DAGs)</h2>
+<h2 class="title toc-ignore" style="display:none;">HDAT9700: Directed
+Acyclic Graphs (DAGs)</h2>
 </div>
 <!-- end doc-metadata -->
 

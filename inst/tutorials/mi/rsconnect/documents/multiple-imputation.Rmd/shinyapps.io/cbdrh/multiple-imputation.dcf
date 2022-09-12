@@ -5,8 +5,9 @@ account: cbdrh
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1659387
-bundleId: 3893168
+bundleId: 6110503
 url: https://cbdrh.shinyapps.io/multiple-imputation/
-when: 1606099971.10994
+when: 1658204600.95774
+lastSyncTime: 1658204600.95775
 asMultiple: FALSE
 asStatic: FALSE

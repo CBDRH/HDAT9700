@@ -967,7 +967,7 @@ To identify backdoor paths, look for paths between the exposure and outcome that
 
 * Exercise &larr; Club member &rarr; Social interactions &rarr; Mood 
 * Exercise &larr; Season &rarr; Mood
-* Exercise &rarr; Sleep quality &larr; Mood
+* Exercise &rarr; Blood pressure &larr; Mood
 
 
 #### Frontdoor paths 
