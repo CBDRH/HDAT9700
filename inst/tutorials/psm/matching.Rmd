@@ -26,6 +26,7 @@ library("kableExtra")
 library("ggplot2")
 library("ggdag")
 library("cobalt")
+library("emoji")
 
 # Define colors for DAGs
 exposureCol <- "#CDDC55"
@@ -726,7 +727,7 @@ The Mahalanobis distance has two useful properties:
 
 (i) It **standardises** the variables recorded in $X$. This means that the units used in your data have no impact on the distance - it doesn't matter if weight is recorded in pounds or kilograms or if income is recorded in dollars or '000s of dollars, the resulting distances will be the same.
 
-(ii) It takes into account the **covariance** structure in the data when calculating distance. To see what this means, consider the ponts **a** and **b** on the scatterplot of education versus salary below.
+(ii) It takes into account the **covariance** structure in the data when calculating distance. To see what this means, consider the points **a** and **b** on the scatterplot of education versus salary below.
 
 ```{r}
 data(cars)
@@ -738,7 +739,7 @@ plotdata <- cbind(df, lab)
 ggplot(plotdata, aes(x=speed, y=dist)) + 
   geom_line(data = plotdata[51:53, ], 
             aes(x = speed, y = dist), color = c("red", "green", "pink"), 
-            arrow = arrow(angle = 15, ends = c("first", "last"), type = "closed")) +
+            arrow = grid::arrow(angle = 15, ends = c("first", "last"), type = "closed")) +
   ggrepel::geom_text_repel(data = plotdata, aes(x = speed, y = dist, label = lab), size=6, color = 'darkorchid4') +
   geom_point() +
   labs(x = 'Years of education', y = "Base salary ($ ,000s)")
@@ -766,7 +767,7 @@ names(plotdata) <- c("speed", "dist", "lab")
 flippedPlot <- ggplot(plotdata, aes(x=speed, y=dist)) + 
   geom_line(data = plotdata[51:53, ], 
             aes(x = speed, y = dist), color = c("red", "green", "pink"), 
-            arrow = arrow(angle = 15, ends = c("first", "last"), type = "closed")) +
+            arrow = grid::arrow(angle = 15, ends = c("first", "last"), type = "closed")) +
   ggrepel::geom_text_repel(data = plotdata, aes(x = speed, y = dist, label = lab), size=6, color = 'darkorchid4') +
   geom_point() +
   labs(x = 'Years of education (rescaled)', y = "Base salary (rescaled)")
@@ -971,7 +972,7 @@ The key functions in the `cobalt` package are:
 * `bal.tab()` for tables of balance statistics 
 
 * `bal.plot()` for plots comparing the distribution of a variable before and after matching
-* `love.plot()` for a single plot comparing balance before and after matching for all variables `r emo::ji('heart')`
+* `love.plot()` for a single plot comparing balance before and after matching for all variables `r emoji::emoji('heart')`
 
 Each of these functions take a `matchit` object as the main argument (`cobalt` also works with other packages that undertake matching). Let's check out some examples:
 
@@ -1008,7 +1009,7 @@ bal.plot(match4, var.name = 'age')
 Here we can see that treated individuals have a narrow age range compared to untreated individuals. But at least we know there should be suitable matches in terms of age for our treated individuals. Try editing the code above to examine some of the other variables. 
 
 
-#### `love.plot()` `r emo::ji('heart')`
+#### `love.plot()` `r emoji::emoji('heart')`
 
 A love plot is a popular plot that compares the balance before and after matching for all covariates included in the matching procedure. 
 
