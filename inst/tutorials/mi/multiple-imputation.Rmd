@@ -463,7 +463,7 @@ You will learn the functions:
 ***
 
 #### Exercise 1.2 Data exploration
-```{r exercise1_2, exercise.cap = "Exercise 1.2", exercise=TRUE, exercise.eval=FALSE, exercise.setup = "exercise1.1", exercise.lines=8}
+```{r exercise1_2, exercise.cap = "Exercise 1.2", exercise=TRUE, exercise.eval=FALSE, exercise.setup = "exercise1_1", exercise.lines=8}
 # How many variables are there in the sleep dataset?
 
 # How many observations are there in the sleep dataset?
@@ -486,7 +486,7 @@ summary(complete.cases(sleep))
 The [`VIM`](https://www.rdocumentation.org/packages/VIM/versions/4.7.0) (**V**isualization and **I**mputation of **M**issing Values) package includes a collection of visualisation techniques for incomplete data. You can read more about `VIM`, and see some examples of visualisations produced by `VIM`, in [this journal article](https://link.springer.com/content/pdf/10.1007%2Fs11634-011-0102-y.pdf).
 
 The [`aggr`](https://www.rdocumentation.org/packages/VIM/versions/4.7.0/topics/aggr) function plots the proportion of missing data for all variables, as well as common patterns of missing data. Run the code below to summarise missing data in the sleep dataset. You'll need to expand on the code to answer all of the questions.
-```{r exercise1_3, exercise.cap = "Exercise 1.3",  exercise=TRUE, exercise.eval=FALSE, exercise.setup = "exercise1.1", exercise.lines=14, fig.width=7, fig.height=5}
+```{r exercise1_3, exercise.cap = "Exercise 1.3",  exercise=TRUE, exercise.eval=FALSE, exercise.setup = "exercise1_1", exercise.lines=14, fig.width=7, fig.height=5}
 aggr(sleep)
 
 # What variable has the most missing values?
@@ -511,7 +511,7 @@ aggr(sleep)
 #### Exercise 1.4 Summarising patterns of missing data
 The [`md.pattern`](https://www.rdocumentation.org/packages/mice/versions/2.46.0/topics/md.pattern) function from the [`mice`](https://www.rdocumentation.org/packages/mice/versions/2.46.0) (**M**ultivariate **I**mputation by **C**hained **E**quations) package offers another way to summarise patterns of missing data in a dataset. Use the `md.pattern()` function to answer the question below.
 
-```{r exercise1_4, exercise.cap = "Exercise 1.4",  exercise=TRUE, exercise.eval=FALSE, exercise.setup = "exercise1.1", exercise.lines=6}
+```{r exercise1_4, exercise.cap = "Exercise 1.4",  exercise=TRUE, exercise.eval=FALSE, exercise.setup = "exercise1_1", exercise.lines=6}
 # How many records in the sleep dataset have missing data on three or more variables?
 
 library("mice")
@@ -522,7 +522,7 @@ library("mice")
 
 #### Exercise 1.5 Visualising incomplete variables
 The [`histMiss`](https://www.rdocumentation.org/packages/VIM/versions/4.7.0/topics/histMiss) function from the `VIM` package plots a histogram that includes the proportion of missing values in a variable, and can also plot missing values in one variable by the values of another variable. The variable **NonD** records the hours the mammal spent asleep but not dreaming. Use `histMiss` below to explore missing values on the variable **NonD** with respect to the values of other variables in the dataset.
-```{r exercise1_5, exercise.cap = "Exercise 1.5",  exercise=TRUE, exercise.eval=FALSE, exercise.setup = "exercise1.1", exercise.lines=20, fig.width=7, fig.height=7}
+```{r exercise1_5, exercise.cap = "Exercise 1.5",  exercise=TRUE, exercise.eval=FALSE, exercise.setup = "exercise1_1", exercise.lines=20, fig.width=7, fig.height=7}
 # This figure shows that most missing values of nonD occurred for values of BodyWgt <1000
 # The bar on the right indicates that no values of X were missing
 histMiss(sleep[, c("BodyWgt", "NonD")])
@@ -550,7 +550,7 @@ histMiss(sleep[, c("lnBodyWgt", "NonD")])
 
 #### Exercise 1.6 Visualising incomplete variables
 The [`marginsplot`](https://www.rdocumentation.org/packages/VIM/versions/4.7.0/topics/marginplot) function from the `VIM` package plots a scatterplot with additional information in the margins.
-```{r exercise1_6, exercise.cap = "Exercise 1.6",  exercise=TRUE, exercise.eval=FALSE, exercise.setup = "exercise1.1", exercise.lines=8, fig.width=7, fig.height=7}
+```{r exercise1_6, exercise.cap = "Exercise 1.6",  exercise=TRUE, exercise.eval=FALSE, exercise.setup = "exercise1_1", exercise.lines=8, fig.width=7, fig.height=7}
 # Use the marginplot function to explore patterns of missing data in the dataset
 # marginplot(sleep[, c("XXX", "XXX")])
 
@@ -889,7 +889,7 @@ In this practical session you will compare some simple  approaches to handling m
 ***
 
 #### Exercise 2.2 The variable NonD contains the number of hours that a mammal slept without dreaming. Calculate the mean and standard error of the mean using **casewise deletion**.
-```{r exercise2_2, exercise.cap = "Exercise 2.2", exercise=TRUE, exercise.setup = "exercise2.1", exercise.eval=FALSE, exercise.lines=5}
+```{r exercise2_2, exercise.cap = "Exercise 2.2", exercise=TRUE, exercise.setup = "exercise2_1", exercise.eval=FALSE, exercise.lines=5}
 
 ```
 
@@ -905,7 +905,7 @@ In this practical session you will compare some simple  approaches to handling m
 
 
 #### Exercise 2.3 Calculate the mean and standard error of the variable NonD using **mean imputation** to fill in missing values.
-```{r exercise2_3, exercise.cap = "Exercise 2.3", exercise=TRUE, exercise.setup = "exercise2.1", exercise.eval=FALSE, exercise.lines=10}
+```{r exercise2_3, exercise.cap = "Exercise 2.3", exercise=TRUE, exercise.setup = "exercise2_1", exercise.eval=FALSE, exercise.lines=10}
 # Create a copy of the NonD variable
 # sleep$NonD.mean <- XXX
 
@@ -926,7 +926,7 @@ sleep$NonD.mean <- replace(sleep$NonD, is.na(sleep$NonD), mean(sleep$NonD,na.rm=
 
 
 #### Exercise 2.4 Calculate the mean and standard error of the variable NonD using **regression imputation** to fill in missing values.
-```{r exercise2_4, exercise.cap = "Exercise 2.4", exercise=TRUE, exercise.setup = "exercise2.3", exercise.eval=FALSE, exercise.lines=10}
+```{r exercise2_4, exercise.cap = "Exercise 2.4", exercise=TRUE, exercise.setup = "exercise2_3", exercise.eval=FALSE, exercise.lines=10}
 
 # Fit a model for the complete values of NonD conditional on the fully observed variables
 # imp.model <- lm(XXX <- XXX , data = XXX)

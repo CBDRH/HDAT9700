@@ -6,9 +6,6 @@
 \usage{
 index()
 }
-\value{
-
-}
 \description{
 Show an index of available tutorials
 }

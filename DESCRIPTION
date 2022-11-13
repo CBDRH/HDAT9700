@@ -1,7 +1,7 @@
 Package: hdat9700tutorials
 Type: Package
 Title: Health Data Analytics: Statistical Modelling II (HDAT9700)
-Version: 0.1.8
+Version: 0.1.9
 Authors@R: as.person(c(
     "Mark Hanly <m.hanly@unsw.edu.au> [aut, cre]", 
     "Andrea Schaffer <andrea.schaffer@unsw.edu.au> [aut]",
@@ -43,7 +43,7 @@ Imports:
     lattice,
     learnr (>= 0.10.0),
     lme4,
-    lmtest (<= 0.9-37),
+    lmtest,
     magrittr,
     MatchIt,
     meta,
@@ -74,4 +74,4 @@ Imports:
     zoo
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
