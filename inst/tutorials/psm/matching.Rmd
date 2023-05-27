@@ -44,7 +44,7 @@ Welcome to HDAT9700 Statistical Modelling II!
 
 This chapter focuses on the challenge of drawing **causal inferences from observational data**.  
 
-Previously, you learned about randomised control trials (RCTs), and different approaches to randomisation, including simple, block and stratified randomisation. RCTs are the gold standard design for estimating causal effects: because treatment assignment is under the researchers' control, it is possible to balance the characteristics of treated and untreated individuals, therefore any difference in their outcomes can be ascribed to the effect of the treatment or intervention.  
+You are probably familiar with the idea of randomised control trials (RCTs). RCTs are the gold standard design for estimating causal effects: because treatment assignment is under the researchers' control, it is possible to balance the characteristics of treated and untreated individuals, therefore any difference in outcomes can be ascribed to the effect of the treatment or intervention.  
 
 When analysing observational data (e.g. a cohort study or administrative data), treatment assignment is no longer under the researchers control. As a result, treated and untreated individuals may differ in ways related to the outcome, therefore it is not straightforward to ascribe differences in the outcome to the treatment.  
 

@@ -37,7 +37,7 @@ Welcome to HDAT9700 Statistical Modelling II - Directed Acyclic Graphs (DAGs)!
 
 ![](https://youtu.be/lhkmc-dXC7M)
 
-In this chapter you will learn how to represent assumptions about casual mechanisms using a special type of graph: a Directed Acyclic Graph, or DAG. DAGs are useful because they allow us to formalise our assumptions and can help inform variable selection for causal models. 
+In this chapter you will learn how to represent assumptions about casual mechanisms using a special type of graph: a Directed Acyclic Graph, or DAG. DAGs are useful because they allow us to formalise and communicate causal assumptions underlying a particular research question and can help inform variable selection for causal models. 
 
 In this chapter you will learn how to:
 
@@ -65,6 +65,8 @@ Causal Inference Right: A Classification of Data Science Tasks, _Chance_, 32(1),
 * ["Austin, Anna E., Tania A. Desrosiers, and Meghan E. Shanahan. Directed Acyclic Graphs: An under-utilized tool for child maltreatment research. Child Abuse & Neglect 91 (2019): 78-87"](https://doi.org/10.1016/j.chiabu.2019.02.011)
 
 ### Additional resources: 
+
+* [The daggle app](https://cbdrh.shinyapps.io/daggle/): A shiny app to learn and practice the rules of covariate selection using a DAG
 
 * [dagitty.net](http://www.dagitty.net/learn/): A great website explaining DAGs and related topics, with built-in applets to test your knowledge
 
@@ -242,7 +244,7 @@ g %>%
 
 We know that icecream sales definitely don't cause sunburn, but you wouldn't be surprised to find an association between ice-cream sales and incidence of sunburn (a case of correlation not implying causation!). This is a classic example of **confounding bias**. The relationship between ice-cream sales and sunburn is **confounded** by sunshine, inducing an association between the two variables, even though there is no causal relationship. 
 
-By using expert knowledge to express our qualitative understanding of causal relationships of interest, DAGs help us to distinguish between association and causation.    
+By using expert knowledge to express our qualitative understanding of causal relationships of interest, DAGs help us to distinguish between correlation and causation.    
 
 
 ### Properties of DAGS
@@ -460,7 +462,7 @@ ggarrange(a, b, c, nrow = 1)
 quiz(caption = "Quiz: DAGS",
   question("Which of the diagrams above is not a valid DAG?",
     answer("A"),
-    answer("B", correct = TRUE, message = "Correct, (B) is not a valid DAG because it is not _directional_. This DAG would suggest that **X** causes **Y** and **Y** causes **X**."),
+    answer("B", correct = TRUE, message = "Correct, (B) is not a valid DAG because it is not _acyclic_. If you start at **X** you can follow the direction of the arrows to get back to **X** again."),
     answer("C"),
     incorrect = "This is a valid DAG, try again!",
     allow_retry = TRUE
@@ -753,14 +755,60 @@ You can explore this example and the concept of collider bias further using this
 
 Now that you know how to represent and recognise different types of relationships in a DAG, how can a DAG help us to choose what variables to include in a causal model? The answer lies in the concept of **d-separation**. 
 
-**Definition:** Two variables in a DAG are said to be d-separated if there are no open backdoor paths between them.
+**Definition:** Two variables in a DAG are said to be d-separated if there are no open non-causal paths between them.
 
-This definition introduces two new concepts that we also have to define: _backdoor_ paths, and what makes an _open_ or _closed_ path.
+This definition introduces two new concepts that we also have to define: _causal and non-causal_ paths, and what makes an _open_ or _closed_ path.
 
-#### 1. Backdoor paths
-**Definition:** A backdoor path between X and Y is a path between X and Y that contains an arrow pointing towards Y. 
+#### 1a. Causal paths
 
-For example, the path ice-cream sales &larr; sunshine &rarr; sunburn is a backdoor path between ice-cream sales and sunburn.
+A causal path is any path from the exposure to the outcome where all arrows point from the exposure towards the outcome. The causal effect of interest $\text{X} \rightarrow \text{Y}$  is one causal path, but if mediators are present there will be more than one causal path. In the mediation example below, both pathways are causal paths because they start with an arrow pointing from the exposure (Exercise) and end up at the outcome (Mood).
+
+```{r}
+g <- 'dag {
+    X [exposure,pos="0.000,0.000"]
+    Y [outcome,pos="2.000,0.000"]
+    Z [pos="1.000,1.000"]
+    X -> Z
+    Z -> Y
+    X -> Y
+}'
+
+
+g %>%
+  dagitty::dagitty() %>%
+  dag_label(labels = c(X = "Exercise", Y = "Mood", Z = "Sleep quality")) %>%
+  adjust_for(NULL) %>% 
+  node_status() %>% 
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
+  geom_dag_point(aes(color = adjusted)) +
+  geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
+  geom_dag_text() +
+  geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
+  theme_dag(legend.position = 'bottom') +
+  scale_adjusted() +
+  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
+  scale_fill_manual(NULL,
+                    values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
+                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
+                    na.value = naCol) +
+  scale_color_manual(NULL, guide = 'none',
+                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
+  scale_shape_manual(NULL, guide = 'none',
+                     values = c(unadjusted = 21, adjusted = 22))  
+```
+
+Both paths are causal paths: 
+
+* Exercise &rarr; Sleep quality &rarr; Mood
+
+* Exercise &rarr; Mood
+
+
+#### 1b. Non-causal paths
+
+A non-causal path between an exposure **X** and outcome **Y** is a path between X and Y that contains one or more arrows pointing back towards **X**. A backdoor path is a type of non-causal path where an arrow points back into the exposure **X**. 
+
+For example, the path ice-cream sales &larr; sunshine &rarr; sunburn is a non-causal path between ice-cream sales and sunburn. This is also an example of a backdoor path .
 
 ```{r}
 g <- 'dag {
@@ -797,55 +845,10 @@ g %>%
 
 You will recognise this as an example of confounding. In this case, the presence of sunshine induces a correlation or _dependence_ between ice-cream sales and sunburn. The "d" in d-connected stands for **dependence**! 
 
-#### 1b. Frontdoor paths
-While we are at it, lets also define frontdoor paths. These are any paths that start with an arrow **pointing from the exposure** and ending at the outcome. The causal effect of interest $\text{X} \rightarrow \text{Y}$  is one frontdoor path, but if mediators are present there will be more than one front door path. In the mediation example you saw earlier, both pathways are frontdoor paths because they start with an arrow pointing from the exposure (Exercise) and end up at the outcome (Mood).
 
-```{r}
-g <- 'dag {
-    X [exposure,pos="0.000,0.000"]
-    Y [outcome,pos="2.000,0.000"]
-    Z [pos="1.000,1.000"]
-    X -> Z
-    Z -> Y
-}'
+#### 2. Open and closed paths
 
-
-g %>%
-  dagitty::dagitty() %>%
-  dag_label(labels = c(X = "Exercise", Y = "Mood", Z = "Sleep quality")) %>%
-  adjust_for(NULL) %>% 
-  node_status() %>% 
-  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-  geom_dag_point(aes(color = adjusted)) +
-  geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
-  geom_dag_text() +
-  geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
-  theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
-  scale_fill_manual(NULL,
-                    values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
-                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
-                    na.value = naCol) +
-  scale_color_manual(NULL, guide = 'none',
-                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-  scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22))  
-```
-
-Both paths are front door paths: 
-
-* Exercise &rarr; Sleep quality &rarr; Mood
-
-* Exercise &rarr; Mood
-
-
-![](https://youtu.be/6X8yc9qY96M)
-
-
-#### 2. Open paths
-
-A path between two nodes X and Y is open if the path carries information or dependence between X and Y. We can open or close a path between two nodes by controlling for intermediate variables. In most contexts, conditioning will mean stratifying by a variable or adding the variable to a regression model.
+A path between two nodes X and Y is **open** if the path carries information or dependence between X and Y. We can open or close a path between two nodes by controlling for intermediate variables. In most practical contexts, controlling for a variable will mean stratifying by that variable in your analysis or adding the variable to a regression model.
 
 Importantly, however, whether or not controlling for an intermediate variable Z opens the the pathway or closes the pathway depends on the role of Z. The table below outlines what happens in three different scenarios.
 
@@ -888,20 +891,17 @@ Note that conditioning on a mediator or a confounder will CLOSE the path between
 
 Having read through the section above, you should be comfortable with the idea of: 
 
-1. A backdoor path (and a front door path)
-2. An open or closed path
+1. Causal and non-causal paths
+2. Open and closed paths
 
-To estimate the TOTAL effect of X on Y you need to control for a set of variables that can close any backdoor paths, but do not close the frontdoor paths.
+To estimate the TOTAL effect of X on Y you need to control for a set of variables that closes all non-causal paths, while leaving all causal paths open.
 
-To estimate the DIRECT effect of X on Y you need to control for a set of variables that close any backdoor paths and close any frontdoor paths (except the path $\text{X} \rightarrow \text{Y}$). 
+To estimate the DIRECT effect of X on Y you need to control for a set of variables that closes all non-causal paths and closes any causal paths except the path $\text{X} \rightarrow \text{Y}$. 
 
-### Recap
-
-![](https://youtu.be/gIeQymUfyBM)
 
 ## Worked example
 
-In this section we will use the principle of d-separation and backdoor paths to identify a minimal set of adjustment variables that will allow us to estimate the effect of Exercise on Mood based on the following DAG. 
+In this section we will use the principle of d-separation and causal paths to identify a minimal set of adjustment variables that will allow us to estimate the effect of Exercise on Mood based on the following DAG. 
 
 ```{r, out.width="90%"}
 g <- 'dag {
@@ -959,19 +959,19 @@ This DAG represents several plausible assumptions:
 * Season has an effect on mood (sunlight can have a positive effect on mood)
 * Mood has an effect on blood pressure (perhaps being calmer and happier decreases stress-induced high blood pressure)
 
-### Identifying backdoor paths
-In order to estimate the **total** effect of exercise on mood we need to close all the available backdoor paths. If we are interested in the **direct** effect of mood on exercise we additionally need to close any frontdoor paths, other than the main causal pathway Exercise &rarr; Mood. So let's start by identifying all of the backdoor and frontdoor paths between Exercise and Mood.
+### Identifying non-causal paths
+In order to estimate the **total** effect of exercise on mood we need to close all open non-causal paths. If we are interested in the **direct** effect of mood on exercise we additionally need to close any open causal paths, other than the main causal pathway Exercise &rarr; Mood. So let's start by identifying all of the causal and non-causal paths between Exercise and Mood.
 
-#### Backdoor paths 
-To identify backdoor paths, look for paths between the exposure and outcome that have one or more arrows pointing toward the exposure. In total there are three backdoor paths
+#### Non-causal paths
+To identify non-causal paths, look for paths between the exposure and outcome that have one or more arrows pointing back toward the exposure. In total there are non-causal paths
 
 * Exercise &larr; Club member &rarr; Social interactions &rarr; Mood 
 * Exercise &larr; Season &rarr; Mood
 * Exercise &rarr; Blood pressure &larr; Mood
 
 
-#### Frontdoor paths 
-To identify frontdoor paths, look for paths between the exposure and outcome where all arrows point towards the outcome. There are two frontdoor paths are: 
+#### Causal paths 
+To identify causal paths, look for paths between the exposure and outcome where all arrows point towards the outcome. There are two casual paths: 
 
 * Exercise &rarr; Mood 
 * Exercise &rarr; Sleep quality &rarr; Mood  
@@ -979,9 +979,9 @@ To identify frontdoor paths, look for paths between the exposure and outcome whe
 ### Identifying adjustment sets
 
 #### Total effect 
-To estimate the total effect of Exercise on Mood we must close all of the backdoor paths. To close a path it is sufficient to control for any single variable along that path. 
+To estimate the total effect of Exercise on Mood we must close all of the non-causal paths. **Note that to close a path it is sufficient to control for any single variable along that path.** This means that for long paths with more than three nodes we can break the path up into triplets; if any triplet is closed then the whole path is closed. 
 
-* To close the path Exercise &larr; Club member &rarr; Social interactions &rarr; Mood we could control for Club membership OR we could control for number of social interactions. Note that controlling for either variable is sufficient to close the path. We could also control for both variables; this isn't necessary to close the path, but it won't do any harm. 
+* To close the path Exercise &larr; Club member &rarr; Social interactions &rarr; Mood we could control for Club membership OR we could control for number of social interactions. Here is an example where controlling for either variable is sufficient to close the path. We could also control for both variables; this isn't necessary to close the path, but it won't do any harm. 
 
 * To close the path Exercise &larr; Season &rarr; Mood we would need to control for Season.
 
@@ -1043,11 +1043,11 @@ g %>%
 
 
 #### Direct effect 
-To estimate the direct effect of Exercise on Food we must also consider alternative frontdoor paths other than the path of interest. 
+To estimate the direct effect of Exercise on Mood we must also consider alternative causal paths other than the main path of interest. 
 
-We identified two front door paths. The first was the path Exercise &rarr; Mood. This is the causal path of interest so we don't have to do anything here (obviously we will include our exposure and outcome in the model).
+We identified two causal paths. The first was the path Exercise &rarr; Mood. This is the causal path of interest so we don't have to do anything here (obviously we will include our exposure and outcome in the model!).
 
-The second frontdoor path was Exercise &rarr; Sleep quality &rarr; Mood. This path implies that part of the effect of exercise is mediated through sleep quality. In order to estimate the direct effect of exercise we must close this pathway, i.e. control for sleep quality in our analysis.
+The second causal path was Exercise &rarr; Sleep quality &rarr; Mood. This path implies that part of the effect of exercise is mediated through sleep quality. In order to estimate the direct effect of exercise we must close this pathway, i.e. control for sleep quality in our analysis.
 
 Thus, there are two possible minimal adjustment sets to identify the **direct** effect of Exercise on Mood: 
 
@@ -1110,10 +1110,11 @@ Now try the exercise to practice this yourself!
 
 <div class="shiny">
 
-### Activity 1. Test your understanding of d-separation and closing backdoor paths
-Explore the concept of d-separation and backdoor paths adjustment further using this [interactive Shiny app](https://cbdrh.shinyapps.io/daggle/). The app can also be launched by entering `hdat9700tutorials::run('backdoor-paths')` at the console. 
+### Activity 1. Test your understanding of using a DAG to select adjustment covariates
 
-This app will generate a random DAG and you must identify which variables to control for in order to estimate causal effect of the exposure on the outcome. You can vary the DAG complexity, and choose to focus on the total effect or the direct effect (you should have a go using both modes). 
+Practice using a DAG to select adjustment covariates [interactive Shiny app](https://cbdrh.shinyapps.io/daggle/). The app can also be launched by entering `hdat9700tutorials::run('backdoor-paths')` at the console. 
+
+This app will generate a random DAG and you must identify which variables to control for in order to estimate the causal effect of interest (total or direct effect). You can vary the DAG complexity, and choose to focus on the total effect or the direct effect (you should have a go using both modes). 
 
 </div>
 
@@ -1130,15 +1131,15 @@ This app generates data for three variables: aspirin use (the exposure), pulmona
 
 ## Selection Biases 
 
-Many different types of biases arise from mechanisms that result in some individuals being recorded in our data and available for analysis, while data other individuals is unavailable. These biases are referred to as Selection Biases.
+Many different types of biases arise from mechanisms that result in some individuals being recorded in our data and available for analysis, while data for other individuals are unavailable. These biases are referred to as Selection Biases.
 
 In this section we will take a closer look at one type of selection bias - nonresponse bias - and see how this can be represented as a type of collider bias. 
 
 ### Survey nonresponse bias
 
-Suppose a researcher was interested in estimating the effect of wearing a face mask (X) on the risk on contracting COVID-19 (Y) during the pandemic using data from a random-digit-dialling telephone survey. Survey respondents were asked whether they had been wearing a face mask in public during the last month and if they had tested positive for the coronavirus. Of course, there are numerous factors that we would need to include in our DAG to address this research question, including the number and type of contacts, individual characteristics like age, sex and smoking status, and the quality and correct use of masks. For the this example, we will zoom in on one aspect: survey participation.
+Suppose a researcher was interested in estimating the effect of wearing a face mask (X) on the risk on contracting COVID-19 (Y) during the pandemic using data from a random-digit-dialing telephone survey. Survey respondents were asked whether they wore a face mask in public during the last month and if they had tested positive for the coronavirus. Of course, there are numerous factors that we would need to include in our DAG to address this research question, including the number and type of contacts, individual characteristics like age, sex and smoking status, and the quality and correct use of masks. For the this example, we will zoom in on one aspect: survey participation.
 
-There is a large literature documenting the many ways that survey respondents (those who agreed to participate in a survey) differ from survey nonrespondents (those who decline to participate or can't even be contacted). Like any survey we can assume this telephone survey suffered from a degree of nonresponse - not every sampled phone number provided a response. In this context, we could imagine that survey respondents are more likely to wear masks, a correlation arising as a result of a latent variable: compliant personality type. Compliant people may be more likely to wear masks and more likely to agree to a survey request, resulting in an association (although not a causal relationship) between mask wearing and survey participation. 
+There is a large literature documenting the many ways that survey respondents (those who agreed to participate in a survey) differ from survey nonrespondents (those who decline to participate or can't even be contacted). Like any survey we can assume this telephone survey suffered from a degree of nonresponse - not every sampled phone number provided a response. In this context, we might hypothesise that survey respondents are more likely to wear masks, a correlation arising as a result of a latent variable: conscientious personality type. Conscientious people may be more likely to wear masks and more likely to agree to a survey request, resulting in an association (although not a causal relationship) between mask wearing and survey participation. 
 
 We can also imagine that individuals with a recent coronavirus diagnosis may be more likely to participated in a telephone COVID-19 survey, perhaps because they have a personal interest in the topic, or they are easier to contact because they are self-isolating at home.
 
@@ -1160,7 +1161,7 @@ g <- 'dag {
 
 g %>%
   dagitty::dagitty() %>%
-  dag_label(labels = c(X = "Mask", Y = "COVID-19", Z1 = "Compliant", Z2 = "Participation")) %>%
+  dag_label(labels = c(X = "Mask", Y = "COVID-19", Z1 = "Conscientious", Z2 = "Participation")) %>%
   adjust_for(NULL) %>% 
   node_status() %>% 
   ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
@@ -1181,9 +1182,9 @@ g %>%
 
 ```
 
-When we estimated the effect of mask wearing on COVID-19 using data from participants only, we are effectively controlling for participation status. To see this, consider the  hypothetical scenario where data is available for participants and non-participants alike. In this case, stratifying on participation status and performing the analysis among survey respondents only is the same as only having data for survey respondents in the first place. 
+When we estimated the effect of mask wearing on COVID-19 using data from participants only, we are effectively controlling for participation status. To see this, consider the  hypothetical scenario where data is available for participants and non-participants alike. In this case, stratifying on participation status and performing the analysis among survey respondents only (i.e. "controlling" for participation in the analysis) is equivalent to only having data for survey respondents in the first place. 
 
-Looking at the DAG above, it should be clear that survey participation is a collider on the path Mask &rarr; Compliant &rarr; Participation &larr; COVID-19. And what happens when we condition on a collider? As you have learned in the section on Collider Variables, controlling for response status will **open** the triplet Compliant &rarr; Participation &larr; COVID-19. In addition, assuming compliant personality type is a latent, unobserved variable, we will be unable to control for this variable.  Thus there will be an open backdoor pathway between the exposure and outcome.
+Looking at the DAG above, it should be clear that survey participation is a collider on the path Mask &rarr; Conscientious &rarr; Participation &larr; COVID-19. And what happens when we condition on a collider? As you have learned in the section on Collider Variables, controlling for response status will **open** the triplet Conscientious &rarr; Participation &larr; COVID-19. In addition, assuming compliant personality type is a latent, unobserved variable, we will be unable to control for this variable.  Thus there will be an open non-causal path between the exposure and outcome.
 
 Under this set of assumptions, our exposure and outcome would not be d-separated and our estimated causal effect of mask-wearing on the risk of contracting COVID-19 would likely be biased. 
 
@@ -1196,7 +1197,7 @@ M-bias is a common structure of bias that arises when collider bias is transmitt
 ggdag_m_bias() + theme_dag()
 ```
 
-It should be clear by now that adjusting for m would open a backdoor path between a and y in this DAG, as below:
+It should be clear by now that adjusting for m would open a non-causal path between a and y in this DAG, as below:
 
 ```{r}
 m_bias() %>% adjust_for('m') %>% ggdag_adjust() + theme_dag()
@@ -1206,9 +1207,9 @@ M-bias emphasises a key point of this lecture: just because a variable is availa
 
 ### Example 
 
-Below is a plausible example of M-bias presented by (Liu et al, 2020)[https://doi.org/10.1093/aje/kws165] where the exposure us SSRI use (SSRI = selective serotonin reuptake inhibitor, a common antidepressant).
+Below is a plausible example of M-bias presented by [Liu et al, 2020](https://doi.org/10.1093/aje/kws165) where the exposure us SSRI use (SSRI = selective serotonin reuptake inhibitor, a common antidepressant).
 
-```{r}
+```{r, out.width="90%"}
 
 g <- 'dag {
 Z1 [pos="0.000,1.000"]
@@ -1248,7 +1249,7 @@ g %>%
 
 If this DAG were a reasonable representation of the data generation mechanism, coronary artery disease would be associated with SSRI Use and Lung cancer in an observational dataset. However, adjusting for coronary artery disease would suggest an apparent effect of SSRI use on Lung cancer, even if one didn't exist.
 
-```{r}
+```{r, out.width="90%"}
 
 g %>%
   dagitty::dagitty() %>%
@@ -1445,7 +1446,7 @@ You might notice that this code differs slightly from the code in the flipbook s
  
 ## Summary 
  
-DAGs are a useful tool that allow us to formalise our assumptions about causal mechanisms under study. Dong so has many advantages: 
+DAGs are a useful tool that allow us to formalise our assumptions about causal mechanisms under study. Doing so has many advantages: 
 
 * Express expert knowledge explicitly 
 * Facilitate discussions about variable selection with co-authors 
@@ -1453,7 +1454,7 @@ DAGs are a useful tool that allow us to formalise our assumptions about causal m
 
 ### D-separation
 
-In order to estimated the causal path between an exposure X and an outcome Y, the nodes X and Y should be **d-separated**. This means that there should be **no open backdoor paths** between X and Y. 
+In order to estimated the causal path between an exposure X and an outcome Y, the nodes X and Y should be **d-separated**. This means that there should be **no open non-causal paths** between X and Y. 
 
 * To close a confounding path ($X \leftarrow C \rightarrow Y$) or a mediating path ($X \rightarrow M \rightarrow Y$) we can condition on the confounder C or mediator M. 
 * Conversely, conditioning on a collider ($X \rightarrow C \leftarrow Y$) will open the pathway 
