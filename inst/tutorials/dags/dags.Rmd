@@ -414,7 +414,7 @@ Below are examples of paths:
 Below are examples of **causal** paths 
 
 * exercise $\rightarrow$ sun exposure $\rightarrow$ melanoma
-* sunexposure $\rightarrow$ melanoma 
+* exercise $\rightarrow$ melanoma (The direct path - this doesn't seem like a very plausible relationship but it could be the hypothesis the investigator wants to test)
 
 #### Parent
 The parents for a given node in a DAG are the set of variables with an arrow pointing directly into that node. For example, a parent of **melanoma** is **sun exposure**. 
