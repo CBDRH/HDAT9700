@@ -5,9 +5,7 @@ account: cbdrh
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2774627
-bundleId: 7260860
+bundleId: 7695422
 url: https://cbdrh.shinyapps.io/dags/
-when: 1684993791.95326
-lastSyncTime: 1684993791.95327
 asMultiple: FALSE
 asStatic: FALSE

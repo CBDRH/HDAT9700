@@ -106,8 +106,8 @@ ui <- dashboardPage(
                              )
                       ),
                       column(width=2,
-                             uiOutput("info1"),
-                             uiOutput("info2")
+                             uiOutput("info1")
+                             # uiOutput("info2")
                       )
                   ),
 
@@ -369,19 +369,19 @@ output$syntax <- renderText({
 })
 
 output$info1 <- renderUI({
-    aic <- format(AIC(model()), digits = 0)
+    aic <- format(AIC(model()), digits = 1)
     shinydashboard::valueBox(value = aic, subtitle = "Model AIC",
                              icon = shiny::icon("bar-chart"), color = "aqua", width = '50%')
 })
 
-output$info2 <- renderUI({
-    mod0 <- summary(lmer(y ~ 1 + (1|j) , data = data()))
-    lvl1 <- (mod0$sigma)^2
-    lvl2 <- as.numeric(mod0$varcor[1])
-    vpc <- paste(format(100*lvl2/(lvl1+lvl2), digits = 2), "%")
-    shinydashboard::valueBox(value = vpc, subtitle = "Variance partition coefficient",
-                             icon = shiny::icon("bar-chart"), color = "aqua", width = '50%')
-})
+# output$info2 <- renderUI({
+#     mod0 <- summary(lmer(y ~ 1 + (1|j) , data = data()))
+#     lvl1 <- (model()$sigma)^2
+#     lvl2 <- as.numeric(model()$varcor[1])
+#     vpc <- paste(format(100*lvl2/(lvl1+lvl2), digits = 2), "%")
+#     shinydashboard::valueBox(value = vpc, subtitle = "Variance partition coefficient",
+#                              icon = shiny::icon("bar-chart"), color = "aqua", width = '50%')
+# })
 
 output$beta0 <- renderUI({
     beta0 <- format(summary(model())$coefficients[1], digits = 2, nsmall = 1)

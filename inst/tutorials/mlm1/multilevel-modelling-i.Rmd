@@ -631,7 +631,7 @@ VarCorr(mod.vc)
 
 #### Examining the output above, can you answer:
 * What is the average birth weight $\beta_{0}$  
-* What is the estimated level 1 (child) variance $\sigma^2_{e}}$?  
+* What is the estimated level 1 (child) variance $\sigma^2_{e}$?  
 * What is the estimated level 2 (mother) variance $\sigma^2_{u_0}$?  
 * Based on the above, what proportion of the observed variation in birthweight is attributable to mother-level factors?  
 
@@ -907,7 +907,7 @@ $\sigma_{u01}$ close to zero indicate no consistent relationship between the slo
 <div class="shiny">
 
 ### Activity
-Use the [interactive Shiny app](https://cbdrh.shinyapps.io/mlm1/) to connect ideas between multilevel data, multilevel models, and fitting and interpreting models in R. The app can also be launched by entering `hdat9700tutorials::run('mlm1')` at the console. 
+Use the [interactive Shiny app](https://cbdrh.shinyapps.io/mlm1/) to connect ideas between multilevel data, multilevel models, and fitting and interpreting models in R. The app can also be launched by entering `hdat9700tutorials::run('mlm-1')` at the console. 
 
 The app allows you to generate multilevel data under different data generation mechanisms. You can then fit a multilevel model to the data, visualise the output and review the corresponding R syntax and model output.
 
