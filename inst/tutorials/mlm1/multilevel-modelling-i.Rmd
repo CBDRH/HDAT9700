@@ -472,7 +472,7 @@ $$
 
 ## Partitioning the variance
 
-Consider a simple multilvel model: a two-level hierarchy with no explanatory variables:
+Consider a simple multilevel model: a two-level hierarchy with no explanatory variables:
 $$
 y_{ij} = \beta_{0} + u_{0j} + e_{ij}
 $$

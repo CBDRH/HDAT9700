@@ -4,6 +4,7 @@
 # Chapter:  Missing data and multiple imputation
 # Topic:    Missing data bias
 # Author:   Mark Hanly
+# Note:     This version strips away annotation for embedding directly in context
 ###################################################################
 
 library(shiny)
@@ -12,62 +13,30 @@ library(ggplot2)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
+  sidebarLayout(
 
-    # Application title
-    titlePanel("Exploring systematic missing data bias"),
+    sidebarPanel(width=3,
+      sliderInput("rho", "Correlation between height and the chances of height being unobserved", min = -0.5, max = 0.5, step = .01, value = 0, animate = TRUE),
+      sliderInput("pct", "Proportion of missing data", min = 0, max = .5, step=.01, value = .1, animate = TRUE)
+    ),
 
-sidebarLayout(
-    sidebarPanel(
-    h3("Instructions"),
-        p(
-            "This app simulates a scenario where we would like to estimate the average height
-            in a population based on a sample of 1,000 individuals, where a certain proportion
-            of our sample is missing data on height. By design, the population mean of height is
-            set to 170cm, so we can explore how our estimate varies from this known value based
-            on two variable factors:"),
-    tags$ol(
-        tags$li("The correlation between the true value of height and the probability of height being unobserved."),
-        tags$li("The proportion of missing values.")
+
+    mainPanel(width=9,
+        column(width=6,
+               plotOutput("plot1")
         ),
-    br(),
-    h4("Using the app can you demonstrate the following three points?"),
 
-    tags$ol(
-        tags$li("If the correlation between the true value of height and the probability of height being unobserved is zero, then the estimate of height based on the observed data is unbiased regardless of the proportion of missing data."),
-        tags$li("As the magnitude of the correlation increases, the bias increases (i.e. the gap between the known sample mean and the observed data estimate of the mean)."),
-        tags$li("A negative correlation results in a positive bias and a positive correlation results in a negative bias."),
-    )
-
-    ),
-
-
-mainPanel(
-    column(width=6,
-           plotOutput("plot1")
-    ),
-
-    column(width=6,
-           plotOutput("plot2")
-    ),
-    column(width = 12, h3("")),
-    column(width = 12,
-           shinydashboard::valueBoxOutput("info1"),
-           shinydashboard::valueBoxOutput("info2"),
-           shinydashboard::valueBoxOutput("info3")
-    ),
-    column(width = 12, h3("")),
-    column(width = 5,
-           sliderInput("rho", "Correlation between height and the chances of height being unobserved", min = -0.5, max = 0.5, step = .01, value = 0, animate = TRUE),
-           sliderInput("pct", "Proportion of missing data", min = 0, max = .5, step=.01, value = .1, animate = TRUE)
-    ),
-    column(width = 7,
-           br(),
-           helpText("A positive correlation between height and the chances of height being observed means that tall individuals are more likley to have missing data. As a result the estimate for average height will be biased downwards (lower than the known sample value)."),
-           br(),
-           helpText("A negative correlation between height and the chances of height being observed means that short individuals are more likley to have missing data. As a result the estimate for average height will be biased upwards (higher than the known sample value).")
-    )
-)
-)
+        column(width=6,
+               plotOutput("plot2")
+        ),
+        column(width = 12, h3("")),
+        column(width = 12,
+               shinydashboard::valueBoxOutput("info1"),
+               shinydashboard::valueBoxOutput("info2"),
+               shinydashboard::valueBoxOutput("info3")
+        )
+     )
+  )
 )
 
 # Define server logic required to draw a histogram

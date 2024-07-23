@@ -297,7 +297,7 @@ dt <- cbind('Child'=c("Anne","Barry","Katie", "Mikey", "Nuffy", "Deirdre", "John
 ``` 
 
 ### Discussions points
-For the children listed in the table, 4/10 have on-track development if nobody participates in the program. If everybody particpates then 6/10 have on-track development.
+For the children listed in the table, 4/10 have on-track development if nobody participates in the program. If everybody participates then 6/10 have on-track development.
 
 So we have:
 

@@ -1,0 +1,12 @@
+name: missing-data-2
+title: missing-data-2
+username: cbdrh
+account: cbdrh
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 12351944
+bundleId: 8894677
+url: https://cbdrh.shinyapps.io/missing-data-2/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE

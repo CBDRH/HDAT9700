@@ -15,19 +15,18 @@ description: "Learn how to use Directed Acyclic Graphs (DAGs) as a way to formal
 
 ```{r setup, include=FALSE, warning=FALSE}
 library(learnr)
-library(tidyverse)
 library(ggplot2)
 library(dagitty)
 library(ggdag)
 library(ggpubr)
 library(kableExtra)
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
 # Define colors for DAGs
 exposureCol <- "#CDDC55"
 outcomeCol <- "#4FBAE4"
-adjustedCol <- "seagreen"
-unadjustedCol <- "pink"
+# unadjustedCol <- "seagreen"
+adjustedCol <- "pink"
 naCol <- 'grey80'
 
 ```
@@ -35,7 +34,7 @@ naCol <- 'grey80'
 ## Overview  
 Welcome to HDAT9700 Statistical Modelling II - Directed Acyclic Graphs (DAGs)! 
 
-![](https://youtu.be/lhkmc-dXC7M)
+<!-- ![](https://youtu.be/lhkmc-dXC7M) -->
 
 In this chapter you will learn how to represent assumptions about casual mechanisms using a special type of graph: a Directed Acyclic Graph, or DAG. DAGs are useful because they allow us to formalise and communicate causal assumptions underlying a particular research question and can help inform variable selection for causal models. 
 
@@ -46,23 +45,14 @@ In this chapter you will learn how to:
 
 ***
 
-### Prereadings
-
-The pre-reading for this chapter is a _tweetorial_ by epidemiologist [Ellie Murray](https://twitter.com/EpiEllie) from Boston University School of Public Health. 
-
-The tweetorial focuses on **"the importance of being clear about your question & using that to drive your methods"**. Find it [here](https://twitter.com/EpiEllie/status/1214641734900224003).
-
-Ellie's tweetorial was prompted by a disparaging tweet about [this](https://www.nature.com/articles/bjc2017146.pdf) study, which explores the relationship between frozen shoulder and the risk of cancer. The disparaging tweet criticised the study for failing to adjust for confounding. In her tweetorial, Ellie explains that this was a descriptive study, not one addressing a causal question and that in fact adjusting for confounding may well have led to the wrong answer to the question at hand.
-
-This pre-reading should help you understand that we always need to be clear about the purpose of our models, as our purpose dictates how we specify the model and what variables we should control for. 
-
-
 ### Core readings:
 
 * [Miguel A. Hernán, John Hsu & Brian Healy (2019) A Second Chance to Get
 Causal Inference Right: A Classification of Data Science Tasks, _Chance_, 32(1), 42-49](https://doi.org/10.1080/09332480.2019.1579578)
 
-* ["Austin, Anna E., Tania A. Desrosiers, and Meghan E. Shanahan. Directed Acyclic Graphs: An under-utilized tool for child maltreatment research. Child Abuse & Neglect 91 (2019): 78-87"](https://doi.org/10.1016/j.chiabu.2019.02.011)
+* [Austin, Anna E., Tania A. Desrosiers, and Meghan E. Shanahan. Directed Acyclic Graphs: An under-utilized tool for child maltreatment research. Child Abuse & Neglect 91 (2019): 78-87](https://doi.org/10.1016/j.chiabu.2019.02.011)
+
+* [Hanly, M., Brew, B. K., Austin, A., & Jorm, L. (2023). Software Application Profile: The daggle app—a tool to support learning and teaching the graphical rules of selecting adjustment variables using directed acyclic graphs. International Journal of Epidemiology, 52(5), 1659-1664](https://doi.org/10.1093/ije/dyad038)
 
 ### Additional resources: 
 
@@ -71,8 +61,6 @@ Causal Inference Right: A Classification of Data Science Tasks, _Chance_, 32(1),
 * [dagitty.net](http://www.dagitty.net/learn/): A great website explaining DAGs and related topics, with built-in applets to test your knowledge
 
 * An excellent [YouTube video series on Causality and DAGs](https://www.youtube.com/playlist?list=PLcTBLulJV_AKmUTH-nUsxxFyRQoWnUzxU) presented by Assistant Professor Nick Huntington-Klein from Seattle University. This is a series of 14 videos that starts from the very basics of causal thinking with DAGs.
-
-* The Causal Inference Podcast, hosted by Ellie Murray and Lucy D'Agostino McGowan. Check out the first episode: [Talking target trials with Miguel Hernán](https://casualinfer.libsyn.com/casual-inference-talking-target-trials-with-miguel-hernan-episode-01)
 
 ## Three tasks of data science
 
@@ -147,30 +135,28 @@ g <- 'dag {
     X -> Y
 }'
 
-
-g %>%
-  dagitty::dagitty() %>%
-  adjust_for(NULL) %>% 
-  node_status() %>% 
-  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-  geom_dag_point(aes(color = adjusted)) +
+g |>
+  dagitty::dagitty() |>
+  adjust_for(NULL) |> 
+  node_status() |> 
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_point(aes(color = status)) +
   geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
-  geom_dag_text() +
+  geom_dag_text(aes(fill=status)) +
   theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
+  guides(color = guide_legend(override.aes = list(size = 9))) +
   scale_fill_manual(NULL,
                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
                     na.value = naCol) +
-  scale_color_manual(NULL, guide = 'none',
-                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-  scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22))  
+  scale_color_manual(NULL, 
+                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
+                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome')
+                     ) 
 
 ```
 
-The absense of an arrow between two variables represents the assumption that neither neither variable is causing or caused by the other. In the next DAG, **Z** causes **X** and **Z** causes **Y**, but **X** and **Y** are _causally_ unrelated (there is no arrow pointing from **X** to **Y** or from **Y** to X). 
+The absence of an arrow between two variables represents the assumption that neither neither variable is causing or caused by the other. In the next DAG, **Z** causes **X** and **Z** causes **Y**, but **X** and **Y** are _causally_ unrelated (there is no arrow pointing from **X** to **Y** or from **Y** to X). 
 
 ```{r}
 
@@ -182,26 +168,39 @@ g <- 'dag {
     Z -> Y
 }'
 
-
-g %>%
-  dagitty::dagitty() %>%
-  adjust_for(NULL) %>% 
-  node_status() %>% 
-  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-  geom_dag_point(aes(color = adjusted)) +
+df <- g |>
+  dagitty::dagitty() |>
+  adjust_for(NULL) |> 
+  node_status() |> 
+  pull_dag_data() |> 
+  mutate(
+    status = factor(
+      ifelse(name=='Z', 3, status),
+      levels = 1:3, 
+      labels = c('exposure', 'outcome', 'confounder')
+    ))
+g |>
+  dagitty::dagitty() |>
+  adjust_for(NULL) |> 
+  node_status() |> 
+  pull_dag_data() |> 
+  mutate(
+    status = factor(
+      ifelse(name=='Z', 3, status),
+      levels = 1:3,
+      labels = c('exposure', 'outcome', 'confounder')
+    )) |>
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_point((aes(color=status))) +
   geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
   geom_dag_text() +
   theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
-  scale_fill_manual(NULL,
+  scale_y_continuous(limits = c(-0.05, 1.05)) +
+  guides(color = guide_legend(override.aes = list(size = 9))) +
+  scale_color_manual(NULL, 
                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
-                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
-                    na.value = naCol) +
-  scale_color_manual(NULL, guide = 'none',
-                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-  scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22))  
+                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'), 
+                    na.value = naCol)
 
 ```
 
@@ -218,33 +217,40 @@ g <- 'dag {
 }'
 
 
-g %>%
-  dagitty::dagitty() %>%
-  dag_label(labels = c("X" = "Ice-cream sales", "Y" = "Sunburn", "Z" = "Sunshine")) %>%
-  adjust_for(NULL) %>% 
-  node_status() %>% 
-    ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-      geom_dag_point(aes(color = adjusted)) +
+g |>
+  dagitty::dagitty() |>
+  dag_label(labels = c("X" = "Ice-cream sales", "Y" = "Sunburn", "Z" = "Sunshine")) |>
+  adjust_for(NULL) |>
+  node_status() |>
+  pull_dag_data() |> 
+  mutate(
+    status = factor(
+      ifelse(name=='Z', 3, status),
+      levels = 1:3,
+      labels = c('exposure', 'outcome', 'confounder')
+    )) |>
+    ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+      geom_dag_point(aes(color = status)) +
       geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
       geom_dag_text() +
       geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
       theme_dag(legend.position = 'bottom') +
-      scale_adjusted() +
-      guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
-      scale_fill_manual(NULL,
+      scale_y_continuous(limits = c(-0.05, 1.05)) +
+      guides(color = guide_legend(override.aes = list(size = 9))) +
+      scale_color_manual(NULL,
                       values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
                       labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
                       na.value = naCol) +
-      scale_color_manual(NULL, guide = 'none',
-                       values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-      scale_shape_manual(NULL, guide = 'none',
-                       values = c(unadjusted = 21, adjusted = 22)) 
+      scale_fill_manual(NULL,
+                      values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
+                      labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
+                      na.value = naCol)
 
 ```
 
-We know that icecream sales definitely don't cause sunburn, but you wouldn't be surprised to find an association between ice-cream sales and incidence of sunburn (a case of correlation not implying causation!). This is a classic example of **confounding bias**. The relationship between ice-cream sales and sunburn is **confounded** by sunshine, inducing an association between the two variables, even though there is no causal relationship. 
+We know that icecream sales definitely don't cause sunburn, but you wouldn't be surprised to find an association between ice-cream sales and incidence of sunburn (a case of correlation not implying causation!). This is a classic example of **confounding bias**. The relationship between ice-cream sales and sunburn is **confounded** by sunshine, inducing an association between the two variables, even though there is no causal relationship.
 
-By using expert knowledge to express our qualitative understanding of causal relationships of interest, DAGs help us to distinguish between correlation and causation.    
+By using expert knowledge to express our qualitative understanding of causal relationships of interest, DAGs help us to distinguish between correlation and causation.
 
 
 ### Properties of DAGS
@@ -252,7 +258,7 @@ There are some formal requirements for a causal DAG. As indicated by the name, D
 
 * **Directed** The relationship between nodes are _directional_. The arrows indicate the direction of causality.
 
-* **Acyclic** DAGs must not have _cycles_ between the nodes, i.e. a variable should not "cause" itself, either directly or through other variables. You can spot a cyclic relationship if it is possible to start at one node and follow the directional arrows to arrive back at the same node. 
+* **Acyclic** DAGs must not have _cycles_ between the nodes, i.e. a variable should not "cause" itself, either directly or through other variables. You can spot a cyclic relationship if it is possible to start at one node and follow the directional arrows to arrive back at the same node.
 
 Below is an example of a **cyclic** graph. The logic here is tempting: good health will improve educational outcomes, high levels of education will increase income and higher income can improve health. However this results in a cyclic graph: it is posible to start at any node and follow the directional arrows to return to that node, for example the path **health** $\rightarrow$ **education** $\rightarrow$ **income** $\rightarrow$ **health**.
 
@@ -282,7 +288,7 @@ ggdag(dag3, use_labels = "label") +
   theme_dag()
 ```
 
-This is a now valid DAG because it is **directional** and **acyclic**. Note the DAG above follows the convention that time moves from left to right. 
+This is a now valid DAG because it is **directional** and **acyclic**. Note the DAG above follows the convention that time moves from left to right.
 
 ### The causal Markov assumption
 A further property of a causal DAG is the **causal Markov assumption**. Although this sounds a bit scary, it is quite simple (cf Hernán and Robins 2020 Chapter 6 Technical Point 6.1 for a formal definition). It means that a common cause of any pair of variables on a DAG should also be included in the DAG.
@@ -300,53 +306,60 @@ g <- 'dag {
 }'
 
 
-g %>%
-  dagitty::dagitty() %>%
-  dag_label(labels = c(X = "Aspirin", Y = "Pulmonary embolism", Z = "Blood pressure")) %>%
-  adjust_for(NULL) %>% 
-  node_status() %>% 
-    ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-      geom_dag_point(aes(color = adjusted)) +
+g |>
+  dagitty::dagitty() |>
+  dag_label(labels = c(X = "Aspirin", Y = "Pulmonary embolism", Z = "Blood pressure")) |>
+  adjust_for(NULL) |>
+  node_status() |>
+  pull_dag_data() |> 
+  mutate(
+    status = factor(
+      ifelse(name=='Z', 3, status),
+      levels = 1:3,
+      labels = c('exposure', 'outcome', 'confounder')
+    )) |>
+    ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+      geom_dag_point(aes(color = status)) +
       geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
       geom_dag_text() +
       geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
       theme_dag(legend.position = 'bottom') +
-      scale_adjusted() +
-      guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
+      scale_y_continuous(limits = c(-0.05, 1.05)) +
+      guides(color = guide_legend(override.aes = list(size = 9))) +
       scale_fill_manual(NULL,
                       values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
                       labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
                       na.value = naCol) +
-      scale_color_manual(NULL, guide = 'none',
-                       values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-      scale_shape_manual(NULL, guide = 'none',
-                       values = c(unadjusted = 21, adjusted = 22))  
+      scale_color_manual(NULL,
+                      values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
+                      labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
+                      na.value = naCol)
 ```
 
 
-Now, imagine a different setting where aspirin has been administered as the intervention in a randomised control trial. In this case, patients are randomly assigned, so there is no causal relationship between blood pressure and taking aspirin. Blood pressure still increases the risk of having a pulmonary embolism, but it is no longer a **common cause** of taking aspirin and having a pulmonary embolism so it is not necessary to include on the DAG. 
+Now, imagine a different setting where aspirin has been administered as the intervention in a randomised control trial. In this case, patients are randomly assigned, so there is no causal relationship between blood pressure and taking aspirin. Blood pressure still increases the risk of having a pulmonary embolism, but it is no longer a **common cause** of taking aspirin and having a pulmonary embolism so it is not necessary to include on the DAG.
 
 ```{r}
 g <- 'dag {
-    X [exposure,pos="0.000,0.001"]
+    X [exposure,pos="0.000,0.8"]
     Y [outcome,pos="2.000,0.000"]
     X -> Y
 }'
 
 
-g %>%
-  dagitty::dagitty() %>%
-  dag_label(labels = c("X" = "Aspirin", "Y" = "Pulmonary embolism")) %>%
-  adjust_for(NULL) %>% 
-  node_status() %>% 
+g |>
+  dagitty::dagitty() |>
+  dag_label(labels = c("X" = "Aspirin", "Y" = "Pulmonary embolism")) |>
+  adjust_for(NULL) |>
+  node_status() |>
     ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
       geom_dag_point(aes(color = adjusted)) +
       geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
       geom_dag_text() +
       geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
       theme_dag(legend.position = 'bottom') +
-      scale_adjusted() +
-      guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
+      scale_y_continuous(limits = c(-0.05, 1.05)) +
+      guides(color = guide_legend(override.aes = list(size = 9))) +
       scale_fill_manual(NULL,
                       values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
                       labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
@@ -354,10 +367,10 @@ g %>%
       scale_color_manual(NULL, guide = 'none',
                        values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
       scale_shape_manual(NULL, guide = 'none',
-                       values = c(unadjusted = 21, adjusted = 22)) 
+                       values = c(unadjusted = 21, adjusted = 22))
 ```
 
-*** 
+***
 
 ### Other terminology
 
@@ -379,19 +392,26 @@ g <- 'dag {
 }'
 
 
-g %>%
-  dagitty::dagitty() %>%
-  dag_label(labels = c(X="exercise", Y = "melanoma", Z1="health consciousness", Z2="sun exposure", Z3="screening")) %>%
-  adjust_for(NULL) %>% 
-  node_status() %>% 
+g |>
+  dagitty::dagitty() |>
+  dag_label(labels = c(X="exercise", Y = "melanoma", Z1="health consciousness", Z2="sun exposure", Z3="screening")) |>
+  adjust_for(NULL) |>
+  node_status() |>
+  pull_dag_data() |> 
+  mutate(
+    status = factor(
+      ifelse(is.na(status), 3, status),
+      levels = 1:3,
+      labels = c('exposure', 'outcome', 'covariate')
+    )) |>
   ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
   geom_dag_point(aes(color = adjusted)) +
   geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
   geom_dag_text() +
   geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
   theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
+  scale_y_continuous(limits=c(-1.2, 2.2)) +
+  guides(color = guide_legend(override.aes = list(size = 9))) +
   scale_fill_manual(NULL,
                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
@@ -399,48 +419,48 @@ g %>%
   scale_color_manual(NULL, guide = 'none',
                      values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
   scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22))  
+                     values = c(unadjusted = 21, adjusted = 22))
 
 ```
 
 #### Path
-A path between two nodes in a DAG is a route that connects the two nodes, visiting no node more than once. The arrows don't have to point in the same direction, but if they do the path is considered a _causal path_. 
+A path between two nodes in a DAG is a route that connects the two nodes, visiting no node more than once. The arrows don't have to point in the same direction, but if they do the path is considered a _causal path_.
 
 Below are examples of paths:
 
-* exercise $\leftarrow$ health consciousness $\rightarrow$ screening (Not a causal path) 
-* health consciousness $\rightarrow$ screening  $\leftarrow$ melanoma (Not a causal path) 
+* exercise $\leftarrow$ health consciousness $\rightarrow$ screening (Not a causal path)
+* health consciousness $\rightarrow$ screening  $\leftarrow$ melanoma (Not a causal path)
 
-Below are examples of **causal** paths 
+Below are examples of **causal** paths
 
 * exercise $\rightarrow$ sun exposure $\rightarrow$ melanoma
 * exercise $\rightarrow$ melanoma (The direct path - this doesn't seem like a very plausible relationship but it could be the hypothesis the investigator wants to test)
 
 #### Parent
-The parents for a given node in a DAG are the set of variables with an arrow pointing directly into that node. For example, a parent of **melanoma** is **sun exposure**. 
+The parents for a given node in a DAG are the set of variables with an arrow pointing directly into that node. For example, a parent of **melanoma** is **sun exposure**.
 
 #### Child
-A child of a given node X is any variable with an arrow pointing directly from X. For example, **exercise** and **screening** are child nodes of **health consciousness**. 
+A child of a given node X is any variable with an arrow pointing directly from X. For example, **exercise** and **screening** are child nodes of **health consciousness**.
 
 #### Descendants and Ancestors
-The ancestors of a node are any nodes on the causal path leading to that node. The descendants of a node are any nodes that can be reached by following causal paths. 
+The ancestors of a node are any nodes on the causal path leading to that node. The descendants of a node are any nodes that can be reached by following causal paths.
 
-* The **ancestors** of sun exposure are exercise and health consciousness 
+* The **ancestors** of sun exposure are exercise and health consciousness
 * The **descendants** of health consciousness are exercise, sun exposure, melanoma and screening
 
 
-#### Confounder 
-A confounder is a **common cause** of two nodes (usually the common cause of an exposure and an outcome) 
+#### Confounder
+A confounder is a **common cause** of two nodes (usually the common cause of an exposure and an outcome)
 
 * Health consciousness is a confounder of exercise and screening
 
 #### Mediator
 A mediator is a node that lies on the causal path between two other nodes.
 
-* Sun exposure is a mediator on the path between exercise and melanoma 
+* Sun exposure is a mediator on the path between exercise and melanoma
 
-#### Collider 
-A collider is a node with two directional arrows pointing towards it. 
+#### Collider
+A collider is a node with two directional arrows pointing towards it.
 
 * Screening is a collider on the path health consciousness $\rightarrow$ screening $\leftarrow$ melanoma
 
@@ -450,9 +470,9 @@ A collider is a node with two directional arrows pointing towards it.
 
 ```{r, out.width = '100%'}
 
-a <- dagify(Z ~ X, Y ~ X) %>% ggdag(node_size = 6) + theme_dag() + border() + labs(title = "(A)")
-b <- dagify(Y ~ X, X ~ Z, Z ~ Y) %>% ggdag(node_size = 6) + theme_dag() + border() + labs(title = "(B)")
-c <- dagify(Y ~ X) %>% ggdag(node_size = 6) + theme_dag() + border() + labs(title = "(C)")
+a <- dagify(Z ~ X, Y ~ X) |> ggdag(node_size = 6) + theme_dag() + border() + labs(title = "(A)")
+b <- dagify(Y ~ X, X ~ Z, Z ~ Y) |> ggdag(node_size = 6) + theme_dag() + border() + labs(title = "(B)")
+c <- dagify(Y ~ X) |> ggdag(node_size = 6) + theme_dag() + border() + labs(title = "(C)")
 
 ggarrange(a, b, c, nrow = 1)
 
@@ -462,7 +482,7 @@ ggarrange(a, b, c, nrow = 1)
 quiz(caption = "Quiz: DAGS",
   question("Which of the diagrams above is not a valid DAG?",
     answer("A"),
-    answer("B", correct = TRUE, message = "Correct, (B) is not a valid DAG because it is not _acyclic_. If you start at **X** you can follow the direction of the arrows to get back to **X** again."),
+    answer("B", correct = TRUE, message = "Correct, (B) is not a valid DAG because it is not _acyclic_. If you start at **X** you can follow the direction of the arrows to get back to **X** again, making this a cyclic graph."),
     answer("C"),
     incorrect = "This is a valid DAG, try again!",
     allow_retry = TRUE
@@ -470,7 +490,7 @@ quiz(caption = "Quiz: DAGS",
 )
 ```
 
-*** 
+***
 
 ```{r, out.width = '100%'}
 g <- 'dag {
@@ -483,27 +503,34 @@ g <- 'dag {
 }'
 
 
-g %>%
-  dagitty::dagitty() %>%
-  dag_label(labels = c(X = "Maternal age", Y = "Low birthweight", Z = "Social deprivation")) %>%
-  adjust_for(NULL) %>% 
-  node_status() %>% 
-  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-  geom_dag_point(aes(color = adjusted)) +
+g |>
+  dagitty::dagitty() |>
+  dag_label(labels = c(X = "Maternal age", Y = "Low birthweight", Z = "Social deprivation")) |>
+  adjust_for(NULL) |>
+  node_status() |>
+  pull_dag_data() |> 
+  mutate(
+    status = factor(
+      ifelse(is.na(status), 3, status),
+      levels = 1:3,
+      labels = c('exposure', 'outcome', 'covariate')
+    )) |>
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_point(aes(color = status)) +
   geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
   geom_dag_text() +
   geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
   theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
+  scale_y_continuous(limits = c(-0.05, 1.05)) +
+  guides(color = guide_legend(override.aes = list(size = 9))) +
   scale_fill_manual(NULL,
                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
                     na.value = naCol) +
-  scale_color_manual(NULL, guide = 'none',
-                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-  scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22))  
+  scale_color_manual(NULL,
+                  values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
+                  labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
+                  na.value = naCol) 
 ```
 
 ```{r quiz3, echo=FALSE}
@@ -518,15 +545,15 @@ quiz(caption = "Quiz: DAGS",
 )
 ```
 
-#### Want more? 
+#### Want more?
 Try testing yourself on DAG terminology using this applet on [dagitty.net](http://www.dagitty.net/learn/graphs/index.html).
 
 
-## Video: Common causal structures
+<!-- ## Video: Common causal structures -->
 
-![](https://youtu.be/DhHBMvpYeec)
+<!-- ![](https://youtu.be/DhHBMvpYeec) -->
 
-Learn how to represent confounding variables, mediating variables and collider variables on a DAG.
+<!-- Learn how to represent confounding variables, mediating variables and collider variables on a DAG. -->
 
 
 ## Confounding variables
@@ -534,11 +561,11 @@ Learn how to represent confounding variables, mediating variables and collider v
 ### Definition
 Confounding arises when there is a variable **Z** that influences the exposure of interest **X** _and_ the outcome of interest **Y**. We say that the relationship between **X** and **Y** is _confounded_ and that **Z** is the _confounder_.
 
-Depending on the discipline, a confounder is also referred to as a third variable or a lurking variable. 
+Depending on the discipline, a confounder is also referred to as a third variable or a lurking variable.
 
 
 ### Example
-The relationship between mother's age at birth (exposure) and child's birth weight (outcome) may be confounded by mother's socioeconomic status.    
+The relationship between mother's age at birth (exposure) and child's birth weight (outcome) may be confounded by mother's socioeconomic status.
 
 
 ### How does this look in a DAG?
@@ -554,27 +581,34 @@ g <- 'dag {
 }'
 
 
-g %>%
-  dagitty::dagitty() %>%
-  dag_label(labels = c(X = "Maternal age", Y = "Birth weight", Z = "Socioeconomic status")) %>%
-  adjust_for(NULL) %>% 
-  node_status() %>% 
-  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-  geom_dag_point(aes(color = adjusted)) +
+g |>
+  dagitty::dagitty() |>
+  dag_label(labels = c(X = "Maternal age", Y = "Birth weight", Z = "Socioeconomic status")) |>
+  adjust_for(NULL) |>
+  node_status() |>
+  pull_dag_data() |> 
+  mutate(
+    status = factor(
+      ifelse(is.na(status), 3, status),
+      levels = 1:3,
+      labels = c('exposure', 'outcome', 'covariate')
+    )) |>
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_point(aes(color = status)) +
   geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
   geom_dag_text() +
   geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
   theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
-  scale_fill_manual(NULL,
+  scale_y_continuous(limits = c(-0.05, 1.05)) +
+  guides(color = guide_legend(override.aes = list(size = 9))) +
+    scale_color_manual(NULL,
                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
                     na.value = naCol) +
-  scale_color_manual(NULL, guide = 'none',
-                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-  scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22))  
+  scale_fill_manual(NULL,
+                    values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
+                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
+                    na.value = naCol) 
 ```
 
 
@@ -599,27 +633,34 @@ g <- 'dag {
 }'
 
 
-g %>%
-  dagitty::dagitty() %>%
-  dag_label(labels = c(X = "Exercise", Y = "Mood", Z = "Sleep quality")) %>%
-  adjust_for(NULL) %>% 
-  node_status() %>% 
-  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-  geom_dag_point(aes(color = adjusted)) +
+g |>
+  dagitty::dagitty() |>
+  dag_label(labels = c(X = "Exercise", Y = "Mood", Z = "Sleep quality")) |>
+  adjust_for(NULL) |>
+  node_status() |>
+  pull_dag_data() |> 
+  mutate(
+    status = factor(
+      ifelse(is.na(status), 3, status),
+      levels = 1:3,
+      labels = c('exposure', 'outcome', 'covariate')
+    )) |>
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_point(aes(color = status)) +
   geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
   geom_dag_text() +
   geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
   theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
+  scale_y_continuous(limits = c(-0.05, 1.05)) +
+  guides(color = guide_legend(override.aes = list(size = 9))) +
   scale_fill_manual(NULL,
                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
                     na.value = naCol) +
-  scale_color_manual(NULL, guide = 'none',
-                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-  scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22))  
+  scale_color_manual(NULL,
+                  values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
+                  labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
+                  na.value = naCol) 
 ```
 
 Here there is no connecting arrow going from exercise to mood. Our DAG reflects the assumption that _all_ of the effect of exercise is mediated through quality of sleep. This would be an indirect effect of exercise on mood.
@@ -638,27 +679,34 @@ g <- 'dag {
 }'
 
 
-g %>%
-  dagitty::dagitty() %>%
-  dag_label(labels = c(X = "Exercise", Y = "Mood", Z = "Sleep quality")) %>%
-  adjust_for(NULL) %>% 
-  node_status() %>% 
-  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-  geom_dag_point(aes(color = adjusted)) +
+g |>
+  dagitty::dagitty() |>
+  dag_label(labels = c(X = "Exercise", Y = "Mood", Z = "Sleep quality")) |>
+  adjust_for(NULL) |>
+  node_status() |>
+  pull_dag_data() |> 
+  mutate(
+    status = factor(
+      ifelse(is.na(status), 3, status),
+      levels = 1:3,
+      labels = c('exposure', 'outcome', 'covariate')
+    )) |>
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_point(aes(color = status)) +
   geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
   geom_dag_text() +
   geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
   theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
+  scale_y_continuous(limits = c(-0.05, 1.05)) +
+  guides(color = guide_legend(override.aes = list(size = 9))) +
   scale_fill_manual(NULL,
                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
                     na.value = naCol) +
-  scale_color_manual(NULL, guide = 'none',
-                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-  scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22))  
+  scale_color_manual(NULL,
+                  values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
+                  labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
+                  na.value = naCol) 
 ```
 
 ***
@@ -678,20 +726,20 @@ tab <- data.frame(
   type = c("Effect modification",
             "Interaction",
             "Mediation"),
-  
+
   aim = c("Separate exposure effects according to another variable",
           "Evaluate individual and joint effects of exposures",
           "Evaluate direct and indirect effects of exposures"),
-  
+
   question = c("Does the new drug have a different effect for men compared to women?",
                "Does drug A work better if the patient is also taking drug B?",
-               "Does exercise improve mood directly, or does exercise improve sleep and then better sleep results in improved mood?") 
-  
+               "Does exercise improve mood directly, or does exercise improve sleep and then better sleep results in improved mood?")
+
 )
 
 
-tab %>% 
-  knitr::kable(col.names = c("Type of assessment", "Aim of the assessment", "Example question")) %>% 
+tab |>
+  knitr::kable(col.names = c("Type of assessment", "Aim of the assessment", "Example question")) |>
   kable_styling()
 ```
 
@@ -700,10 +748,10 @@ tab %>%
 
 ## Collider variables
 ### Definition
-A collider is a common effect of two variables. 
+A collider is a common effect of two variables.
 
 ### Example
-Suppose a researcher is interested in whether respiratory syncytial virus (RSV) infection during infancy (exposure) causes asthma in early childhood (outcome). In this case, admissions to the Emergency Department (ED) during early childhood would be a potential collider, because both RSV and asthma will increase the probability of ED admission during early childhood.  
+Suppose a researcher is interested in whether respiratory syncytial virus (RSV) infection during infancy (exposure) causes asthma in early childhood (outcome). In this case, admissions to the Emergency Department (ED) during early childhood would be a potential collider, because both RSV and asthma will increase the probability of ED admission during early childhood.
 
 ### How does this look in a DAG?
 
@@ -718,42 +766,49 @@ g <- 'dag {
 }'
 
 
-g %>%
-  dagitty::dagitty() %>%
-  dag_label(labels = c(X = "RSV infection", Y = "Asthma", Z = "ED admission")) %>%
-  adjust_for(NULL) %>% 
-  node_status() %>% 
-  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-  geom_dag_point(aes(color = adjusted)) +
+g |>
+  dagitty::dagitty() |>
+  dag_label(labels = c(X = "RSV infection", Y = "Asthma", Z = "ED admission")) |>
+  adjust_for(NULL) |>
+  node_status() |>
+  pull_dag_data() |> 
+  mutate(
+    status = factor(
+      ifelse(is.na(status), 3, status),
+      levels = 1:3,
+      labels = c('exposure', 'outcome', 'covariate')
+    )) |>
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_point(aes(color = status)) +
   geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
   geom_dag_text() +
   geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
   theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
-  scale_fill_manual(NULL,
+  scale_y_continuous(limits = c(-0.05, 1.05)) +
+  guides(color = guide_legend(override.aes = list(size = 9))) +
+  scale_color_manual(NULL,
                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
                     na.value = naCol) +
-  scale_color_manual(NULL, guide = 'none',
-                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-  scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22))  
+  scale_fill_manual(NULL,
+                  values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
+                  labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
+                  na.value = naCol) 
 ```
 
-As we will see, identifying colliders is important because controlling for a collider can inadvertently introduce bias. To continue the above example, even though the number of ED admissions during early childhood may be associated with the exposure and outcome but controlling for this variable would actually _**bias**_ estimates of the relationship between RSV infection and asthma.
+As we will see, identifying colliders is important because controlling for a collider can inadvertently introduce bias. To continue the above example, even though the number of ED admissions during early childhood may be correlated with both the exposure and outcome, controlling for this variable would actually _**bias**_ estimates of the relationship between RSV infection and asthma.
 
 
 <div class="shiny">
 
 ### Explore this further
-You can explore this example and the concept of collider bias further using this [interactive Shiny app](https://cbdrh.shinyapps.io/collider-bias/). The app can also be launched by entering `hdat9700tutorials::run('collider-bias')` at the console. 
+You can explore this example and the concept of collider bias further using this [interactive Shiny app](https://cbdrh.shinyapps.io/collider-bias/). The app can also be launched by entering `hdat9700tutorials::run('collider-bias')` at the console.
 
 </div>
 
-## D-separation
+## d-separation
 
-Now that you know how to represent and recognise different types of relationships in a DAG, how can a DAG help us to choose what variables to include in a causal model? The answer lies in the concept of **d-separation**. 
+Now that you know how to represent and recognise different types of relationships in a DAG, how can a DAG help us to choose what variables to include in a causal model? The answer lies in the concept of **d-separation**.
 
 **Definition:** Two variables in a DAG are said to be d-separated if there are no open non-causal paths between them.
 
@@ -774,30 +829,37 @@ g <- 'dag {
 }'
 
 
-g %>%
-  dagitty::dagitty() %>%
-  dag_label(labels = c(X = "Exercise", Y = "Mood", Z = "Sleep quality")) %>%
-  adjust_for(NULL) %>% 
-  node_status() %>% 
-  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-  geom_dag_point(aes(color = adjusted)) +
+g |>
+  dagitty::dagitty() |>
+  dag_label(labels = c(X = "Exercise", Y = "Mood", Z = "Sleep quality")) |>
+  adjust_for(NULL) |>
+  node_status() |>
+  pull_dag_data() |> 
+  mutate(
+    status = factor(
+      ifelse(is.na(status), 3, status),
+      levels = 1:3,
+      labels = c('exposure', 'outcome', 'covariate')
+    )) |>
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_point(aes(color = status)) +
   geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
   geom_dag_text() +
   geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
   theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
+  scale_y_continuous(limits = c(-0.05, 1.05)) +
+  guides(color = guide_legend(override.aes = list(size = 9))) +
   scale_fill_manual(NULL,
                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
                     na.value = naCol) +
-  scale_color_manual(NULL, guide = 'none',
-                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-  scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22))  
+  scale_color_manual(NULL,
+                    values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
+                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
+                    na.value = naCol) 
 ```
 
-Both paths are causal paths: 
+Both paths are causal paths:
 
 * Exercise &rarr; Sleep quality &rarr; Mood
 
@@ -806,7 +868,7 @@ Both paths are causal paths:
 
 #### 1b. Non-causal paths
 
-A non-causal path between an exposure **X** and outcome **Y** is a path between X and Y that contains one or more arrows pointing back towards **X**. A backdoor path is a type of non-causal path where an arrow points back into the exposure **X**. 
+A non-causal path between an exposure **X** and outcome **Y** is a path between X and Y that contains one or more arrows pointing back towards **X**. A backdoor path is a type of non-causal path where an arrow points back into the exposure **X**.
 
 For example, the path ice-cream sales &larr; sunshine &rarr; sunburn is a non-causal path between ice-cream sales and sunburn. This is also an example of a backdoor path .
 
@@ -820,30 +882,37 @@ g <- 'dag {
 }'
 
 
-g %>%
-  dagitty::dagitty() %>%
-  dag_label(labels = c("X" = "Ice-cream sales", "Y" = "Sunburn", "Z" = "Sunshine")) %>%
-  adjust_for(NULL) %>% 
-  node_status() %>% 
+g |>
+  dagitty::dagitty() |>
+  dag_label(labels = c("X" = "Ice-cream sales", "Y" = "Sunburn", "Z" = "Sunshine")) |>
+  adjust_for(NULL) |>
+  node_status() |>
+  pull_dag_data() |> 
+  mutate(
+    status = factor(
+      ifelse(is.na(status), 3, status),
+      levels = 1:3,
+      labels = c('exposure', 'outcome', 'covariate')
+    )) |>
     ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
       geom_dag_point(aes(color = adjusted)) +
       geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
       geom_dag_text() +
       geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
       theme_dag(legend.position = 'bottom') +
-      scale_adjusted() +
-      guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
-      scale_fill_manual(NULL,
+      scale_y_continuous(limits = c(-0.05, 1.05)) +
+      guides(color = guide_legend(override.aes = list(size = 9))) +
+      scale_color_manual(NULL,
                       values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
                       labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
                       na.value = naCol) +
-      scale_color_manual(NULL, guide = 'none',
-                       values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-      scale_shape_manual(NULL, guide = 'none',
-                       values = c(unadjusted = 21, adjusted = 22)) 
+      scale_fill_manual(NULL,
+                values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
+                labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
+                na.value = naCol)
 ```
 
-You will recognise this as an example of confounding. In this case, the presence of sunshine induces a correlation or _dependence_ between ice-cream sales and sunburn. The "d" in d-connected stands for **dependence**! 
+You will recognise this as an example of confounding. In this case, the presence of sunshine induces a correlation or _dependence_ between ice-cream sales and sunburn. The "d" in d-connected stands for **dependence**!
 
 
 #### 2. Open and closed paths
@@ -855,32 +924,32 @@ Importantly, however, whether or not controlling for an intermediate variable Z 
 
 ```{r}
 tab <- data.frame(
-  
+
   A = c("![](images/mediator-dag.png){width='80%'}",
     "![](images/confounder-dag.png){width='80%'}",
     "![](images/collider-dag.png){width='80%'}"
   ),
-  
+
   B = c("Mediator",
             "Confounder",
             "Collider"),
-  
+
   C = c("Path between X and Y is OPEN",
           "Path between X and Y is OPEN",
           "Path between X and Y is CLOSED"),
-  
+
   D = c("CLOSES path between X and Y.",
           "CLOSES path between X and Y",
           "OPENS path between X and Y")
-  
+
 )
 
 
-tab %>% 
-  knitr::kable(col.names = c("DAG", "Role of Z", "Status before controlling for Z", "Effect of controlling for Z")) %>% 
-  kable_styling() %>% 
-  column_spec(1, width = "4cm") %>% 
-  column_spec(2, width = "2cm") %>% 
+tab |>
+  knitr::kable(col.names = c("DAG", "Role of Z", "Status before controlling for Z", "Effect of controlling for Z")) |>
+  kable_styling() |>
+  column_spec(1, width = "4cm") |>
+  column_spec(2, width = "2cm") |>
   column_spec(3, width = "3cm")
 ```
 
@@ -889,19 +958,19 @@ Note that conditioning on a mediator or a confounder will CLOSE the path between
 
 ### How does this all help?
 
-Having read through the section above, you should be comfortable with the idea of: 
+Having read through the section above, you should be comfortable with the idea of:
 
 1. Causal and non-causal paths
 2. Open and closed paths
 
 To estimate the TOTAL effect of X on Y you need to control for a set of variables that closes all non-causal paths, while leaving all causal paths open.
 
-To estimate the DIRECT effect of X on Y you need to control for a set of variables that closes all non-causal paths and closes any causal paths except the path $\text{X} \rightarrow \text{Y}$. 
+To estimate the DIRECT effect of X on Y you need to control for a set of variables that closes all non-causal paths and closes any causal paths except the path $\text{X} \rightarrow \text{Y}$.
 
 
 ## Worked example
 
-In this section we will use the principle of d-separation and causal paths to identify a minimal set of adjustment variables that will allow us to estimate the effect of Exercise on Mood based on the following DAG. 
+In this section we will use the principle of d-separation and causal paths to identify a minimal set of adjustment variables that will allow us to estimate the effect of Exercise on Mood based on the following DAG.
 
 ```{r, out.width="90%"}
 g <- 'dag {
@@ -925,37 +994,44 @@ g <- 'dag {
 }'
 
 
-g %>%
-  dagitty::dagitty() %>%
-  dag_label(labels = c(X = "Exercise", Y = "Mood", Z1 = "Club member", Z2 = "Season", Z3 = "Social interaction", Z4 = "Sleep quality", Z5 = "Blood pressure")) %>%
-  adjust_for(NULL) %>% 
-  node_status() %>% 
-  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-  geom_dag_point(aes(color = adjusted)) +
+g |>
+  dagitty::dagitty() |>
+  dag_label(labels = c(X = "Exercise", Y = "Mood", Z1 = "Club member", Z2 = "Season", Z3 = "Social interaction", Z4 = "Sleep quality", Z5 = "Blood pressure")) |>
+  adjust_for(NULL) |>
+  node_status() |>
+  pull_dag_data() |> 
+  mutate(
+    status = factor(
+      ifelse(is.na(status), 3, status),
+      levels = 1:3,
+      labels = c('exposure', 'outcome', 'covariate')
+    )) |>
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_point(aes(color = status)) +
   geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
-  geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
+  geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80', size=9/.pt) +
   theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
+  scale_y_continuous(limits = c(0.8, 5.2)) +
+  guides(color = guide_legend(override.aes = list(size = 9))) +
   scale_fill_manual(NULL,
                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
                     na.value = naCol) +
-  scale_color_manual(NULL, guide = 'none',
-                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-  scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22)) 
+  scale_color_manual(NULL,
+                  values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
+                  labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
+                  na.value = naCol) 
 
 ```
 
 This DAG represents several plausible assumptions:
 
-* Exercise has a direct effect on mood but also an indirect effect via sleep quality 
-* Exercise also has an effect on blood pressure 
-* Being a club member has an effect on exercise 
-* The season also has an effect on exercise (perhaps people exercise less during cold weather) 
-* Being a club member has an effect on social interactions 
-* Social interactions have an effect on mood (hopefully a positive one!) 
+* Exercise has a direct effect on mood but also an indirect effect via sleep quality
+* Exercise also has an effect on blood pressure
+* Being a club member has an effect on exercise
+* The season also has an effect on exercise (perhaps people exercise less during cold weather)
+* Being a club member has an effect on social interactions
+* Social interactions have an effect on mood (hopefully a positive one!)
 * Season has an effect on mood (sunlight can have a positive effect on mood)
 * Mood has an effect on blood pressure (perhaps being calmer and happier decreases stress-induced high blood pressure)
 
@@ -965,143 +1041,183 @@ In order to estimate the **total** effect of exercise on mood we need to close a
 #### Non-causal paths
 To identify non-causal paths, look for paths between the exposure and outcome that have one or more arrows pointing back toward the exposure. In total there are non-causal paths
 
-* Exercise &larr; Club member &rarr; Social interactions &rarr; Mood 
+* Exercise &larr; Club member &rarr; Social interactions &rarr; Mood
 * Exercise &larr; Season &rarr; Mood
 * Exercise &rarr; Blood pressure &larr; Mood
 
 
-#### Causal paths 
-To identify causal paths, look for paths between the exposure and outcome where all arrows point towards the outcome. There are two casual paths: 
+#### Causal paths
+To identify causal paths, look for paths between the exposure and outcome where all arrows point towards the outcome. There are two casual paths:
 
-* Exercise &rarr; Mood 
-* Exercise &rarr; Sleep quality &rarr; Mood  
+* Exercise &rarr; Mood
+* Exercise &rarr; Sleep quality &rarr; Mood
 
 ### Identifying adjustment sets
 
-#### Total effect 
-To estimate the total effect of Exercise on Mood we must close all of the non-causal paths. **Note that to close a path it is sufficient to control for any single variable along that path.** This means that for long paths with more than three nodes we can break the path up into triplets; if any triplet is closed then the whole path is closed. 
+#### Total effect
+To estimate the total effect of Exercise on Mood we must close all of the non-causal paths. **Note that to close a path it is sufficient to control for any single variable along that path.** This means that for long paths with more than three nodes we can break the path up into triplets; if any triplet is closed then the whole path is closed.
 
-* To close the path Exercise &larr; Club member &rarr; Social interactions &rarr; Mood we could control for Club membership OR we could control for number of social interactions. Here is an example where controlling for either variable is sufficient to close the path. We could also control for both variables; this isn't necessary to close the path, but it won't do any harm. 
+* To close the path Exercise &larr; Club member &rarr; Social interactions &rarr; Mood we could control for Club membership OR we could control for number of social interactions. Here is an example where controlling for either variable is sufficient to close the path. We could also control for both variables; this isn't necessary to close the path, but it won't do any harm.
 
 * To close the path Exercise &larr; Season &rarr; Mood we would need to control for Season.
 
-* The path Exercise &rarr; Sleep quality &larr; Mood is already closed (because Sleep quality is a collider on this path) so we don't have to worry about this. 
+* The path Exercise &rarr; Sleep quality &larr; Mood is already closed (because Sleep quality is a collider on this path) so we don't have to worry about this.
 
-Thus, there are two possible minimal adjustment sets to identify the total effect of Exercise on Mood: 
+Thus, there are two possible minimal adjustment sets to identify the total effect of Exercise on Mood:
 
-1. Club membership and Season 
+1. Club membership and Season
 
-```{r}
+```{r, out.width="90%"}
 
-g %>%
-  dagitty::dagitty() %>%
-  adjust_for(c('Z1', 'Z2')) %>% 
-  dag_label(labels = c(X = "Exercise", Y = "Mood", Z1 = "Club member", Z2 = "Season", Z3 = "Social interaction", Z4 = "Sleep quality", Z5 = "Blood pressure")) %>%
-  node_status() %>% 
-  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-  geom_dag_point(aes(color = adjusted)) +
+g |>
+  dagitty::dagitty() |>
+  adjust_for(c('Z1', 'Z2')) |>
+  dag_label(labels = c(X = "Exercise", Y = "Mood", Z1 = "Club member", Z2 = "Season", Z3 = "Social interaction", Z4 = "Sleep quality", Z5 = "Blood pressure")) |>
+  node_status() |>
+  pull_dag_data() |>
+  mutate(
+    status = factor(
+      ifelse(adjusted=='adjusted', 3, 
+             ifelse(adjusted=='unadjusted' & is.na(status), 4, status)),
+      levels = 1:4,
+      labels = c('exposure', 'outcome', 'adjusted', 'unadjusted')
+    )) |> 
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_point(aes(color = status, shape = status)) +
   geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
-  geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
+  geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80', size=9/.pt) +
   theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
+  guides(color = guide_legend(override.aes = list(size = 9))) +
+  scale_y_continuous(limits = c(0.8, 5.2)) +
   scale_fill_manual(NULL,
-                    values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
-                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
-                    na.value = naCol) +
-  scale_color_manual(NULL, guide = 'none',
-                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-  scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22)) 
+                    values = c('exposure' = exposureCol, 'outcome' = outcomeCol, adjusted = adjustedCol, unadjusted = naCol),
+                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome', 'adjusted' = 'adjusted', 'unadjusted' = 'unadjusted')) +
+  scale_color_manual(NULL,
+                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol, adjusted = adjustedCol, unadjusted = naCol),
+                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome', 'adjusted' = 'adjusted', 'unadjusted' = 'unadjusted')) +
+  scale_shape_manual(NULL,
+                     values = c('circle', 'circle', 'square', 'circle'),
+                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome', 'adjusted' = 'adjusted', 'unadjusted' = 'unadjusted')
+                     ) 
 
 ```
 
-2. Number of Social interactions and Season 
+2. Number of Social interactions and Season
 
-```{r}
-g %>%
-  dagitty::dagitty() %>%
-  adjust_for(c('Z3', 'Z2')) %>% 
-  dag_label(labels = c(X = "Exercise", Y = "Mood", Z1 = "Club member", Z2 = "Season", Z3 = "Social interaction", Z4 = "Sleep quality", Z5 = "Blood pressure")) %>%
-  node_status() %>% 
-  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-  geom_dag_point(aes(color = adjusted)) +
+```{r, out.width="90%"}
+g |>
+  dagitty::dagitty() |>
+  adjust_for(c('Z2', 'Z3')) |>
+  dag_label(labels = c(X = "Exercise", Y = "Mood", Z1 = "Club member", Z2 = "Season", Z3 = "Social interaction", Z4 = "Sleep quality", Z5 = "Blood pressure")) |>
+  node_status() |>
+  pull_dag_data() |>
+  mutate(
+    status = factor(
+      ifelse(adjusted=='adjusted', 3, 
+             ifelse(adjusted=='unadjusted' & is.na(status), 4, status)),
+      levels = 1:4,
+      labels = c('exposure', 'outcome', 'adjusted', 'unadjusted')
+    )) |> 
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_point(aes(color = status, shape = status)) +
   geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
-  geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
+  geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80', size=9/.pt) +
   theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
+  guides(color = guide_legend(override.aes = list(size = 9))) +
+  scale_y_continuous(limits = c(0.8, 5.2)) +
   scale_fill_manual(NULL,
-                    values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
-                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
-                    na.value = naCol) +
-  scale_color_manual(NULL, guide = 'none',
-                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-  scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22)) 
+                    values = c('exposure' = exposureCol, 'outcome' = outcomeCol, adjusted = adjustedCol, unadjusted = naCol),
+                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome', 'adjusted' = 'adjusted', 'unadjusted' = 'unadjusted')) +
+  scale_color_manual(NULL,
+                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol, adjusted = adjustedCol, unadjusted = naCol),
+                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome', 'adjusted' = 'adjusted', 'unadjusted' = 'unadjusted')) +
+  scale_shape_manual(NULL,
+                     values = c('circle', 'circle', 'square', 'circle'),
+                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome', 'adjusted' = 'adjusted', 'unadjusted' = 'unadjusted')
+                     ) 
 ```
 
 
-#### Direct effect 
-To estimate the direct effect of Exercise on Mood we must also consider alternative causal paths other than the main path of interest. 
+#### Direct effect
+To estimate the direct effect of Exercise on Mood we must also consider alternative causal paths other than the main path of interest.
 
 We identified two causal paths. The first was the path Exercise &rarr; Mood. This is the causal path of interest so we don't have to do anything here (obviously we will include our exposure and outcome in the model!).
 
 The second causal path was Exercise &rarr; Sleep quality &rarr; Mood. This path implies that part of the effect of exercise is mediated through sleep quality. In order to estimate the direct effect of exercise we must close this pathway, i.e. control for sleep quality in our analysis.
 
-Thus, there are two possible minimal adjustment sets to identify the **direct** effect of Exercise on Mood: 
+Thus, there are two possible minimal adjustment sets to identify the **direct** effect of Exercise on Mood:
 
 1. Club membership, Season and Sleep quality
 
 ```{r}
-g %>%
-  dagitty::dagitty() %>%
-  adjust_for(c('Z1', 'Z2', 'Z4')) %>% 
-  dag_label(labels = c(X = "Exercise", Y = "Mood", Z1 = "Club member", Z2 = "Season", Z3 = "Social interaction", Z4 = "Sleep quality", Z5 = "Blood pressure")) %>%
-  node_status() %>% 
-  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-  geom_dag_point(aes(color = adjusted)) +
+g |>
+  dagitty::dagitty() |>
+  adjust_for(c('Z1', 'Z2', 'Z4')) |>
+  dag_label(labels = c(X = "Exercise", Y = "Mood", Z1 = "Club member", Z2 = "Season", Z3 = "Social interaction", Z4 = "Sleep quality", Z5 = "Blood pressure")) |>
+  node_status() |>
+  pull_dag_data() |>
+  mutate(
+    status = factor(
+      ifelse(adjusted=='adjusted', 3, 
+             ifelse(adjusted=='unadjusted' & is.na(status), 4, status)),
+      levels = 1:4,
+      labels = c('exposure', 'outcome', 'adjusted', 'unadjusted')
+    )) |> 
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_point(aes(color = status, shape = status)) +
   geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
-  geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
+  geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80', size=9/.pt) +
   theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
+  guides(color = guide_legend(override.aes = list(size = 9))) +
+  scale_y_continuous(limits = c(0.8, 5.2)) +
   scale_fill_manual(NULL,
-                    values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
-                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
-                    na.value = naCol) +
-  scale_color_manual(NULL, guide = 'none',
-                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-  scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22)) 
+                    values = c('exposure' = exposureCol, 'outcome' = outcomeCol, adjusted = adjustedCol, unadjusted = naCol),
+                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome', 'adjusted' = 'adjusted', 'unadjusted' = 'unadjusted')) +
+  scale_color_manual(NULL,
+                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol, adjusted = adjustedCol, unadjusted = naCol),
+                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome', 'adjusted' = 'adjusted', 'unadjusted' = 'unadjusted')) +
+  scale_shape_manual(NULL,
+                     values = c('circle', 'circle', 'square', 'circle'),
+                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome', 'adjusted' = 'adjusted', 'unadjusted' = 'unadjusted')
+                     )
 ```
 
 2. Number of Social interactions, Season and Sleep quality
 
 ```{r}
-g %>%
-  dagitty::dagitty() %>%
-  adjust_for(c('Z3', 'Z2', 'Z4')) %>% 
-  dag_label(labels = c(X = "Exercise", Y = "Mood", Z1 = "Club member", Z2 = "Season", Z3 = "Social interaction", Z4 = "Sleep quality", Z5 = "Blood pressure")) %>%
-  node_status() %>% 
-  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-  geom_dag_point(aes(color = adjusted)) +
+g |>
+  dagitty::dagitty() |>
+  adjust_for(c('Z2', 'Z3', 'Z4')) |>
+  dag_label(labels = c(X = "Exercise", Y = "Mood", Z1 = "Club member", Z2 = "Season", Z3 = "Social interaction", Z4 = "Sleep quality", Z5 = "Blood pressure")) |>
+  node_status() |>
+  pull_dag_data() |>
+  mutate(
+    status = factor(
+      ifelse(adjusted=='adjusted', 3, 
+             ifelse(adjusted=='unadjusted' & is.na(status), 4, status)),
+      levels = 1:4,
+      labels = c('exposure', 'outcome', 'adjusted', 'unadjusted')
+    )) |> 
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_point(aes(color = status, shape = status)) +
   geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
-  geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
+  geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80', size=9/.pt) +
   theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
+  guides(color = guide_legend(override.aes = list(size = 9))) +
+  scale_y_continuous(limits = c(0.8, 5.2)) +
   scale_fill_manual(NULL,
-                    values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
-                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
-                    na.value = naCol) +
-  scale_color_manual(NULL, guide = 'none',
-                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-  scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22)) 
+                    values = c('exposure' = exposureCol, 'outcome' = outcomeCol, adjusted = adjustedCol, unadjusted = naCol),
+                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome', 'adjusted' = 'adjusted', 'unadjusted' = 'unadjusted')) +
+  scale_color_manual(NULL,
+                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol, adjusted = adjustedCol, unadjusted = naCol),
+                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome', 'adjusted' = 'adjusted', 'unadjusted' = 'unadjusted')) +
+  scale_shape_manual(NULL,
+                     values = c('circle', 'circle', 'square', 'circle'),
+                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome', 'adjusted' = 'adjusted', 'unadjusted' = 'unadjusted')
+                     )
 ```
 
-*** 
+***
 
 Now try the exercise to practice this yourself!
 
@@ -1112,34 +1228,34 @@ Now try the exercise to practice this yourself!
 
 ### Activity 1. Test your understanding of using a DAG to select adjustment covariates
 
-Practice using a DAG to select adjustment covariates [interactive Shiny app](https://cbdrh.shinyapps.io/daggle/). The app can also be launched by entering `hdat9700tutorials::run('backdoor-paths')` at the console. 
+Practice using a DAG to select adjustment covariates [interactive Shiny app](https://cbdrh.shinyapps.io/daggle/). 
 
-This app will generate a random DAG and you must identify which variables to control for in order to estimate the causal effect of interest (total or direct effect). You can vary the DAG complexity, and choose to focus on the total effect or the direct effect (you should have a go using both modes). 
-
-</div>
-
-
-<div class="shiny">
-
-### Activity 2. Explore how understanding causal structures is key to madel specification
-Explore how the assumptions about causal structures can guide our model specification using this [interactive Shiny app](https://cbdrh.shinyapps.io/dags-1/). The app can also be launched by entering `hdat9700tutorials::run('dags-1')` at the console. 
-
-This app generates data for three variables: aspirin use (the exposure), pulmonary embolism (the outcome) and high-blood pressure ( a covariate) under two data generation mechanisms. Scenario A emulates having collected these three variables from a randomised control trial; Scenario  emulates having collected these three variables from observational data. You will see that although the available variables are the same in these two scenarios, the correct DAGs and model specifications are different.
+The daggle app will generate a random DAG and you must identify which variables to control for in order to estimate the causal effect of interest (total or direct effect). You can vary the DAG complexity, and choose to focus on the total effect or the direct effect (you should have a go using both modes).
 
 </div>
 
 
-## Selection Biases 
+<!-- <div class="shiny"> -->
+
+<!-- ### Activity 2. Explore how understanding causal structures is key to model specification -->
+<!-- Explore how the assumptions about causal structures can guide our model specification using this [interactive Shiny app](https://cbdrh.shinyapps.io/dags-1/). The app can also be launched by entering `hdat9700tutorials::run('dags-1')` at the console.  -->
+
+<!-- This app generates data for three variables: aspirin use (the exposure), pulmonary embolism (the outcome) and high-blood pressure ( a covariate) under two data generation mechanisms. Scenario A emulates having collected these three variables from a randomised control trial; Scenario  emulates having collected these three variables from observational data. You will see that although the available variables are the same in these two scenarios, the correct DAGs and model specifications are different. -->
+
+<!-- </div> -->
+
+
+## Selection Biases
 
 Many different types of biases arise from mechanisms that result in some individuals being recorded in our data and available for analysis, while data for other individuals are unavailable. These biases are referred to as Selection Biases.
 
-In this section we will take a closer look at one type of selection bias - nonresponse bias - and see how this can be represented as a type of collider bias. 
+In this section we will take a closer look at one type of selection bias - nonresponse bias - and see how this can be represented as a type of collider bias.
 
 ### Survey nonresponse bias
 
 Suppose a researcher was interested in estimating the effect of wearing a face mask (X) on the risk on contracting COVID-19 (Y) during the pandemic using data from a random-digit-dialing telephone survey. Survey respondents were asked whether they wore a face mask in public during the last month and if they had tested positive for the coronavirus. Of course, there are numerous factors that we would need to include in our DAG to address this research question, including the number and type of contacts, individual characteristics like age, sex and smoking status, and the quality and correct use of masks. For the this example, we will zoom in on one aspect: survey participation.
 
-There is a large literature documenting the many ways that survey respondents (those who agreed to participate in a survey) differ from survey nonrespondents (those who decline to participate or can't even be contacted). Like any survey we can assume this telephone survey suffered from a degree of nonresponse - not every sampled phone number provided a response. In this context, we might hypothesise that survey respondents are more likely to wear masks, a correlation arising as a result of a latent variable: conscientious personality type. Conscientious people may be more likely to wear masks and more likely to agree to a survey request, resulting in an association (although not a causal relationship) between mask wearing and survey participation. 
+There is a large literature documenting the many ways that survey respondents (those who agreed to participate in a survey) differ from survey nonrespondents (those who decline to participate or can't even be contacted). Like any survey we can assume this telephone survey suffered from a degree of nonresponse - not every sampled phone number provided a response. In this context, we might hypothesise that survey respondents are more likely to wear masks, a correlation arising as a result of a latent variable: conscientious personality type. Conscientious people may be more likely to wear masks and more likely to agree to a survey request, resulting in an association (although not a causal relationship) between mask wearing and survey participation.
 
 We can also imagine that individuals with a recent coronavirus diagnosis may be more likely to participated in a telephone COVID-19 survey, perhaps because they have a personal interest in the topic, or they are easier to contact because they are self-isolating at home.
 
@@ -1159,34 +1275,41 @@ g <- 'dag {
 }'
 
 
-g %>%
-  dagitty::dagitty() %>%
-  dag_label(labels = c(X = "Mask", Y = "COVID-19", Z1 = "Conscientious", Z2 = "Participation")) %>%
-  adjust_for(NULL) %>% 
-  node_status() %>% 
-  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-  geom_dag_point(aes(color = adjusted)) +
+g |>
+  dagitty::dagitty() |>
+  dag_label(labels = c(X = "Mask", Y = "COVID-19", Z1 = "Conscientious", Z2 = "Participation")) |>
+  adjust_for(NULL) |>
+  node_status() |>
+  pull_dag_data() |> 
+  mutate(
+    status = factor(
+      ifelse(is.na(status), 3, status),
+      levels = 1:3,
+      labels = c('exposure', 'outcome', 'covariate')
+    )) |>
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_point(aes(color = status)) +
   geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
   geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
   theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
-  scale_fill_manual(NULL,
+  scale_y_continuous(limits = c(2.8, 5.2)) +
+  guides(color = guide_legend(override.aes = list(size = 9))) +  
+  scale_color_manual(NULL,
                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
                     na.value = naCol) +
-  scale_color_manual(NULL, guide = 'none',
-                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-  scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22)) 
+  scale_fill_manual(NULL,
+                    values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
+                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
+                    na.value = naCol)   
 
 ```
 
-When we estimated the effect of mask wearing on COVID-19 using data from participants only, we are effectively controlling for participation status. To see this, consider the  hypothetical scenario where data is available for participants and non-participants alike. In this case, stratifying on participation status and performing the analysis among survey respondents only (i.e. "controlling" for participation in the analysis) is equivalent to only having data for survey respondents in the first place. 
+When we estimated the effect of mask wearing on COVID-19 using data from participants only, we are effectively controlling for participation status. To see this, consider the  hypothetical scenario where data is available for participants and non-participants alike. In this case, stratifying on participation status and performing the analysis among survey respondents only (i.e. "controlling" for participation in the analysis) is equivalent to only having data for survey respondents in the first place.
 
 Looking at the DAG above, it should be clear that survey participation is a collider on the path Mask &rarr; Conscientious &rarr; Participation &larr; COVID-19. And what happens when we condition on a collider? As you have learned in the section on Collider Variables, controlling for response status will **open** the triplet Conscientious &rarr; Participation &larr; COVID-19. In addition, assuming compliant personality type is a latent, unobserved variable, we will be unable to control for this variable.  Thus there will be an open non-causal path between the exposure and outcome.
 
-Under this set of assumptions, our exposure and outcome would not be d-separated and our estimated causal effect of mask-wearing on the risk of contracting COVID-19 would likely be biased. 
+Under this set of assumptions, our exposure and outcome would not be d-separated and our estimated causal effect of mask-wearing on the risk of contracting COVID-19 would likely be biased.
 
 
 ## M-Bias
@@ -1200,12 +1323,12 @@ ggdag_m_bias() + theme_dag()
 It should be clear by now that adjusting for m would open a non-causal path between a and y in this DAG, as below:
 
 ```{r}
-m_bias() %>% adjust_for('m') %>% ggdag_adjust() + theme_dag()
+m_bias() |> adjust_for('m') |> ggdag_adjust() + theme_dag()
 ```
 
 M-bias emphasises a key point of this lecture: just because a variable is available and correlated with the exposure and outcome, doesn't necessarily mean we should adjust for that variable in a causal model. This is still true **even for variables that are "pre-treatment" variables**, as is the case in M-bias.
 
-### Example 
+### Example
 
 Below is a plausible example of M-bias presented by [Liu et al, 2020](https://doi.org/10.1093/aje/kws165) where the exposure us SSRI use (SSRI = selective serotonin reuptake inhibitor, a common antidepressant).
 
@@ -1224,98 +1347,116 @@ Z2 -> Y
 X -> Y
 }'
 
-g %>%
-  dagitty::dagitty() %>%
-  dag_label(labels = c("X" = "SSRI use", "Y" = "Lung cancer", "Z1" = "Depression", "Z2" = "Ever smoker", "Z3" = "Coronary disease")) %>%
-  adjust_for(NULL) %>% 
-  node_status() %>% 
-  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-  geom_dag_point(aes(color = adjusted)) +
+g |>
+  dagitty::dagitty() |>
+  dag_label(labels = c("X" = "SSRI use", "Y" = "Lung cancer", "Z1" = "Depression", "Z2" = "Ever smoker", "Z3" = "Coronary disease")) |>
+  adjust_for(NULL) |>
+  node_status() |>
+  pull_dag_data() |> 
+  mutate(
+    status = factor(
+      ifelse(is.na(status), 3, status),
+      levels = 1:3,
+      labels = c('exposure', 'outcome', 'covariate')
+    )) |>
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_point(aes(color = status)) +
   geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
   geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
   theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
+  scale_y_continuous(limits = c(-0.1, 1.1)) +
+  guides(color = guide_legend(override.aes = list(size = 9))) +
   scale_fill_manual(NULL,
                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
                     na.value = naCol) +
-  scale_color_manual(NULL, guide = 'none',
-                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-  scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22)) 
+  scale_color_manual(NULL, 
+                    values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
+                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
+                    na.value = naCol
+                     )
 
 ```
 
-If this DAG were a reasonable representation of the data generation mechanism, coronary artery disease would be associated with SSRI Use and Lung cancer in an observational dataset. However, adjusting for coronary artery disease would suggest an apparent effect of SSRI use on Lung cancer, even if one didn't exist.
+If this DAG were a reasonable representation of the data generation mechanism, coronary artery disease would be correlated with SSRI Use and Lung cancer in an observational dataset. However, adjusting for coronary artery disease would suggest an apparent effect of SSRI use on Lung cancer, even if one didn't exist.
 
 ```{r, out.width="90%"}
 
-g %>%
-  dagitty::dagitty() %>%
-  dag_label(labels = c("X" = "SSRI use", "Y" = "Lung cancer", "Z1" = "Depression", "Z2" = "Ever smoker", "Z3" = "Coronary disease")) %>%
-  adjust_for('Z3') %>% 
-  node_status() %>% 
-  ggplot(aes(x = x, y = y, xend = xend, yend = yend, fill = status, shape = adjusted)) +
-  geom_dag_point(aes(color = adjusted)) +
+g |>
+  dagitty::dagitty() |>
+  dag_label(labels = c("X" = "SSRI use", "Y" = "Lung cancer", "Z1" = "Depression", "Z2" = "Ever smoker", "Z3" = "Coronary disease")) |>
+  adjust_for('Z3') |>
+  node_status() |>
+  pull_dag_data() |> 
+  mutate(
+    status = factor(
+      ifelse(adjusted=='adjusted', 3, 
+             ifelse(adjusted=='unadjusted' & is.na(status), 4, status)),
+      levels = 1:4,
+      labels = c('exposure', 'outcome', 'adjusted', 'unadjusted')
+    )) |> 
+  ggplot(aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_point(aes(color = status, shape=status)) +
   geom_dag_edges(arrow_directed = grid::arrow(length = grid::unit(10, "pt"), type = "closed")) +
   geom_dag_label_repel(aes(label = label, fill = status), show.legend = FALSE, box.padding = 4, segment.color = 'grey80') +
-  geom_dag_collider_edges(color = 'pink') +
-  theme_dag(legend.position = 'bottom') +
-  scale_adjusted() +
-  guides(fill = guide_legend(override.aes = list(color = c(exposureCol, outcomeCol)))) +
+  geom_dag_collider_edges(color = 'pink', curvature=-0.15) +
+  theme_dag(legend.position = 'none') +
+  guides(color = guide_legend(override.aes = list(size = 9))) +
+  scale_y_continuous(limits = c(-0.1, 1.1)) +
   scale_fill_manual(NULL,
-                    values = c('exposure' = exposureCol, 'outcome' = outcomeCol),
-                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome'),
-                    na.value = naCol) +
-  scale_color_manual(NULL, guide = 'none',
-                     values = c('adjusted' = 'gray20', 'unadjusted' = 'white')) +
-  scale_shape_manual(NULL, guide = 'none',
-                     values = c(unadjusted = 21, adjusted = 22)) 
+                    values = c('exposure' = exposureCol, 'outcome' = outcomeCol, adjusted = adjustedCol, unadjusted = naCol),
+                    labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome', 'adjusted' = 'adjusted', 'unadjusted' = 'unadjusted')) +
+  scale_color_manual(NULL,
+                     values = c('exposure' = exposureCol, 'outcome' = outcomeCol, adjusted = adjustedCol, unadjusted = naCol),
+                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome', 'adjusted' = 'adjusted', 'unadjusted' = 'unadjusted')) +
+  scale_shape_manual(NULL,
+                     values = c('circle', 'circle', 'square', 'circle'),
+                     labels = c('exposure' = 'Exposure', 'outcome' = 'Outcome', 'adjusted' = 'adjusted', 'unadjusted' = 'unadjusted')
+                     )
 
 ```
 
-## Exercise
+<!-- ## Exercise -->
 
 
-For this exercise, you need to read through a second tweetorial from [Dr Ellie Murray](twitter.com/EpiEllie)) (@EpiEllie), then answer the question below. This tweetorial focuses on **"applying conclusions about causation to results obtained via methods designed only for finding correlations"** and illustrates a real-world scenario where M-bias was potentially contributing to counter-intuitive (or misunderstood) results in a study of COVID-19 hospital deaths. Find it [here](https://twitter.com/EpiEllie/status/1258607277357006849).
+<!-- For this exercise, you need to read through a second tweetorial from [Dr Ellie Murray](twitter.com/EpiEllie)) (@EpiEllie), then answer the question below. This tweetorial focuses on **"applying conclusions about causation to results obtained via methods designed only for finding correlations"** and illustrates a real-world scenario where M-bias was potentially contributing to counter-intuitive (or misunderstood) results in a study of COVID-19 hospital deaths. Find it [here](https://twitter.com/EpiEllie/status/1258607277357006849). -->
 
-Once you have read through the tweetorial, consider the following question.
+<!-- Once you have read through the tweetorial, consider the following question. -->
 
-```{r, fig.width = 3, fig.height=3}
-ggdag_m_bias() + theme_dag()
-```
+<!-- ```{r, fig.width = 3, fig.height=3} -->
+<!-- ggdag_m_bias() + theme_dag() -->
+<!-- ``` -->
 
-```{r quiz4, echo=FALSE}
-quiz(caption = "Quiz: M-Bias",
-     question("What are the correct labels for the nodes in the DAG above to best reflect the example discussed in @EpiEllie's tweetorial",
-              answer("x = 'COVID-19 death', a = 'Social determinants of health', m = 'Smoking history', b = 'Heart disease', y = 'Current smoking'"),
-              answer("x = 'COVID-19 death', a = 'Social determinants of health', m = 'Heart disease', b = 'Smoking history', y = 'Current smoking'"),
-              answer("x = 'Current smoking', a = 'Social determinants of health', m = 'Smoking history', b = 'Heart disease', y = 'COVID-19 death'"),
-              answer("x = 'Current smoking', a = 'Social determinants of health', m = 'Heart disease', b = 'Smoking history', y = 'COVID-19 death'"),
-              answer("x = 'Current smoking', a = 'Smoking history', m = 'Heart disease', b = 'Social determinants of health', y = 'COVID-19 death'", correct = TRUE, message = "Although the complete DAG is likely much more complicated."),
-              incorrect = "Not quite right, try again!",
-              allow_retry = TRUE,
-              random_answer_order = TRUE
-     )
-)
-```
+<!-- ```{r quiz4, echo=FALSE} -->
+<!-- quiz(caption = "Quiz: M-Bias", -->
+<!--      question("What are the correct labels for the nodes in the DAG above to best reflect the example discussed in @EpiEllie's tweetorial", -->
+<!--               answer("x = 'COVID-19 death', a = 'Social determinants of health', m = 'Smoking history', b = 'Heart disease', y = 'Current smoking'"), -->
+<!--               answer("x = 'COVID-19 death', a = 'Social determinants of health', m = 'Heart disease', b = 'Smoking history', y = 'Current smoking'"), -->
+<!--               answer("x = 'Current smoking', a = 'Social determinants of health', m = 'Smoking history', b = 'Heart disease', y = 'COVID-19 death'"), -->
+<!--               answer("x = 'Current smoking', a = 'Social determinants of health', m = 'Heart disease', b = 'Smoking history', y = 'COVID-19 death'"), -->
+<!--               answer("x = 'Current smoking', a = 'Smoking history', m = 'Heart disease', b = 'Social determinants of health', y = 'COVID-19 death'", correct = TRUE, message = "Although the complete DAG is likely much more complicated."), -->
+<!--               incorrect = "Not quite right, try again!", -->
+<!--               allow_retry = TRUE, -->
+<!--               random_answer_order = TRUE -->
+<!--      ) -->
+<!-- ) -->
+<!-- ``` -->
 
-You can use the code below to help visualise different possible answers, or to just take a sneak peek at the syntax for coding DAGs in R.
+<!-- You can use the code below to help visualise different possible answers, or to just take a sneak peek at the syntax for coding DAGs in R. -->
 
-```{r m-bias, exercise = TRUE, exercise.lines = 12}
+<!-- ```{r m-bias, exercise = TRUE, exercise.lines = 12} -->
 
-# Choices: COVID-19 death, Social determinants of health; Smoking history; Heart disease; Current smoking
-ggdag_m_bias(x="Hmm", 
-             y = "Not sure",
-             a = "Could be",
-             b = "Maybe",
-             m = "Mehnunuh",
-             use_labels = "label",
-             label_col = "black") +
-              theme_dag()
+<!-- # Choices: COVID-19 death, Social determinants of health; Smoking history; Heart disease; Current smoking -->
+<!-- ggdag_m_bias(x="Hmm",  -->
+<!--              y = "Not sure", -->
+<!--              a = "Could be", -->
+<!--              b = "Maybe", -->
+<!--              m = "Mehnunuh", -->
+<!--              use_labels = "label", -->
+<!--              label_col = "black") + -->
+<!--               theme_dag() -->
 
-```
+<!-- ``` -->
 
 
 
@@ -1323,7 +1464,7 @@ ggdag_m_bias(x="Hmm",
 
 ### DAGitty
 
-[DAGitty](http://dagitty.net/dags.html) is an online tool that allows you to easily create DAGs in a point-and-click fashion, without any coding required. Conveniently, DAGitty also automatically creates R code that will allow you to recreate the DAG you draw in DAGitty within R. In this section, you will see an example of how to copy the model code from DAGitty into an R environment for further manipulation with the `dagitty` and `ggdag` R packages. 
+[DAGitty](http://dagitty.net/dags.html) is an online tool that allows you to easily create DAGs in a point-and-click fashion, without any coding required. Conveniently, DAGitty also automatically creates R code that will allow you to recreate the DAG you draw in DAGitty within R. In this section, you will see an example of how to copy the model code from DAGitty into an R environment for further manipulation with the `dagitty` and `ggdag` R packages.
 
 Below is a mirror to the DAGitty interface . Note that if you are reading this tutorial in the RStudio viewer pane you will need to show it in a browser window to view it properly. Alternatively, you can just go to [dagitty.net/dags.html](http://www.dagitty.net/dags.html).
 
@@ -1355,7 +1496,7 @@ ggdag(dagittyObject)
 ```
 
 
-*** 
+***
 
 ### Coding DAGS in R
 The DAGs in this tutorial are created using the `ggdag` package. If you are interested in learning more about how to draw DAGs in this way, check out the vignette on the package [here](https://cran.r-project.org/web/packages/ggdag/vignettes/intro-to-ggdag.html).
@@ -1368,7 +1509,7 @@ The `ggdag` package includes a set of convenience functions to quickly create DA
 #### Confounding
 ```{r ggdag2, exercise = TRUE, exercise.lines = 8}
 
-ggdag_confounder_triangle(x="icecream sales", y="sunburn", z="sunshine", 
+ggdag_confounder_triangle(x="icecream sales", y="sunburn", z="sunshine",
                           use_labels = "label",
                           label_col = "black") +
                           theme_dag()
@@ -1378,7 +1519,7 @@ ggdag_confounder_triangle(x="icecream sales", y="sunburn", z="sunshine",
 #### Mediation
 ```{r ggdag3, exercise = TRUE, exercise.lines = 8}
 
-ggdag_mediation_triangle(x="Exercise", y="Mood", m="Sleep quality", 
+ggdag_mediation_triangle(x="Exercise", y="Mood", m="Sleep quality",
                           use_labels = "label",
                           label_col = "black") +
                           theme_dag()
@@ -1388,7 +1529,7 @@ ggdag_mediation_triangle(x="Exercise", y="Mood", m="Sleep quality",
 #### Collider
 ```{r ggdag4, exercise = TRUE, exercise.lines = 8}
 
-ggdag_collider_triangle(x="RSV infection", y="Asthma", m="ED admission", 
+ggdag_collider_triangle(x="RSV infection", y="Asthma", m="ED admission",
                           use_labels = "label",
                           label_col = "black") +
                           theme_dag()
@@ -1396,7 +1537,7 @@ ggdag_collider_triangle(x="RSV infection", y="Asthma", m="ED admission",
 ```
 
 ### Building up the elements of a DAG
-For more complex DAGs, or mode control over colour and placement, it might be necessary to use the bespoke `geom_dag_*` functions that come with `ggdag` to tailor the elements of your desired DAG. Click through the slides below to see an example of this in action. 
+For more complex DAGs, or mode control over colour and placement, it might be necessary to use the bespoke `geom_dag_*` functions that come with `ggdag` to tailor the elements of your desired DAG. Click through the slides below to see an example of this in action.
 
 ```{r, out.width='100%', out.height='100%'}
 knitr::include_url("images/fb-ggdag.html")
@@ -1404,19 +1545,19 @@ knitr::include_url("images/fb-ggdag.html")
 
 Note that:
 
-* By default, the position of nodes is random. You can specify fixed node positions using `coords = `. 
-* The function `dagify()` is used to define the relationships between nodes. E.g. `y ~ x` indicates that an arrow will point from **x** to **y**.  
-* Passing the output of `dagify()` to `node_parents(x)` creates a dataframe distinguishing between child and parent nodes of **x**. 
-* `geom_dag_point()` and `geom_dag_edges()` plot the results. 
-* Applying `theme_dag()` provides a nice clean plot. 
- 
- 
+* By default, the position of nodes is random. You can specify fixed node positions using `coords = `.
+* The function `dagify()` is used to define the relationships between nodes. E.g. `y ~ x` indicates that an arrow will point from **x** to **y**.
+* Passing the output of `dagify()` to `node_parents(x)` creates a dataframe distinguishing between child and parent nodes of **x**.
+* `geom_dag_point()` and `geom_dag_edges()` plot the results.
+* Applying `theme_dag()` provides a nice clean plot.
+
+
 ### Try it yourself
 Try experimenting with the code below to create your own DAG.
 
 ```{r ggdag1, exercise = TRUE, exercise.lines = 25}
-# specifying fixed coordinates means that the nodes of the DAG will 
-# always be in the same in the same place. If we don't include this, 
+# specifying fixed coordinates means that the nodes of the DAG will
+# always be in the same in the same place. If we don't include this,
 # the nodes will be randomly arranged each time the DAG is drawn
 coords <- list(
         x = c(x = 0, y = 1, a = 1, b = 0),
@@ -1428,40 +1569,40 @@ dagify(y ~ x + a + b,
        x ~ a + b,
        exposure = "x",
        outcome = "y",
-       coords = coords) %>%  
-  node_parents("x") %>% 
-  ggplot(aes(x=x, y=y, xend=xend, yend=yend, color=parent)) + 
-  geom_dag_point() + 
+       coords = coords) |>
+  node_parents("x") |>
+  ggplot(aes(x=x, y=y, xend=xend, yend=yend, color=parent)) +
+  geom_dag_point() +
   geom_dag_edges() +
-  geom_dag_text(col = "white", size = 6) + 
-  geom_dag_edges_link(arrow = grid::arrow()) + 
-  theme_dag() + 
+  geom_dag_text(col = "white", size = 6) +
+  geom_dag_edges_link(arrow = grid::arrow()) +
+  theme_dag() +
   scale_color_hue(
     breaks  = c("parent", "child")
-    ) 
+    )
 ```
 
-You might notice that this code differs slightly from the code in the flipbook slides above. The flipbook code uses _slow ggplot_ as described by the `flipbookr` package developer Evangeline Reynolds in her [blog](https://evangelinereynolds.netlify.app/post/slow-ggplot/). Slow ggplot is an approach to writing ggplot code that focuses on incremental changes, for example, instead of specifying `aes(x=xy, y=y, xend=xend, yend=yend, color=parent)` in a single line, slow ggplot separates out each aesthetic element to a separate line, to emphasise how that element affects the graph. The editable code above dispenses with the slow ggplot syntax, and is more typical of how you will write R code in the wild.    
- 
- 
-## Summary 
- 
-DAGs are a useful tool that allow us to formalise our assumptions about causal mechanisms under study. Doing so has many advantages: 
+You might notice that this code differs slightly from the code in the flipbook slides above. The flipbook code uses _slow ggplot_ as described by the `flipbookr` package developer Evangeline Reynolds in her [blog](https://evangelinereynolds.netlify.app/post/slow-ggplot/). Slow ggplot is an approach to writing ggplot code that focuses on incremental changes, for example, instead of specifying `aes(x=xy, y=y, xend=xend, yend=yend, color=parent)` in a single line, slow ggplot separates out each aesthetic element to a separate line, to emphasise how that element affects the graph. The editable code above dispenses with the slow ggplot syntax, and is more typical of how you will write R code in the wild.
 
-* Express expert knowledge explicitly 
-* Facilitate discussions about variable selection with co-authors 
-* Communicate your assumptions to readers 
+
+## Summary
+
+DAGs are a useful tool that allow us to formalise our assumptions about causal mechanisms under study. Doing so has many advantages:
+
+* Express expert knowledge explicitly
+* Facilitate discussions about variable selection with co-authors
+* Communicate your assumptions to readers
 
 ### D-separation
 
-In order to estimated the causal path between an exposure X and an outcome Y, the nodes X and Y should be **d-separated**. This means that there should be **no open non-causal paths** between X and Y. 
+In order to estimated the causal path between an exposure X and an outcome Y, the nodes X and Y should be **d-separated**. This means that there should be **no open non-causal paths** between X and Y.
 
-* To close a confounding path ($X \leftarrow C \rightarrow Y$) or a mediating path ($X \rightarrow M \rightarrow Y$) we can condition on the confounder C or mediator M. 
-* Conversely, conditioning on a collider ($X \rightarrow C \leftarrow Y$) will open the pathway 
+* To close a confounding path ($X \leftarrow C \rightarrow Y$) or a mediating path ($X \rightarrow M \rightarrow Y$) we can condition on the confounder C or mediator M.
+* Conversely, conditioning on a collider ($X \rightarrow C \leftarrow Y$) will open the pathway
 
 ### Limitations
 
-Causal inference is hard. DAGs can help, but they are no silver bullet. First of all, DAGs that truly represent causal mechanisms of interest are likely to be much more complicated that the simple scenarios presented in this chapter. Check out the posited DAG below, presented in the study _Risk factors for unsuccessful dog ownership: An epidemiologic study in Taiwan_ by [Weng et al 2006](doi:10.1016/j.prevetmed.2006.06.004). Woof.  
+Causal inference is hard. DAGs can help, but they are no silver bullet. First of all, DAGs that truly represent causal mechanisms of interest are likely to be much more complicated that the simple scenarios presented in this chapter. Check out the posited DAG below, presented in the study _Risk factors for unsuccessful dog ownership: An epidemiologic study in Taiwan_ by [Weng et al 2006](doi:10.1016/j.prevetmed.2006.06.004). Woof.
 
  ![](images/dog-ownership-dag.png){width="75%"}
 
@@ -1472,16 +1613,16 @@ It should be clear that any useful DAG needs to be informed by knowledge and und
 
 ***
 
-DAGs are also limited in terms of what they can represent. For example: 
+DAGs are also limited in terms of what they can represent. For example:
 
-* DAGs don't contain information about the magnitude or direction of association between nodes. If an arrow points from X to Y we don't know if this is a strong negative effect or a weak positive one. In some contexts, the edges of a DAG are annotated with a number to indicate the magnitude and direction of the implied effect. 
+* DAGs don't contain information about the magnitude or direction of association between nodes. If an arrow points from X to Y we don't know if this is a strong negative effect or a weak positive one. In some contexts, the edges of a DAG are annotated with a number to indicate the magnitude and direction of the implied effect.
 
 * It is not simple to represent statistical interaction or effect modification in a DAG.
 
 * A DAG does not show if a cause only applies to some individuals
 
 
-*** 
+***
 
 Despite some limitations, DAGs are a powerful tool. Next time you are faced with a research question ask yourself, is this a casual question? If the answer is yes, before looking at any data see if you can draw the main elements of a DAG. To quote Miguel Hernán:
 
